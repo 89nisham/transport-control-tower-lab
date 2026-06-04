@@ -1,0 +1,4 @@
+geofence_id,name,lat,lon,radius_m,geofence_type
+JED_DC,Jeddah DC,21.5161,39.1729,350,depot
+JED_CUSTOMER_01,Jeddah Customer 01,21.5523,39.2093,300,customer
+RUH_HUB,Riyadh Hub,24.7136,46.6753,400,hub

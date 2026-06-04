@@ -39,6 +39,57 @@ It is built as the first micro-tool inside the shared Control Tower CLI.
 - `cleaned_trips`: normalized trip rows with source row numbers preserved
 - `column_map`: source-to-canonical field mapping used by the run
 
+## Day 2 Micro-Product: GeoReplay
+
+GeoReplay is a local-first Streamlit app that reconstructs operational geofence visit events from GPS pings.
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Transport managers
+- Anyone checking whether vehicles entered planned depots, hubs, customer sites, or fuel stations
+
+### Problem
+
+Raw GPS pings are hard to review directly. A manager usually needs the event layer:
+
+- Did the vehicle enter the site?
+- When did it enter and exit?
+- How long did it dwell?
+- Which planned stops were missed?
+- Which geofence visits were unexpected?
+
+### Inputs
+
+- `gps_points.csv`: `vehicle_id`, `timestamp`, `lat`, `lon`, optional `speed_kph`
+- `geofences.csv`: `geofence_id`, `name`, `lat`, `lon`, `radius_m`, optional `geofence_type`
+- `planned_stops.csv`: optional plan with `vehicle_id`, `geofence_id`, optional `planned_arrival`, `stop_sequence`
+
+### Outputs
+
+- `georeplay/output/visit_events.csv`
+- `georeplay/output/exceptions.csv`
+- Interactive Folium map inside Streamlit
+
+### Run GeoReplay
+
+```bash
+uv sync
+cd georeplay
+uv run streamlit run app.py
+```
+
+The app loads synthetic demo data from `georeplay/demo_data/` when no files are uploaded.
+
+### GeoReplay Limitations
+
+- V1 supports circular geofences from latitude, longitude, and radius.
+- It is local-first and file-based; no live GPS integrations are included.
+- Sparse GPS data can understate dwell or miss short visits.
+- Reverse geocoding is optional and only applies to geofence master rows, final visit events, and final exception locations. Raw GPS pings are never reverse-geocoded.
+
 ## Quick Start
 
 Install dependencies:
@@ -106,6 +157,7 @@ Each micro-product follows the same lean journey:
 
 ```text
 src/control_tower_lab/      Python package and CLI
+georeplay/                  Product 2 Streamlit app and geospatial engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -142,11 +194,19 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
+- `streamlit`: runs the GeoReplay local app.
+- `geopandas`: handles geospatial tables and coordinate reference systems.
+- `shapely`: builds and checks geofence geometry.
+- `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
+- `folium`: renders the interactive map.
+- `pydantic`: validates GeoReplay input records.
 
 ## Public Story
 
 This repo is the start of an open-source Transport Control Tower toolkit.
 
 Day 1 is Trip Sheet Doctor: a CLI tool that turns messy trip sheets into an explainable exception pack.
+
+Day 2 is GeoReplay: a Streamlit app that turns GPS pings and geofence masters into visit events and exceptions.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.

@@ -1,0 +1,4 @@
+vehicle_id,geofence_id,planned_arrival,stop_sequence
+VH-001,JED_DC,2026-06-01 08:10:00,1
+VH-001,RUH_HUB,2026-06-01 18:00:00,2
+VH-002,JED_DC,2026-06-01 08:15:00,1

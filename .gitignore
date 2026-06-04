@@ -1,4 +1,5 @@
 .venv/
+georeplay/.venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -8,6 +9,7 @@ data/input/*
 !data/input/.gitkeep
 data/output/*
 !data/output/.gitkeep
+georeplay/output/*
 logs/*
 !logs/.gitkeep
 
