@@ -1,0 +1,67 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ETA Watch Streamlit risk board screenshot</title>
+  <desc id="desc">Stylized screenshot of a transport ETA risk board with KPI cards, bar chart, and color-coded trip table.</desc>
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="0" y="0" width="1200" height="68" fill="#0f172a"/>
+  <text x="36" y="43" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28" font-weight="700">ETA Watch</text>
+  <text x="210" y="43" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="16">Local-first ETA risk board for transport control towers</text>
+
+  <rect x="36" y="102" width="172" height="94" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="58" y="135" fill="#64748b" font-family="Arial, sans-serif" font-size="15">Total trips</text>
+  <text x="58" y="174" fill="#0f172a" font-family="Arial, sans-serif" font-size="34" font-weight="700">5</text>
+
+  <rect x="228" y="102" width="172" height="94" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="250" y="135" fill="#166534" font-family="Arial, sans-serif" font-size="15">On track</text>
+  <text x="250" y="174" fill="#15803d" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="420" y="102" width="172" height="94" rx="8" fill="#ffffff" stroke="#fef08a"/>
+  <text x="442" y="135" fill="#854d0e" font-family="Arial, sans-serif" font-size="15">Watch</text>
+  <text x="442" y="174" fill="#ca8a04" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="612" y="102" width="172" height="94" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="634" y="135" fill="#9a3412" font-family="Arial, sans-serif" font-size="15">At risk</text>
+  <text x="634" y="174" fill="#ea580c" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="804" y="102" width="172" height="94" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="826" y="135" fill="#991b1b" font-family="Arial, sans-serif" font-size="15">Late</text>
+  <text x="826" y="174" fill="#dc2626" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="996" y="102" width="168" height="94" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="1018" y="135" fill="#475569" font-family="Arial, sans-serif" font-size="15">No signal</text>
+  <text x="1018" y="174" fill="#64748b" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="36" y="232" width="1128" height="180" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="62" y="267" fill="#0f172a" font-family="Arial, sans-serif" font-size="19" font-weight="700">Risk distribution</text>
+  <rect x="92" y="335" width="110" height="38" fill="#15803d"/>
+  <rect x="286" y="335" width="110" height="38" fill="#ca8a04"/>
+  <rect x="480" y="335" width="110" height="38" fill="#ea580c"/>
+  <rect x="674" y="335" width="110" height="38" fill="#dc2626"/>
+  <rect x="868" y="335" width="110" height="38" fill="#64748b"/>
+  <text x="93" y="395" fill="#475569" font-family="Arial, sans-serif" font-size="14">ON TRACK</text>
+  <text x="315" y="395" fill="#475569" font-family="Arial, sans-serif" font-size="14">WATCH</text>
+  <text x="500" y="395" fill="#475569" font-family="Arial, sans-serif" font-size="14">AT RISK</text>
+  <text x="710" y="395" fill="#475569" font-family="Arial, sans-serif" font-size="14">LATE</text>
+  <text x="885" y="395" fill="#475569" font-family="Arial, sans-serif" font-size="14">NO SIGNAL</text>
+
+  <rect x="36" y="446" width="1128" height="226" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="62" y="482" fill="#0f172a" font-family="Arial, sans-serif" font-size="19" font-weight="700">ETA risk board</text>
+  <rect x="62" y="506" width="1076" height="38" fill="#f1f5f9"/>
+  <text x="82" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Trip</text>
+  <text x="222" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Vehicle</text>
+  <text x="372" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Progress</text>
+  <text x="654" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Predicted ETA</text>
+  <text x="854" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Risk</text>
+  <text x="82" y="574" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">TRIP-1002</text>
+  <text x="222" y="574" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">VH-102</text>
+  <text x="372" y="574" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">Riyadh Exit Gate</text>
+  <text x="654" y="574" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">2026-06-04 11:40 UTC</text>
+  <rect x="854" y="554" width="92" height="28" rx="5" fill="#ea580c"/>
+  <text x="872" y="573" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="700">AT RISK</text>
+  <text x="82" y="622" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">TRIP-1005</text>
+  <text x="222" y="622" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">VH-105</text>
+  <text x="372" y="622" fill="#0f172a" font-family="Arial, sans-serif" font-size="14">No latest event</text>
+  <text x="654" y="622" fill="#64748b" font-family="Arial, sans-serif" font-size="14">-</text>
+  <rect x="854" y="602" width="104" height="28" rx="5" fill="#64748b"/>
+  <text x="872" y="621" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="700">NO SIGNAL</text>
+</svg>
+

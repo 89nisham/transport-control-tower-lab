@@ -1,0 +1,6 @@
+lane_id,from_geofence_id,to_destination,remaining_minutes_after_geofence,default_remaining_minutes
+RUH-DMM,RUH_GATE,Dammam Customer,120,240
+RUH-JED,RUH_GATE,Jeddah Customer,420,600
+JED-MAK,JED_GATE,Mecca Customer,250,180
+RUH-QSM,RUH_GATE,Qassim Customer,290,240
+RUH-KHB,RUH_GATE,Khobar Customer,300,360

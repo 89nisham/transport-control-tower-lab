@@ -1,0 +1,6 @@
+event_id,vehicle_id,geofence_id,geofence_name,geofence_type,entry_time,exit_time,dwell_minutes,ping_count,event_lat,event_lon
+EV-1001,VH-101,RUH_GATE,Riyadh Exit Gate,depot,2026-06-04T07:10:00+03:00,2026-06-04T07:25:00+03:00,15,3,24.7136,46.6753
+EV-1002,VH-102,RUH_GATE,Riyadh Exit Gate,depot,2026-06-04T07:20:00+03:00,2026-06-04T07:40:00+03:00,20,4,24.7136,46.6753
+EV-1003,VH-103,JED_GATE,Jeddah Exit Gate,depot,2026-06-04T08:00:00+03:00,2026-06-04T08:15:00+03:00,15,3,21.5161,39.1729
+EV-1004,VH-104,RUH_GATE,Riyadh Exit Gate,depot,2026-06-04T07:30:00+03:00,2026-06-04T08:00:00+03:00,30,5,24.7136,46.6753
+

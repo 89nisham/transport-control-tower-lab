@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -124,6 +124,60 @@ The app loads synthetic demo data from `georeplay/demo_data/` when no files are 
 - Sparse GPS data can understate dwell or miss short visits.
 - Reverse geocoding is optional and only applies to geofence master rows, final visit events, and final exception locations. Raw GPS pings are never reverse-geocoded.
 
+## Day 3 Micro-Product: ETA Watch
+
+ETA Watch is a local-first Streamlit app that turns cleaned trip rows and GeoReplay visit events into a manager-ready ETA risk board.
+
+![ETA Watch Streamlit screenshot](docs/assets/eta-watch-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Transport managers
+- Customer-service escalation owners
+- Anyone manually checking whether trucks are likely to miss promised arrival
+
+### Problem
+
+After trip sheets are cleaned and GPS pings become visit events, control towers still spend time manually checking:
+
+- Which trucks have gone silent?
+- Which trips are still safe?
+- Which trips need a dispatcher call?
+- Which trips are already late?
+- Which customer updates need to be prepared first?
+
+### Inputs
+
+- `trips.csv`: `trip_id`, `vehicle_id`, `origin`, `destination`, optional `lane_id`, optional `planned_departure`, `promised_arrival`
+- `visit_events.csv`: GeoReplay output with latest geofence visit events
+- `lane_baselines.csv`: optional lane/geofence remaining-time baselines
+
+### Outputs
+
+- `eta_watch/output/eta_risk_board.csv`
+- `eta_watch/output/late_trips.csv`
+- KPI cards, Plotly risk chart, color-coded risk board, and trip detail view inside Streamlit
+
+### Run ETA Watch
+
+```bash
+uv sync
+uv run streamlit run eta_watch/app.py
+```
+
+The app loads synthetic demo data from `eta_watch/demo_data/` when no files are uploaded.
+
+### ETA Watch Limitations
+
+- V1 is deterministic and file-based; no live tracking API is included.
+- All timestamps are standardized to UTC before ETA math.
+- Baseline quality directly affects predicted ETA quality.
+- `NO SIGNAL` means no matching GeoReplay event was available for the vehicle.
+- No traffic API, route optimization, SMS/email alerting, driver app, enterprise login, or database backend is included.
+
 ## Quick Start
 
 Install dependencies:
@@ -192,6 +246,7 @@ Each micro-product follows the same lean journey:
 ```text
 src/control_tower_lab/      Python package and CLI
 georeplay/                  Product 2 Streamlit app and geospatial engine
+eta_watch/                  Product 3 Streamlit app and ETA risk engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -239,6 +294,24 @@ After:
 - `visit_events.csv` and `exceptions.csv` are written for review and downstream reporting.
 - The Streamlit app shows tables, export buttons, and an interactive Folium map from local files.
 
+### ETA Watch
+
+Before:
+
+- Dispatchers manually compare promised arrival times against the latest event they can find.
+- GeoReplay visit events and trip rows sit in separate CSVs.
+- Lane knowledge lives in a planner's head or a side spreadsheet.
+- Late trips and no-signal trips are discovered too late.
+- Managers cannot quickly separate safe trips from watchlist trips.
+
+After:
+
+- ETA Watch joins trips to latest GeoReplay visit events by vehicle.
+- Uploaded timestamps are standardized to UTC before ETA calculations.
+- Lane baselines estimate remaining minutes when available.
+- Each trip is classified as `ON TRACK`, `WATCH`, `AT RISK`, `LATE`, or `NO SIGNAL`.
+- The Streamlit app shows KPI cards, a Plotly risk chart, a color-coded table, trip detail, and CSV exports.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -248,12 +321,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay local app.
+- `streamlit`: runs the GeoReplay and ETA Watch local apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `pydantic`: validates GeoReplay input records.
+- `plotly`: renders clean ETA Watch KPI distribution charts.
+- `pydantic`: validates GeoReplay and ETA Watch input records.
 
 ## Public Story
 
@@ -262,6 +336,8 @@ This repo is the start of an open-source Transport Control Tower toolkit.
 Day 1 is Trip Sheet Doctor: a CLI tool that turns messy trip sheets into an explainable exception pack.
 
 Day 2 is GeoReplay: a Streamlit app that turns GPS pings and geofence masters into visit events and exceptions.
+
+Day 3 is ETA Watch: a Streamlit app that turns trips and visit events into an ETA risk board.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 

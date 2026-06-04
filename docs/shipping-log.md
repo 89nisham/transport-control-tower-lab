@@ -52,3 +52,30 @@ GPS pings become useful when they are converted into control-tower events: entry
 - `uv run ruff check .`
 - `uv run python -m py_compile georeplay/app.py georeplay/engine.py georeplay/models.py`
 - Demo smoke run writes `georeplay/output/visit_events.csv` and `georeplay/output/exceptions.csv`
+
+## v0.3.0-eta-watch
+
+Date: 2026-06-04
+
+### Shipped
+
+- Added `eta_watch/` as a separate Streamlit micro-product folder.
+- Added deterministic ETA risk calculation from trip rows and GeoReplay visit events.
+- Standardized all uploaded timestamps to UTC before ETA math.
+- Added optional lane baseline support for remaining-time estimates.
+- Added fallback remaining-time rules when no lane baseline is available.
+- Added KPI cards, Plotly risk distribution chart, color-coded risk table, trip detail view, and CSV downloads.
+- Added synthetic demo data and tests.
+- Added README ETA Watch visual and product-specific Before/After section.
+- Tagged the public release as `v0.3.0-eta-watch`.
+
+### Why It Matters
+
+Control towers need to move from manual ETA checking to a risk board that separates safe trips from watchlist, at-risk, late, and no-signal trips.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile eta_watch/app.py eta_watch/engine.py eta_watch/models.py`
+- Demo smoke run writes `eta_watch/output/eta_risk_board.csv` and `eta_watch/output/late_trips.csv`
