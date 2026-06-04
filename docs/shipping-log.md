@@ -26,7 +26,7 @@ Trip sheets are the base layer for ETA, GPS reconciliation, fuel checks, SLA rep
 
 Day 1 is intentionally small: one painful operations file, one deterministic review workflow, one explainable output workbook.
 
-## Product 2: GeoReplay
+## v0.2.0-georeplay
 
 Date: 2026-06-04
 
@@ -39,6 +39,8 @@ Date: 2026-06-04
 - Added Folium map rendering for pings, geofences, and reconstructed visits.
 - Added optional Nominatim reverse geocoding for final geofence/event/exception records only, never raw GPS pings.
 - Added synthetic demo data and tests.
+- Added README GeoReplay visual and product-specific Before/After section.
+- Tagged the public release as `v0.2.0-georeplay`.
 
 ### Why It Matters
 

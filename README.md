@@ -43,6 +43,8 @@ It is built as the first micro-tool inside the shared Control Tower CLI.
 
 GeoReplay is a local-first Streamlit app that reconstructs operational geofence visit events from GPS pings.
 
+![GeoReplay Streamlit screenshot](docs/assets/georeplay-streamlit.svg)
+
 ### Who It Is For
 
 - Control tower teams
@@ -168,6 +170,8 @@ docs/                       Product notes and build logs
 
 ## Before / After
 
+### Trip Sheet Doctor
+
 Before:
 
 - Trip sheets arrive with inconsistent column names like `Trip No`, `shipment_no`, `Truck`, `door_number`, `Pickup Time`, and `eta`.
@@ -184,6 +188,24 @@ After:
 - Exceptions are written into a review workbook with severity, evidence, owner, suggested action, and review status.
 - The output workbook includes `summary`, `exceptions`, `correction_suggestions`, `cleaned_trips`, and `column_map`.
 - Teams get a clear exception pack before ETA, GPS, fuel, SLA, or weekly reporting work begins.
+
+### GeoReplay
+
+Before:
+
+- GPS exports arrive as raw timestamped pings.
+- Site masters and planned stops sit in separate files.
+- Control tower teams manually inspect dots, filters, and timestamps to understand site visits.
+- Missed planned stops, long dwell, and unexpected visits are easy to miss.
+- Managers see coordinates instead of an operational event story.
+
+After:
+
+- GeoReplay reconstructs entry, exit, and dwell events from GPS pings and geofence master data.
+- Planned stops are compared against detected visits.
+- Exceptions are split into missed stops, long dwell, and unexpected visits.
+- `visit_events.csv` and `exceptions.csv` are written for review and downstream reporting.
+- The Streamlit app shows tables, export buttons, and an interactive Folium map from local files.
 
 ## Python Libraries
 
