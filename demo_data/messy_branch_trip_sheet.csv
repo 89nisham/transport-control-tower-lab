@@ -1,0 +1,6 @@
+Trip No,Truck,Driver,From,To,Pickup Time,Delivery Time,Status,Notes
+DXB-1001, ae-4211 ,Khalid,Dubai DC,Abu Dhabi Hub,2026-06-01 08:00,2026-06-01 13:30,Completed,normal run
+DXB-1002,,Sara,Dubai DC,Sharjah Store,2026-06-01 09:15,2026-06-01 11:00,Dispatched,missing vehicle
+,AE 7782,Omar,Al Ain DC,Dubai DC,2026-06-01 10:00,2026-06-01 16:00,Completed,missing trip id
+DXB-1004,AE-9090,Noura,RAK Hub,RAK Hub,2026-06-01 12:00,2026-06-01 14:00,Planned,same origin and destination
+DXB-1005,AE-5512,Hassan,Dubai DC,Fujairah Port,2026-06-02 08:00,2026-06-06 12:00,Planned,long planned duration

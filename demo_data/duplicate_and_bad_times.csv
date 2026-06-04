@@ -1,0 +1,6 @@
+shipment_no,door_number,captain,loading_point,unloading_point,dispatch_time,eta,trip_status,route_owner
+TRP-2001,DOOR-17,Ali,Jeddah DC,Riyadh Hub,2026-06-01 07:30,2026-06-01 18:30,completed,central planning
+TRP-2001,DOOR-17,Ali,Jeddah DC,Riyadh Hub,2026-06-01 07:30,2026-06-01 18:30,completed,central planning
+TRP-2002,DOOR-03,Maha,Dammam Yard,Khobar Store,2026-06-01 15:00,2026-06-01 12:00,in transit,eastern team
+TRP-2003,DOOR-09,Faisal,,Riyadh Hub,2026-06-01 09:00,2026-06-01 21:00,planned,missing origin
+TRP-2004,DOOR-11,Lina,Jeddah DC,,2026-06-02 09:00,2026-06-02 22:00,planned,missing destination

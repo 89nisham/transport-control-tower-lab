@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Trip Sheet Doctor terminal screenshot</title>
+  <desc id="desc">Terminal output showing Trip Sheet Doctor reviewing messy logistics trip sheets and writing an exception workbook.</desc>
+  <rect width="960" height="520" fill="#111827"/>
+  <rect x="24" y="24" width="912" height="472" rx="8" fill="#0b1020" stroke="#2f3a4f"/>
+  <circle cx="52" cy="52" r="7" fill="#ef4444"/>
+  <circle cx="76" cy="52" r="7" fill="#f59e0b"/>
+  <circle cx="100" cy="52" r="7" fill="#22c55e"/>
+  <text x="132" y="58" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">transport-control-tower-lab</text>
+  <text x="52" y="108" fill="#93c5fd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">$ uv run control-tower trip-sheet-doctor demo_data/messy_branch_trip_sheet.csv data/output/demo.xlsx</text>
+  <text x="52" y="154" fill="#e5e7eb" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Wrote data/output/demo.xlsx</text>
+  <text x="52" y="190" fill="#e5e7eb" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Rows reviewed: 5</text>
+  <text x="52" y="226" fill="#facc15" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Exceptions: 4 across 4 rows</text>
+  <text x="52" y="286" fill="#93c5fd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">$ uv run pytest</text>
+  <text x="52" y="332" fill="#86efac" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">3 passed in 1.29s</text>
+  <text x="52" y="392" fill="#93c5fd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">$ uv run ruff check .</text>
+  <text x="52" y="438" fill="#86efac" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">All checks passed!</text>
+</svg>

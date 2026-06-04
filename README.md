@@ -10,6 +10,8 @@ Trip Sheet Doctor diagnoses messy Excel/CSV trip sheets and creates an exception
 
 It is built as the first micro-tool inside the shared Control Tower CLI.
 
+![Trip Sheet Doctor terminal screenshot](docs/assets/trip-sheet-doctor-terminal.svg)
+
 ### Who It Is For
 
 - Control tower teams
@@ -53,6 +55,22 @@ uv run control-tower trip-sheet-doctor \
   data/output/trip_sheet_doctor_demo.xlsx
 ```
 
+Try the intentionally messy demo files:
+
+```bash
+uv run control-tower trip-sheet-doctor \
+  demo_data/messy_branch_trip_sheet.csv \
+  data/output/messy_branch_trip_sheet.xlsx
+
+uv run control-tower trip-sheet-doctor \
+  demo_data/duplicate_and_bad_times.csv \
+  data/output/duplicate_and_bad_times.xlsx
+
+uv run control-tower trip-sheet-doctor \
+  demo_data/column_mapping_gaps.csv \
+  data/output/column_mapping_gaps.xlsx
+```
+
 Run tests:
 
 ```bash
@@ -89,14 +107,46 @@ Each micro-product follows the same lean journey:
 ```text
 src/control_tower_lab/      Python package and CLI
 data/samples/               Public-safe sample files
+demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
 data/output/                Generated outputs, ignored by git
 tests/                      Unit and CLI smoke tests
 docs/                       Product notes and build logs
 ```
 
+## Before / After
+
+Before:
+
+- Trip sheets arrive with inconsistent column names like `Trip No`, `shipment_no`, `Truck`, `door_number`, `Pickup Time`, and `eta`.
+- Required fields may be blank.
+- Duplicate trip IDs are easy to miss.
+- Delivery time can be earlier than pickup time.
+- Same-origin/same-destination rows hide in the sheet.
+- Analysts spend review time finding basic data quality issues instead of acting on them.
+
+After:
+
+- The CLI maps common messy source columns into canonical trip fields.
+- Each source row is preserved with a `source_row` reference.
+- Exceptions are written into a review workbook with severity, evidence, owner, suggested action, and review status.
+- The output workbook includes `summary`, `exceptions`, `correction_suggestions`, `cleaned_trips`, and `column_map`.
+- Teams get a clear exception pack before ETA, GPS, fuel, SLA, or weekly reporting work begins.
+
+## Python Libraries
+
+- `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
+- `openpyxl`: supports Excel workbook output for operations teams that still review in spreadsheets.
+- `typer`: provides the command-line interface.
+- `rich`: makes terminal output readable during demos and local runs.
+- `loguru`: keeps lightweight operational logs.
+- `pytest`: validates the core behavior.
+- `ruff`: checks code quality before shipping.
+
 ## Public Story
 
 This repo is the start of an open-source Transport Control Tower toolkit.
 
 Day 1 is Trip Sheet Doctor: a CLI tool that turns messy trip sheets into an explainable exception pack.
+
+See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
