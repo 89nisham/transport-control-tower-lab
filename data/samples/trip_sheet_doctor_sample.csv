@@ -1,0 +1,7 @@
+Trip No,Door Number,Driver,From,To,Pickup Time,ETA,Status,Customer Ref
+TSD-001,TRK-101,Ali,Riyadh Hub,Jeddah Hub,2026-06-01 08:00,2026-06-01 19:30,Completed,CUST-1001
+TSD-002,,Khalid,Riyadh Hub,Dammam Hub,2026-06-01 09:15,2026-06-01 16:45,In Transit,CUST-1002
+TSD-003,TRK 205,Hassan,Jeddah Hub,Jeddah Hub,2026-06-01 10:00,2026-06-01 12:30,Planned,CUST-1003
+TSD-004,TRK-301,Omar,Dammam Hub,Riyadh Hub,2026-06-02 14:00,2026-06-02 11:00,Planned,CUST-1004
+TSD-005,TRK-404,,Makkah Station,Madinah Hub,bad date,2026-06-03 20:00,Planned,CUST-1005
+TSD-001,TRK-101,Ali,Riyadh Hub,Jeddah Hub,2026-06-01 08:00,2026-06-01 19:30,Duplicate,CUST-1001

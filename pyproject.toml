@@ -1,0 +1,34 @@
+[project]
+name = "control-tower-lab"
+version = "0.1.0"
+description = "Logistics control tower lab for TMS/GPS cleaning, ETA checks, exceptions, and weekly reports."
+requires-python = ">=3.12"
+dependencies = [
+  "pandas>=2.2",
+  "openpyxl>=3.1",
+  "typer>=0.15",
+  "rich>=13.0",
+  "loguru>=0.7",
+]
+
+[project.scripts]
+control-tower = "control_tower_lab.cli:app"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = true
