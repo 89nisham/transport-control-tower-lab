@@ -1,3 +1,5 @@
+"""Deterministic geofence event reconstruction engine for GeoReplay."""
+
 from __future__ import annotations
 
 import time
@@ -21,6 +23,8 @@ REQUIRED_PLANNED_STOP_COLUMNS = {"vehicle_id", "geofence_id"}
 
 @dataclass(frozen=True)
 class GeoReplayResult:
+    """Structured outputs from a GeoReplay run."""
+
     visit_events: pd.DataFrame
     exceptions: pd.DataFrame
     gps_points: gpd.GeoDataFrame
@@ -29,12 +33,14 @@ class GeoReplayResult:
 
 
 def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize uploaded CSV column names to snake_case."""
     normalized = df.copy()
     normalized.columns = [str(column).strip().lower().replace(" ", "_") for column in df.columns]
     return normalized
 
 
 def _require_columns(df: pd.DataFrame, required: set[str], label: str) -> None:
+    """Raise a readable error when an input file is missing required columns."""
     missing = sorted(required - set(df.columns))
     if missing:
         joined = ", ".join(missing)
@@ -42,6 +48,7 @@ def _require_columns(df: pd.DataFrame, required: set[str], label: str) -> None:
 
 
 def prepare_gps_points(df: pd.DataFrame) -> gpd.GeoDataFrame:
+    """Validate and convert raw GPS ping rows into a GeoDataFrame."""
     source = _normalize_columns(df).dropna(how="all").copy()
     _require_columns(source, REQUIRED_GPS_COLUMNS, "gps_points")
     source["timestamp"] = pd.to_datetime(source["timestamp"], errors="coerce")
@@ -74,6 +81,7 @@ def prepare_gps_points(df: pd.DataFrame) -> gpd.GeoDataFrame:
 
 
 def prepare_geofences(df: pd.DataFrame) -> gpd.GeoDataFrame:
+    """Validate circular geofence rows and build polygon geometry."""
     source = _normalize_columns(df).dropna(how="all").copy()
     _require_columns(source, REQUIRED_GEOFENCE_COLUMNS, "geofences")
     if "name" not in source.columns:
@@ -116,6 +124,7 @@ def prepare_geofences(df: pd.DataFrame) -> gpd.GeoDataFrame:
 
 
 def prepare_planned_stops(df: pd.DataFrame | None) -> pd.DataFrame:
+    """Normalize optional planned-stop rows for missed-stop comparison."""
     if df is None or df.empty:
         return pd.DataFrame(columns=["vehicle_id", "geofence_id", "planned_arrival", "stop_sequence"])
     source = _normalize_columns(df).dropna(how="all").copy()
@@ -148,6 +157,7 @@ def prepare_planned_stops(df: pd.DataFrame | None) -> pd.DataFrame:
 
 
 def detect_inside_points(gps_points: gpd.GeoDataFrame, geofences: gpd.GeoDataFrame) -> pd.DataFrame:
+    """Return GPS pings that fall inside each geofence polygon."""
     gps_metric = gps_points.to_crs(METRIC_CRS)
     geofences_metric = geofences.to_crs(METRIC_CRS)
     rows: list[dict[str, Any]] = []
@@ -171,6 +181,7 @@ def detect_inside_points(gps_points: gpd.GeoDataFrame, geofences: gpd.GeoDataFra
 
 
 def reconstruct_visit_events(inside_points: pd.DataFrame) -> pd.DataFrame:
+    """Group inside pings into entry, exit, and dwell visit events."""
     columns = [
         "event_id",
         "vehicle_id",
@@ -220,6 +231,7 @@ def detect_exceptions(
     planned_stops: pd.DataFrame,
     long_dwell_minutes: float = 45,
 ) -> pd.DataFrame:
+    """Detect long dwell, missed planned stops, and unexpected visits."""
     columns = [
         "exception_id",
         "vehicle_id",
@@ -310,6 +322,7 @@ def run_georeplay(
     planned_stops_df: pd.DataFrame | None = None,
     long_dwell_minutes: float = 45,
 ) -> GeoReplayResult:
+    """Run the full GeoReplay pipeline from input tables to events and exceptions."""
     gps_points = prepare_gps_points(gps_df)
     geofences = prepare_geofences(geofence_df)
     planned_stops = prepare_planned_stops(planned_stops_df)
@@ -363,6 +376,7 @@ def create_map(
     geofences: gpd.GeoDataFrame,
     visit_events: pd.DataFrame,
 ):
+    """Create a Folium map with pings, geofences, and reconstructed visits."""
     import folium
 
     center_lat = float(gps_points["lat"].mean()) if not gps_points.empty else 24.7136

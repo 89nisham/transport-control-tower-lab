@@ -1,3 +1,5 @@
+"""Command-line entry points for the Transport Control Tower Lab toolkit."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -20,6 +22,7 @@ LOG_DIR = ROOT / "logs"
 
 
 def _read_table(path: Path) -> pd.DataFrame:
+    """Read a supported CSV or Excel file into a dataframe."""
     if path.suffix.lower() in {".xlsx", ".xlsm", ".xls"}:
         return pd.read_excel(path)
     if path.suffix.lower() == ".csv":
@@ -28,6 +31,7 @@ def _read_table(path: Path) -> pd.DataFrame:
 
 
 def _write_table(df: pd.DataFrame, path: Path) -> None:
+    """Write a dataframe to CSV or Excel based on the output suffix."""
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.suffix.lower() == ".csv":
         df.to_csv(path, index=False)
@@ -36,6 +40,7 @@ def _write_table(df: pd.DataFrame, path: Path) -> None:
 
 
 def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize source column names for simple file-based workflows."""
     df = df.copy()
     df.columns = [str(column).strip().lower().replace(" ", "_") for column in df.columns]
     return df

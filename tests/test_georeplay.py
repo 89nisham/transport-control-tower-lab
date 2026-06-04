@@ -1,3 +1,5 @@
+"""Unit tests for GeoReplay event reconstruction and exception detection."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -6,6 +8,7 @@ from georeplay.engine import run_georeplay
 
 
 def _gps() -> pd.DataFrame:
+    """Build a small GPS fixture with one reconstructed site visit."""
     return pd.DataFrame(
         [
             {
@@ -48,6 +51,7 @@ def _gps() -> pd.DataFrame:
 
 
 def _geofences() -> pd.DataFrame:
+    """Build geofence fixtures for one visited and one missed site."""
     return pd.DataFrame(
         [
             {
@@ -71,6 +75,7 @@ def _geofences() -> pd.DataFrame:
 
 
 def test_geofence_entry_exit_and_dwell_are_reconstructed() -> None:
+    """GeoReplay should reconstruct entry, exit, and dwell from inside pings."""
     result = run_georeplay(_gps(), _geofences(), long_dwell_minutes=45)
 
     assert len(result.visit_events) == 1
@@ -82,6 +87,7 @@ def test_geofence_entry_exit_and_dwell_are_reconstructed() -> None:
 
 
 def test_long_dwell_exception_is_detected() -> None:
+    """GeoReplay should flag visits above the configured dwell threshold."""
     result = run_georeplay(_gps(), _geofences(), long_dwell_minutes=45)
 
     exception_types = set(result.exceptions["exception_type"])
@@ -89,6 +95,7 @@ def test_long_dwell_exception_is_detected() -> None:
 
 
 def test_missed_planned_stop_is_detected() -> None:
+    """GeoReplay should flag planned stops with no matching reconstructed visit."""
     planned = pd.DataFrame(
         [
             {"vehicle_id": "VH-1", "geofence_id": "RUH_DC", "planned_arrival": "2026-06-01 08:05:00"},
@@ -103,6 +110,7 @@ def test_missed_planned_stop_is_detected() -> None:
 
 
 def test_unexpected_geofence_visit_is_detected() -> None:
+    """GeoReplay should flag visits that were not present in the stop plan."""
     planned = pd.DataFrame(
         [{"vehicle_id": "VH-1", "geofence_id": "JED_DC", "planned_arrival": "2026-06-01 18:00:00"}]
     )

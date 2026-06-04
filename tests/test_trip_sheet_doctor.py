@@ -1,3 +1,5 @@
+"""Tests for Trip Sheet Doctor cleaning and workbook output."""
+
 from pathlib import Path
 
 import pandas as pd
@@ -8,6 +10,7 @@ from control_tower_lab.trip_sheet_doctor import analyze_trip_sheet
 
 
 def test_trip_sheet_doctor_detects_operational_exceptions():
+    """Trip Sheet Doctor should detect common operational data-quality issues."""
     df = pd.DataFrame(
         [
             {
@@ -52,6 +55,7 @@ def test_trip_sheet_doctor_detects_operational_exceptions():
 
 
 def test_trip_sheet_doctor_cli_writes_workbook(tmp_path: Path):
+    """The CLI should write the expected multi-sheet Excel review workbook."""
     input_file = tmp_path / "trips.csv"
     output_file = tmp_path / "doctor.xlsx"
     pd.DataFrame(

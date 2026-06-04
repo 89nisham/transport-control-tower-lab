@@ -1,3 +1,5 @@
+"""Trip Sheet Doctor rules for cleaning trip files and finding review exceptions."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -94,6 +96,8 @@ DATE_COLUMNS = ("planned_start", "planned_end")
 
 @dataclass(frozen=True)
 class TripSheetDoctorResult:
+    """Structured output from a Trip Sheet Doctor analysis run."""
+
     cleaned_trips: pd.DataFrame
     exceptions: pd.DataFrame
     correction_suggestions: pd.DataFrame
@@ -102,6 +106,7 @@ class TripSheetDoctorResult:
 
 
 def _simple_column_name(value: Any) -> str:
+    """Convert a source column label into a matching-friendly snake_case name."""
     name = str(value).strip().lower()
     for char in ("-", "/", "\\", ".", "(", ")", "[", "]"):
         name = name.replace(char, " ")
@@ -109,6 +114,7 @@ def _simple_column_name(value: Any) -> str:
 
 
 def _normalize_text(value: Any) -> str | None:
+    """Normalize human-entered text while preserving missing values as None."""
     if pd.isna(value):
         return None
     text = str(value).strip()
@@ -118,6 +124,7 @@ def _normalize_text(value: Any) -> str | None:
 
 
 def _normalize_vehicle(value: Any) -> str | None:
+    """Normalize vehicle or door-number references for operational matching."""
     text = _normalize_text(value)
     if text is None:
         return None
@@ -125,6 +132,7 @@ def _normalize_vehicle(value: Any) -> str | None:
 
 
 def _build_column_map(columns: list[str]) -> dict[str, str]:
+    """Map source columns onto the canonical Trip Sheet Doctor fields."""
     normalized_to_original = {_simple_column_name(column): column for column in columns}
     mapped: dict[str, str] = {}
     used_original: set[str] = set()
@@ -140,6 +148,7 @@ def _build_column_map(columns: list[str]) -> dict[str, str]:
 
 
 def _base_cleaned_frame(df: pd.DataFrame, column_map: dict[str, str]) -> pd.DataFrame:
+    """Create the normalized trip table used by checks and workbook exports."""
     cleaned = pd.DataFrame(index=df.index)
     for canonical in CANONICAL_COLUMNS:
         source = column_map.get(canonical)
@@ -166,6 +175,7 @@ def _exception(
     suggested_action: str,
     confidence: str = "high",
 ) -> dict[str, Any]:
+    """Build one explainable exception row for the review workbook."""
     return {
         "source_row": row.get("source_row"),
         "trip_id": row.get("trip_id"),
@@ -183,6 +193,7 @@ def _exception(
 
 
 def _owner_for_exception(exception_type: str) -> str:
+    """Assign a practical review owner from the exception type."""
     if exception_type in {"missing_vehicle_id", "duplicate_trip_id"}:
         return "fleet/control_tower"
     if exception_type in {"missing_planned_start", "missing_planned_end", "invalid_trip_time_sequence"}:
@@ -193,6 +204,7 @@ def _owner_for_exception(exception_type: str) -> str:
 
 
 def _detect_exceptions(cleaned: pd.DataFrame) -> pd.DataFrame:
+    """Detect deterministic trip-sheet quality exceptions."""
     exceptions: list[dict[str, Any]] = []
 
     for _, row in cleaned.iterrows():
@@ -279,6 +291,7 @@ def _build_correction_suggestions(
     cleaned: pd.DataFrame,
     column_map: dict[str, str],
 ) -> pd.DataFrame:
+    """Build mapping and normalization suggestions for analyst review."""
     suggestions: list[dict[str, Any]] = []
 
     for canonical in CANONICAL_COLUMNS:
@@ -339,6 +352,7 @@ def _build_correction_suggestions(
 
 
 def _build_summary(cleaned: pd.DataFrame, exceptions: pd.DataFrame) -> pd.DataFrame:
+    """Summarize trip-sheet quality metrics for the workbook summary tab."""
     total_rows = len(cleaned)
     trips_with_exceptions = exceptions["source_row"].nunique() if not exceptions.empty else 0
     metrics = [
@@ -366,6 +380,7 @@ def _build_summary(cleaned: pd.DataFrame, exceptions: pd.DataFrame) -> pd.DataFr
 
 
 def analyze_trip_sheet(df: pd.DataFrame) -> TripSheetDoctorResult:
+    """Analyze a raw trip sheet and return cleaned rows, exceptions, and metadata."""
     source = df.dropna(how="all").copy()
     column_map = _build_column_map(list(source.columns))
     cleaned = _base_cleaned_frame(source, column_map)
@@ -382,6 +397,7 @@ def analyze_trip_sheet(df: pd.DataFrame) -> TripSheetDoctorResult:
 
 
 def write_trip_sheet_doctor_workbook(result: TripSheetDoctorResult, output_file: Path) -> None:
+    """Write Trip Sheet Doctor results into a multi-sheet Excel workbook."""
     output_file.parent.mkdir(parents=True, exist_ok=True)
     column_map_df = pd.DataFrame(
         [{"canonical_field": key, "source_column": value} for key, value in result.column_map.items()]

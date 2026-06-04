@@ -1,3 +1,5 @@
+"""Streamlit interface for GeoReplay geofence visit reconstruction."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -15,12 +17,14 @@ OUTPUT_DIR = APP_DIR / "output"
 
 
 def _read_uploaded_or_demo(uploaded_file, demo_path: Path) -> pd.DataFrame:
+    """Read an uploaded CSV or fall back to the bundled demo data."""
     if uploaded_file is None:
         return pd.read_csv(demo_path)
     return pd.read_csv(uploaded_file)
 
 
 def _download_csv(label: str, df: pd.DataFrame, filename: str) -> None:
+    """Render a Streamlit CSV download button for an output dataframe."""
     st.download_button(
         label=label,
         data=df.to_csv(index=False),
@@ -30,6 +34,7 @@ def _download_csv(label: str, df: pd.DataFrame, filename: str) -> None:
 
 
 def main() -> None:
+    """Run the GeoReplay Streamlit application."""
     st.set_page_config(page_title="GeoReplay", page_icon="🛰️", layout="wide")
     st.title("GeoReplay")
     st.caption("Reconstruct geofence visit events from GPS pings for transport control towers.")
@@ -124,4 +129,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

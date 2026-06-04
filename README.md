@@ -1,8 +1,40 @@
 # Transport Control Tower Lab
 
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay-ff4b4b)](https://streamlit.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
+
 Open-source Python CLI for practical logistics control-tower automation.
 
 The goal is not to replace a TMS. The goal is to turn messy operational files into clean events, explainable exceptions, and useful review packs that transport teams can act on.
+
+## Problem
+
+Transport operations teams lose hours every day checking Excel sheets, GPS exports, trip files, and planned stops by hand.
+
+Typical control-tower pain:
+
+- Stop manually checking Excel sheets to see if trucks missed their stops.
+- Stop scanning raw GPS dots to understand when a vehicle entered or left a site.
+- Stop waiting for analysts to clean trip sheets before managers can see exceptions.
+- Stop treating messy source files as if they were clean operational truth.
+
+When the data is messy, late, duplicated, or spread across systems, managers miss the real questions: which truck needs attention, what exception happened, and who should act next.
+
+## Solution
+
+Transport Control Tower Lab is an open-source toolkit for turning messy transport files into manager-ready exception packs.
+
+It gives logistics teams practical local-first tools that:
+
+- clean and normalize messy trip sheets;
+- reconstruct geofence visits from GPS pings;
+- calculate dwell time, missed stops, and unexpected visits;
+- export reviewable CSV/Excel outputs;
+- preserve raw inputs and explain the evidence behind each exception.
+
+This repo is built for operations managers, control-tower teams, dispatchers, and fleet teams who need faster exception visibility before investing in heavier integrations.
 
 ## Day 1 Micro-Product: Trip Sheet Doctor
 
@@ -232,3 +264,13 @@ Day 1 is Trip Sheet Doctor: a CLI tool that turns messy trip sheets into an expl
 Day 2 is GeoReplay: a Streamlit app that turns GPS pings and geofence masters into visit events and exceptions.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
+
+## Roadmap / Coming Soon
+
+This open-source repo starts with local files because that is where most transport data problems begin. The next steps point toward integrated B2B control-tower workflows:
+
+- Automated API integrations with TMS, GPS/telematics, fuel, and customer systems.
+- Live Telegram/WhatsApp alerting for missed stops, long dwell, late trips, and high-risk exceptions.
+- Planned vs actual route visualization for transport managers and customer-facing control towers.
+- Fuel + GPS + trip reconciliation packs for Saudi/GCC fleet operations.
+- Exception cockpit for daily standups, escalation ownership, and management reporting.
