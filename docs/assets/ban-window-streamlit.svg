@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">BanWindow Streamlit screenshot mockup</title>
+  <desc id="desc">A dashboard-style mockup showing restriction-window risk statuses, KPI cards, and a conflict board.</desc>
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="0" y="0" width="260" height="720" fill="#0f172a"/>
+  <text x="34" y="58" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#ffffff">BanWindow</text>
+  <text x="34" y="98" font-family="Arial, sans-serif" font-size="15" fill="#cbd5e1">Inputs</text>
+  <rect x="32" y="122" width="196" height="42" rx="6" fill="#1e293b"/>
+  <text x="50" y="148" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">trips.csv</text>
+  <rect x="32" y="178" width="196" height="42" rx="6" fill="#1e293b"/>
+  <text x="50" y="204" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">ban_windows.csv</text>
+  <rect x="32" y="234" width="196" height="42" rx="6" fill="#1e293b"/>
+  <text x="50" y="260" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">optional ETA / visits</text>
+  <text x="34" y="326" font-family="Arial, sans-serif" font-size="15" fill="#cbd5e1">Settings</text>
+  <rect x="32" y="350" width="196" height="42" rx="6" fill="#1e293b"/>
+  <text x="50" y="376" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Watch buffer: 60 min</text>
+  <rect x="32" y="414" width="196" height="46" rx="6" fill="#ef4444"/>
+  <text x="82" y="443" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Run BanWindow</text>
+
+  <text x="300" y="58" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">BanWindow</text>
+  <text x="300" y="88" font-family="Arial, sans-serif" font-size="16" fill="#475569">Checks planned movement intervals against uploaded restriction windows.</text>
+  <rect x="300" y="112" width="850" height="54" rx="8" fill="#e0f2fe"/>
+  <text x="326" y="145" font-family="Arial, sans-serif" font-size="15" fill="#075985">All restrictions come from uploaded CSV files. No hard-coded legal rules are included.</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="300" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="318" y="224" font-size="13" fill="#64748b">Trips</text>
+    <text x="318" y="256" font-size="30" font-weight="700" fill="#0f172a">10</text>
+    <rect x="448" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="466" y="224" font-size="13" fill="#64748b">Conflicts</text>
+    <text x="466" y="256" font-size="30" font-weight="700" fill="#dc2626">5</text>
+    <rect x="596" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="614" y="224" font-size="13" fill="#64748b">Watch</text>
+    <text x="614" y="256" font-size="30" font-weight="700" fill="#ca8a04">1</text>
+    <rect x="744" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="762" y="224" font-size="13" fill="#64748b">Needs data</text>
+    <text x="762" y="256" font-size="30" font-weight="700" fill="#7f1d1d">3</text>
+    <rect x="892" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="910" y="224" font-size="13" fill="#64748b">Windows</text>
+    <text x="910" y="256" font-size="30" font-weight="700" fill="#0f172a">6</text>
+  </g>
+
+  <rect x="300" y="304" width="850" height="350" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="300" y="304" width="850" height="48" rx="8" fill="#f1f5f9"/>
+  <text x="326" y="334" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">ban_risk_board.csv</text>
+  <g font-family="Arial, sans-serif" font-size="13">
+    <text x="326" y="382" fill="#64748b">trip_id</text>
+    <text x="486" y="382" fill="#64748b">city</text>
+    <text x="626" y="382" fill="#64748b">vehicle_class</text>
+    <text x="800" y="382" fill="#64748b">risk_status</text>
+    <text x="982" y="382" fill="#64748b">action</text>
+    <line x1="326" y1="398" x2="1124" y2="398" stroke="#e2e8f0"/>
+    <text x="326" y="432" fill="#0f172a">TRIP-CONFLICT</text>
+    <text x="486" y="432" fill="#0f172a">Riyadh</text>
+    <text x="626" y="432" fill="#0f172a">HEAVY</text>
+    <rect x="800" y="411" width="92" height="28" rx="4" fill="#dc2626"/>
+    <text x="816" y="430" fill="#ffffff" font-weight="700">CONFLICT</text>
+    <text x="982" y="432" fill="#0f172a">Planning review</text>
+    <text x="326" y="486" fill="#0f172a">TRIP-WATCH</text>
+    <text x="486" y="486" fill="#0f172a">Jeddah</text>
+    <text x="626" y="486" fill="#0f172a">LIGHT</text>
+    <rect x="800" y="465" width="72" height="28" rx="4" fill="#ca8a04"/>
+    <text x="815" y="484" fill="#ffffff" font-weight="700">WATCH</text>
+    <text x="982" y="486" fill="#0f172a">Monitor timing</text>
+    <text x="326" y="540" fill="#0f172a">TRIP-CLEAR</text>
+    <text x="486" y="540" fill="#0f172a">Riyadh</text>
+    <text x="626" y="540" fill="#0f172a">HEAVY</text>
+    <rect x="800" y="519" width="68" height="28" rx="4" fill="#15803d"/>
+    <text x="818" y="538" fill="#ffffff" font-weight="700">CLEAR</text>
+    <text x="982" y="540" fill="#0f172a">No action</text>
+    <text x="326" y="594" fill="#0f172a">TRIP-UNKNOWN</text>
+    <text x="486" y="594" fill="#0f172a">Doha</text>
+    <text x="626" y="594" fill="#0f172a">missing</text>
+    <rect x="800" y="573" width="182" height="28" rx="4" fill="#9333ea"/>
+    <text x="816" y="592" fill="#ffffff" font-weight="700">VEHICLE CLASS UNKNOWN</text>
+    <text x="1000" y="594" fill="#0f172a">Confirm class</text>
+  </g>
+</svg>

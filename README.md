@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab%20%2B%20BanWindow-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -547,6 +547,61 @@ The app loads realistic GCC synthetic demo data from `lane_lab/demo_data/` when 
 - Confidence buckets are data-quality review signals, not operational blame.
 - Baselines depend on historical trip coverage and GeoReplay visit-event quality.
 - Missing, zero, or negative durations are excluded from percentile calculations and counted as invalid trips.
+
+## Day 11 Micro-Product: BanWindow
+
+BanWindow is a local-first Streamlit app that checks planned or predicted trip movement intervals against user-uploaded restriction windows.
+
+![BanWindow Streamlit screenshot](docs/assets/ban-window-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Transport planners
+- Dispatch teams
+- Fleet operations managers
+- Customer-service teams preparing delivery commitments
+
+### Problem
+
+Restriction windows can break a trip plan before dispatch or arrival. Teams still need to check:
+
+- which trips overlap uploaded restriction windows;
+- which trips are near a window and need a watch flag;
+- which rows are missing city or timing evidence;
+- which checks depend on unknown vehicle class;
+- which conflict rows need planning review.
+
+### Inputs
+
+- `trips.csv`: `trip_id`, `vehicle_id`, `origin`, `destination`, `planned_departure`, `promised_arrival`, optional customer, carrier, city, vehicle class, and planned city window fields
+- `ban_windows.csv`: user-supplied restriction windows with `ban_id`, `city`, `start_time`, `end_time`, optional location, vehicle class, days of week, effective dates, and rule notes
+- `eta_risk_board.csv`: optional predicted arrival context
+- `visit_events.csv`: optional GeoReplay-style visit evidence
+
+### Outputs
+
+- `ban_window/output/ban_risk_board.csv` with trip context, movement interval, timing source, matched window count, conflict count, watch count, risk status, severity, evidence, and suggested action
+- `ban_window/output/ban_conflicts.csv` with one row per overlapping uploaded restriction window
+- KPI cards, Plotly status chart, risk board, conflict table, expanded-window table, and download buttons inside Streamlit
+
+Risk statuses are `CLEAR`, `CONFLICT`, `WATCH`, `MISSING TIMING`, `MISSING CITY`, and `VEHICLE CLASS UNKNOWN`.
+
+### Run BanWindow
+
+```bash
+uv sync
+uv run streamlit run ban_window/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `ban_window/demo_data/` when no files are uploaded.
+
+### BanWindow Limitations
+
+- V1 is deterministic and file-based; no live legal, permit, traffic, route-optimization, or driver-messaging integration is included.
+- BanWindow does not hard-code truck-ban laws, scrape laws, claim legal compliance, or provide legal advice.
+- All restriction windows must come from the uploaded `ban_windows.csv` file.
+- Missing city, timing, or vehicle-class values reduce the confidence of the planning check.
 
 ## Quick Start
 

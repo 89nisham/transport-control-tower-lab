@@ -266,3 +266,31 @@ ETA, delay, and SLA review workflows need realistic lane travel-time profiles. L
 - `uv run ruff check .`
 - `uv run python -m py_compile lane_lab/app.py lane_lab/engine.py lane_lab/models.py`
 - Demo smoke run writes `lane_lab/output/lane_baselines.csv` and `lane_lab/output/lane_outliers.csv`
+
+## v0.11.0-ban-window
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `ban_window/` as a separate Streamlit micro-product folder.
+- Added deterministic restriction-window checks from planned trips and user-supplied `ban_windows.csv`.
+- Standardized trip, ETA, visit, and restriction-window timestamps to UTC before overlap checks.
+- Added movement interval selection from planned city windows, optional ETA predictions, optional visit evidence, or planned trip windows.
+- Added expansion for time-of-day restriction windows using days of week and effective dates.
+- Added city and vehicle-class matching, including vehicle-class uncertainty when the trip class is missing.
+- Added clear, conflict, watch, missing-timing, missing-city, and vehicle-class-unknown risk statuses.
+- Added neutral evidence text, suggested actions, KPI cards, Plotly charts, risk board, conflict table, expanded-window table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README BanWindow visual and product-specific Before/After section.
+
+### Why It Matters
+
+Planners need a simple way to check whether uploaded city, port, mall, or site restriction windows might affect a trip plan. BanWindow turns local planning files into a deterministic review board without legal claims or live integrations.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile ban_window/app.py ban_window/engine.py ban_window/models.py`
+- Demo smoke run writes `ban_window/output/ban_risk_board.csv` and `ban_window/output/ban_conflicts.csv`

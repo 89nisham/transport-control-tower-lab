@@ -1,0 +1,2 @@
+trip_id,predicted_arrival,risk_status,latest_event_time
+TRIP-ETA,2026-05-04T09:00:00+04:00,AT RISK,2026-05-04T06:00:00+04:00

@@ -49,6 +49,7 @@ packages = [
   "delay_lens",
   "pod_pulse",
   "lane_lab",
+  "ban_window",
 ]
 
 [tool.uv]

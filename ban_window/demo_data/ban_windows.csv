@@ -1,0 +1,7 @@
+ban_id,city,location_name,vehicle_class,start_time,end_time,days_of_week,effective_from,effective_to,rule_note
+BW-RUH-HEAVY,Riyadh,Riyadh Central,HEAVY,04:00,08:00,Mon,2026-05-01,2026-05-10,Synthetic planning restriction
+BW-JED-ALL,Jeddah,Jeddah Mall Zone,,08:00,09:00,Mon,2026-05-01,2026-05-10,Synthetic receiving window
+BW-DOH-HEAVY,Doha,Doha Corniche,HEAVY,07:00,09:00,Mon,2026-05-01,2026-05-10,Synthetic city restriction
+BW-MCT-HEAVY,Muscat,Muscat Port Gate,HEAVY,2026-05-04T08:30:00+04:00,2026-05-04T09:30:00+04:00,,,Synthetic dated window
+BW-KWI-HEAVY,Kuwait City,Kuwait Mall Dock,HEAVY,05:30,06:30,Mon,2026-05-01,2026-05-10,Synthetic mall receiving window
+BW-AUH-HEAVY,Abu Dhabi,Abu Dhabi Industrial Gate,HEAVY,03:30,04:30,Mon,2026-05-01,2026-05-10,Synthetic restricted movement
