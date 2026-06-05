@@ -1,4 +1,4 @@
-"""Streamlit interface for UpdatePulse update-discipline review."""
+"""Streamlit interface for UpdatePulse."""
 
 from __future__ import annotations
 
@@ -8,32 +8,29 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from update_pulse.engine import STATUS_ORDER, run_update_pulse, write_outputs
+from update_pulse.engine import run_update_pulse, write_outputs
+from update_pulse.models import UpdatePulseSettings
 
 
 APP_DIR = Path(__file__).resolve().parent
 DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
-STATUS_COLORS = {
-    "NEEDS REVIEW": "#dc2626",
-    "UPDATE GAP": "#ca8a04",
+RISK_COLORS = {
     "OK": "#15803d",
+    "WATCH": "#ca8a04",
+    "REVIEW": "#2563eb",
+    "HIGH RISK": "#dc2626",
+    "DATA MISSING": "#64748b",
 }
 
 
 def _read_uploaded_or_demo(uploaded_file, demo_path: Path) -> pd.DataFrame:
-    """Read an uploaded CSV or fall back to bundled UpdatePulse demo data."""
     if uploaded_file is None:
         return pd.read_csv(demo_path)
     return pd.read_csv(uploaded_file)
 
 
-def _read_optional_uploaded_or_demo(
-    uploaded_file,
-    demo_path: Path,
-    use_demo: bool,
-) -> pd.DataFrame | None:
-    """Read optional visit evidence when uploaded or demo mode is enabled."""
+def _read_optional_uploaded_or_demo(uploaded_file, demo_path: Path, use_demo: bool) -> pd.DataFrame | None:
     if uploaded_file is not None:
         return pd.read_csv(uploaded_file)
     if use_demo:
@@ -41,38 +38,46 @@ def _read_optional_uploaded_or_demo(
     return None
 
 
-def _download_csv(label: str, df: pd.DataFrame, filename: str) -> None:
-    """Render a Streamlit CSV download button for one output dataframe."""
-    st.download_button(label=label, data=df.to_csv(index=False), file_name=filename, mime="text/csv")
+def _metric_card(column, label: str, value: float) -> None:
+    column.metric(label, f"{value:.1f}" if isinstance(value, float) and not value.is_integer() else int(value))
 
 
-def _status_style(value: str) -> str:
-    """Return table styling for an UpdatePulse status value."""
-    color = STATUS_COLORS.get(value, "#334155")
+def _style_risk(value: str) -> str:
+    color = RISK_COLORS.get(value, "#334155")
     return f"background-color: {color}; color: white; font-weight: 700"
 
 
 def main() -> None:
-    """Run the UpdatePulse Streamlit application."""
+    """Run the UpdatePulse Streamlit app."""
     st.set_page_config(page_title="UpdatePulse", layout="wide")
     st.title("UpdatePulse")
-    st.caption("Review TMS and driver update timing against planned and actual event evidence.")
+    st.caption("Audits driver and TMS update discipline against planned trips and optional GeoReplay event truth.")
 
     with st.sidebar:
         st.header("Inputs")
         trips_file = st.file_uploader("trips.csv", type=["csv"])
         updates_file = st.file_uploader("tms_updates.csv or driver_updates.csv", type=["csv"])
         visit_events_file = st.file_uploader("visit_events.csv from GeoReplay (optional)", type=["csv"])
-        use_demo_visits = st.checkbox("Load demo actual event evidence", value=True)
-        grace_minutes = st.number_input("Late update grace minutes", min_value=0, value=15, step=5)
-        early_threshold = st.number_input("Early update review threshold minutes", min_value=0, value=30, step=5)
-        match_window = st.number_input("Update matching window hours", min_value=1, value=8, step=1)
-        chart_by = st.selectbox("Chart by", ["Update status", "Exception type", "Carrier"])
+        use_demo_visits = st.checkbox("Use demo visit evidence when no file is uploaded", value=True)
+
+        st.header("Settings")
+        settings = UpdatePulseSettings(
+            late_tolerance_minutes=st.number_input("Late tolerance minutes", min_value=0, value=15, step=5),
+            early_tolerance_minutes=st.number_input("Early tolerance minutes", min_value=0, value=15, step=5),
+            duplicate_update_window_minutes=st.number_input(
+                "Duplicate update window minutes",
+                min_value=0,
+                value=10,
+                step=5,
+            ),
+            assigned_lead_minutes=st.number_input("Assigned lead time minutes", min_value=0, value=120, step=15),
+            include_pod_collected=st.toggle("Include optional POD_COLLECTED milestone", value=False),
+        )
+        chart_by = st.selectbox("Chart by", ["exception_type", "carrier_name", "driver_name", "risk_bucket"])
         run_button = st.button("Run UpdatePulse", type="primary")
 
     st.info(
-        "No upload needed for the demo: UpdatePulse loads synthetic GCC trips, "
-        "TMS updates, and GeoReplay visit evidence from `update_pulse/demo_data/`."
+        "Demo mode uses synthetic GCC logistics data only. Upload your own CSVs to replace the demo inputs."
     )
 
     if not run_button:
@@ -86,70 +91,42 @@ def main() -> None:
         use_demo_visits,
     )
 
-    result = run_update_pulse(
-        trips_df,
-        updates_df,
-        visits_df,
-        grace_minutes=float(grace_minutes),
-        early_threshold_minutes=float(early_threshold),
-        match_window_hours=float(match_window),
-    )
+    result = run_update_pulse(trips_df, updates_df, visits_df, settings=settings)
     report_path, exceptions_path = write_outputs(result, OUTPUT_DIR)
 
-    metric_cols = st.columns(6)
-    metric_cols[0].metric("Milestones", int(result.kpis["total_milestones"]))
-    metric_cols[1].metric("OK", int(result.kpis["ok_milestones"]))
-    metric_cols[2].metric("Update gaps", int(result.kpis["update_gaps"]))
-    metric_cols[3].metric("Late updates", int(result.kpis["late_updates"]))
-    metric_cols[4].metric("Sequence issues", int(result.kpis["sequence_issues"]))
-    metric_cols[5].metric("No event evidence", int(result.kpis["no_event_evidence"]))
+    metric_cols = st.columns(7)
+    _metric_card(metric_cols[0], "Total trips", result.kpis["total_trips"])
+    _metric_card(metric_cols[1], "Expected updates", result.kpis["total_expected_updates"])
+    _metric_card(metric_cols[2], "Exceptions", result.kpis["update_exceptions"])
+    _metric_card(metric_cols[3], "Missing", result.kpis["missing_updates"])
+    _metric_card(metric_cols[4], "Late", result.kpis["late_updates"])
+    _metric_card(metric_cols[5], "Sequence", result.kpis["out_of_sequence_cases"])
+    _metric_card(metric_cols[6], "Avg delay min", result.kpis["average_update_delay_minutes"])
 
-    chart_column = {
-        "Update status": "update_status",
-        "Exception type": "exception_type",
-        "Carrier": "carrier_name",
-    }[chart_by]
-    chart_data = result.update_discipline_report.copy()
-    if chart_column == "exception_type":
-        chart_data = chart_data.assign(exception_type=chart_data["exception_type"].str.split("; "))
-        chart_data = chart_data.explode("exception_type")
-    chart_data = (
-        chart_data.groupby(chart_column, dropna=False, as_index=False)["trip_id"]
-        .count()
-        .rename(columns={"trip_id": "milestones"})
-    )
+    if chart_by == "exception_type":
+        chart_data = result.update_exceptions.groupby("exception_type", as_index=False).size()
+        y_label = "exceptions"
+    else:
+        chart_data = result.update_discipline_report.groupby(chart_by, dropna=False, as_index=False).size()
+        y_label = "milestones"
+    chart_data = chart_data.rename(columns={"size": y_label})
     chart = px.bar(
         chart_data,
-        x=chart_column,
-        y="milestones",
-        color=chart_column,
-        color_discrete_map=STATUS_COLORS,
-        category_orders={"update_status": STATUS_ORDER},
+        x=chart_by,
+        y=y_label,
+        color=chart_by,
+        color_discrete_map=RISK_COLORS,
         text_auto=".0f",
     )
-    chart.update_layout(
-        showlegend=False,
-        margin=dict(l=10, r=10, t=20, b=10),
-        height=300,
-        xaxis_title="",
-        yaxis_title="Milestones",
-    )
+    chart.update_layout(showlegend=False, height=320, margin=dict(l=10, r=10, t=20, b=10))
     st.plotly_chart(chart, use_container_width=True)
 
-    with st.expander("How to read this"):
-        st.write(
-            "`OK` means the milestone update is supported by timing and available event evidence. "
-            "`UPDATE GAP` and `NEEDS REVIEW` are neutral review buckets for dispatch follow-up; "
-            "they are not disciplinary labels."
-        )
-
-    tab_report, tab_exceptions, tab_exports = st.tabs(["Update Report", "Exceptions", "Exports"])
+    tab_report, tab_exceptions, tab_exports, tab_notes = st.tabs(
+        ["Update discipline", "Exceptions", "Exports", "Notes"]
+    )
 
     with tab_report:
-        styled = result.update_discipline_report.style.map(
-            _status_style,
-            subset=["update_status"],
-        )
+        styled = result.update_discipline_report.style.map(_style_risk, subset=["risk_bucket"])
         st.dataframe(styled, use_container_width=True, hide_index=True)
 
     with tab_exceptions:
@@ -157,15 +134,29 @@ def main() -> None:
 
     with tab_exports:
         st.write(f"Wrote `{report_path}` and `{exceptions_path}`.")
-        _download_csv(
+        st.download_button(
             "Download update_discipline_report.csv",
-            result.update_discipline_report,
+            result.update_discipline_report.to_csv(index=False),
             "update_discipline_report.csv",
+            "text/csv",
         )
-        _download_csv(
+        st.download_button(
             "Download update_exceptions.csv",
-            result.update_exceptions,
+            result.update_exceptions.to_csv(index=False),
             "update_exceptions.csv",
+            "text/csv",
+        )
+
+    with tab_notes:
+        st.subheader("How to read this")
+        st.write(
+            "Use the report to spot update gaps, late updates, sequence issues, duplicate updates, "
+            "and milestones that need review because no actual event evidence supports them."
+        )
+        st.subheader("Limitations")
+        st.write(
+            "UpdatePulse is a deterministic local audit tool. It does not connect to live TMS systems, "
+            "does not score drivers, and does not prove intent. It depends on CSV quality and geofence coverage."
         )
 
 

@@ -18,7 +18,7 @@ A trip can be physically moving, waiting, delivered, or delayed while the TMS st
 ## Inputs
 
 - `trips.csv`: required `trip_id`, `vehicle_id`, `origin`, `destination`, `planned_departure`, and `promised_arrival`; optional driver, carrier, and customer fields
-- `tms_updates.csv` or `driver_updates.csv`: required `vehicle_id`, `update_time`, and `status`; optional trip, source, update ID, and note fields
+- `tms_updates.csv` or `driver_updates.csv`: required `trip_id`, `update_time`, and `status`; optional vehicle, updater, and source fields
 - `visit_events.csv`: optional GeoReplay actual event evidence
 
 ## Outputs
@@ -26,19 +26,19 @@ A trip can be physically moving, waiting, delivered, or delayed while the TMS st
 - `update_pulse/output/update_discipline_report.csv`
 - `update_pulse/output/update_exceptions.csv`
 
-The report keeps expected milestone, planned time, matched update time, delay minutes, actual event evidence, update count, review status, exception type, evidence text, and suggested action.
+The report keeps expected status, expected time, matched update time, actual status, source, updater, delay minutes, update gap type, sequence status, evidence status, risk bucket, severity, evidence text, and suggested action.
 
 ## Rules
 
-- Reconstruct expected origin departure and destination arrival milestones from each trip.
-- Match departure-like updates against planned departure.
-- Match arrival or delivery-like updates against promised arrival.
-- Flag `missing update` when a milestone has no matching update.
-- Flag `late update` when a matched update is after the configured grace.
-- Flag `early update` when a matched update is too early for review.
-- Flag `duplicate update` when multiple updates match the same milestone.
-- Flag `sequence issue` when trip updates move backward in operational order.
-- Flag `no actual event evidence` when visit evidence was supplied but no matching event supports the milestone.
+- Reconstruct `ASSIGNED`, `ARRIVED_ORIGIN`, `DEPARTED_ORIGIN`, `ARRIVED_DESTINATION`, `DELIVERED`, and optional `POD_COLLECTED` milestones from each trip.
+- Match TMS or driver updates by trip and expected status.
+- Use origin enter, origin exit, destination enter, and destination exit from visit evidence where available.
+- Flag `MISSING UPDATE` when a milestone has no matching update.
+- Flag `LATE UPDATE` when a matched update is after the comparison time by more than tolerance.
+- Flag `EARLY UPDATE` when a matched update is too early, especially before supported actual event evidence.
+- Flag `DUPLICATE UPDATE` when repeated same-status updates create timeline noise.
+- Flag `OUT OF SEQUENCE` when trip updates move backward in operational order.
+- Flag `NO ACTUAL EVENT EVIDENCE` when visit evidence was supplied but no matching event supports the milestone.
 
 ## Review Language
 
@@ -66,7 +66,7 @@ uv run python -m py_compile update_pulse/app.py update_pulse/engine.py update_pu
 ## Limitations
 
 - No live TMS, driver app, WhatsApp, or telematics integration.
-- Status matching is deterministic and based on common update labels.
+- Status matching is deterministic and expects the UpdatePulse status contract; unusual TMS codes need mapping before upload.
 - Sparse visit evidence can create review cases that need human context.
 - Outputs are operational review flags, not performance penalties.
 

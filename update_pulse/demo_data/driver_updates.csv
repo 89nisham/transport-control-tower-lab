@@ -1,4 +1,4 @@
-update_id,trip_id,vehicle_id,update_time,status,source,note
-D-001,UP-1001,VH-701,2026-06-05T07:06:00+03:00,departed,driver,Driver departure ping
-D-002,UP-1001,VH-701,2026-06-05T16:59:00+03:00,arrived,driver,Driver arrival ping
-D-003,UP-1002,VH-702,2026-06-05T09:08:00+03:00,departed,driver,Late manual update
+trip_id,vehicle_id,update_time,status,updated_by,source
+UP-1001,VH-701,2026-06-05T06:52:00+03:00,ARRIVED_ORIGIN,Omar Hassan,driver_app
+UP-1001,VH-701,2026-06-05T07:04:00+03:00,DEPARTED_ORIGIN,Omar Hassan,driver_app
+UP-1002,VH-702,2026-06-05T07:28:00+03:00,ARRIVED_ORIGIN,Salem Nasser,driver_app

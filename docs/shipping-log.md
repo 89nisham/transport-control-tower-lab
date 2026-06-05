@@ -168,9 +168,9 @@ Date: 2026-06-05
 - Added `update_pulse/` as a separate Streamlit micro-product folder.
 - Added deterministic update-discipline review from trip plans, TMS or driver updates, and optional GeoReplay visit evidence.
 - Standardized trip, update, and visit timestamps to UTC before milestone matching.
-- Added expected origin-departure and destination-arrival milestone reconstruction.
+- Added expected ASSIGNED, ARRIVED_ORIGIN, DEPARTED_ORIGIN, ARRIVED_DESTINATION, DELIVERED, and optional POD_COLLECTED milestone reconstruction.
 - Added missing-update, late-update, early-update, duplicate-update, sequence-issue, and no-actual-event-evidence flags.
-- Added neutral review language, KPI cards, Plotly status chart, update report table, exceptions table, and CSV downloads.
+- Added neutral review language, risk buckets, evidence status, sequence status, KPI cards, Plotly charts, update report table, exceptions table, and CSV downloads.
 - Added synthetic GCC demo data and tests.
 - Added README UpdatePulse visual and product-specific Before/After section.
 

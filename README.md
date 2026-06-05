@@ -363,12 +363,12 @@ A trip can be physically moving, waiting, delivered, or delayed while the system
 ### Inputs
 
 - `trips.csv`: `trip_id`, `vehicle_id`, optional driver, carrier, and customer fields, `origin`, `destination`, `planned_departure`, `promised_arrival`
-- `tms_updates.csv` or `driver_updates.csv`: `vehicle_id`, `update_time`, `status`, optional trip, source, update ID, and note fields
-- `visit_events.csv`: optional GeoReplay evidence with vehicle, site type, enter time, and exit time
+- `tms_updates.csv` or `driver_updates.csv`: `trip_id`, `update_time`, `status`, optional vehicle, updater, and source fields
+- `visit_events.csv`: optional GeoReplay evidence with vehicle, geofence name/type, enter time, exit time, and dwell minutes
 
 ### Outputs
 
-- `update_pulse/output/update_discipline_report.csv` with expected milestone, planned time, matched update time, delay minutes, event evidence, review status, exception type, evidence text, and suggested action
+- `update_pulse/output/update_discipline_report.csv` with expected status, expected time, matched update time, delay minutes, update gap type, sequence status, evidence status, risk bucket, severity, evidence text, and suggested action
 - `update_pulse/output/update_exceptions.csv` with update gaps, late updates, early updates, duplicate updates, sequence issues, and missing actual event evidence
 - KPI cards, Plotly status chart, update report table, exceptions-only table, and download buttons inside Streamlit
 
@@ -384,7 +384,7 @@ The app loads realistic GCC synthetic demo data from `update_pulse/demo_data/` w
 ### UpdatePulse Limitations
 
 - V1 is deterministic and file-based; no TMS, driver app, WhatsApp, or telematics integration is included.
-- Status matching uses common operational labels and may need mapping for unusual TMS codes.
+- Status matching expects `ASSIGNED`, `ARRIVED_ORIGIN`, `DEPARTED_ORIGIN`, `ARRIVED_DESTINATION`, `DELIVERED`, and optional `POD_COLLECTED` milestones.
 - Sparse visit evidence can create review cases that need dispatcher context.
 - Outputs are neutral review flags, not driver punishment or performance penalties.
 
@@ -592,10 +592,10 @@ Before:
 
 After:
 
-- UpdatePulse reconstructs expected origin departure and destination arrival milestones from trip rows.
-- TMS or driver updates are matched against planned departure and promised arrival timestamps.
-- Optional GeoReplay visit events show whether actual event evidence supports the milestone.
-- Each milestone is classified as `OK`, `UPDATE GAP`, or `NEEDS REVIEW` with readable evidence.
+- UpdatePulse reconstructs `ASSIGNED`, `ARRIVED_ORIGIN`, `DEPARTED_ORIGIN`, `ARRIVED_DESTINATION`, `DELIVERED`, and optional `POD_COLLECTED` milestones from trip rows.
+- TMS or driver updates are matched against the expected status timeline and compared with actual event time when GeoReplay evidence exists.
+- Optional GeoReplay visit events show whether origin entry, origin exit, destination entry, and destination exit support the milestone.
+- Each milestone is classified as `OK`, `WATCH`, `REVIEW`, `HIGH RISK`, or `DATA MISSING` with readable evidence.
 - Missing, late, early, duplicate, sequence, and no-event-evidence flags are exported for dispatch review.
 
 ## Python Libraries
