@@ -132,3 +132,29 @@ Start and arrival disputes waste control-tower time when TMS timestamps, GPS vis
 - `uv run ruff check .`
 - `uv run python -m py_compile gate_truth/app.py gate_truth/engine.py gate_truth/models.py`
 - Demo smoke run writes `gate_truth/output/gate_truth_report.csv` and `gate_truth/output/gate_exceptions.csv`
+
+## v0.6.0-fuel-guard
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `fuel_guard/` as a separate Streamlit micro-product folder.
+- Added deterministic fuel transaction reconciliation against GPS points, GeoReplay visit events, fuel-site masters, and optional trip windows.
+- Standardized fuel, GPS, visit, and trip timestamps to UTC before matching.
+- Added known-site matching by station ID, station name, and nearby coordinates.
+- Added no-GPS-evidence, no-stop-near-fuel, unknown-station, duplicate-receipt, odometer-drop, high-liters, and outside-trip-window review flags.
+- Added evidence text, risk buckets, exception severity, KPI cards, Plotly review chart, reconciliation table, exceptions table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README FuelGuard visual and product-specific Before/After section.
+
+### Why It Matters
+
+Fuel reports become useful control-tower evidence only when they are reviewed beside vehicle location, stop dwell, known station coordinates, and trip windows. FuelGuard creates that first-pass review pack without making accusations or touching payment workflows.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile fuel_guard/app.py fuel_guard/engine.py fuel_guard/models.py`
+- Demo smoke run writes `fuel_guard/output/fuel_reconciliation_report.csv` and `fuel_guard/output/fuel_exceptions.csv`

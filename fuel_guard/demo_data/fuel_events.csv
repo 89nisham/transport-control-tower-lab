@@ -1,0 +1,9 @@
+fuel_event_id,vehicle_id,fuel_time,liters,station_name,station_id,lat,lon,amount,odometer,receipt_no,currency,driver_name,carrier_name,trip_id
+FG-001,VH-601,2026-06-05T10:20:00+03:00,280,Riyadh Industrial Fuel,FS-RUH-01,24.7138,46.6753,910,184200,R-1001,SAR,Ahmed Saleh,Desert Line Transport,TR-FG-001
+FG-002,VH-602,2026-06-05T11:30:00+03:00,240,Dammam Highway Diesel,FS-DMM-01,26.3961,50.1194,780,99120,R-2002,SAR,Omar Khalid,Gulf Road Carriers,TR-FG-002
+FG-003,VH-603,2026-06-05T12:15:00+03:00,220,Jeddah South Fuel,FS-JED-01,21.4859,39.1925,715,140500,R-3003,SAR,Faisal Noor,Red Sea Logistics,TR-FG-003
+FG-004,VH-604,2026-06-05T13:05:00+03:00,260,Riyadh Industrial Fuel,FS-RUH-01,24.7138,46.6753,845,77400,R-4004,SAR,Hassan Ali,Desert Line Transport,TR-FG-004
+FG-005,VH-604,2026-06-05T13:12:00+03:00,260,Riyadh Industrial Fuel,FS-RUH-01,24.7138,46.6753,845,77380,R-4004,SAR,Hassan Ali,Desert Line Transport,TR-FG-004
+FG-006,VH-605,2026-06-05T14:10:00+03:00,760,Dammam Highway Diesel,FS-DMM-01,26.3961,50.1194,2470,203200,R-5005,SAR,Saud Faris,Eastern Freight,TR-FG-005
+FG-007,VH-606,2026-06-05T22:20:00+03:00,300,Al Kharj Fuel Stop,FS-KHJ-01,24.1550,47.3120,975,55210,R-6006,SAR,Nasser Hamad,Najd Freight,TR-FG-006
+FG-008,VH-607,2026-06-05T15:10:00+03:00,210,Kuwait Remote Fuel,FS-KWT-99,29.3759,47.9774,685,88400,R-7007,SAR,Majed Fahad,Kuwait Line,TR-FG-007

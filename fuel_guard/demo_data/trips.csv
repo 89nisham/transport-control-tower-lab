@@ -1,0 +1,8 @@
+trip_id,vehicle_id,customer_name,carrier_name,origin,destination,planned_departure,promised_arrival
+TR-FG-001,VH-601,Acme Foods,Desert Line Transport,Riyadh Hub,Jeddah DC,2026-06-05T07:00:00+03:00,2026-06-05T18:00:00+03:00
+TR-FG-002,VH-602,Gulf Retail,Gulf Road Carriers,Dammam Port,Riyadh Store,2026-06-05T08:00:00+03:00,2026-06-05T16:00:00+03:00
+TR-FG-003,VH-603,Fresh Basket,Red Sea Logistics,Jeddah Port,Makkah DC,2026-06-05T09:00:00+03:00,2026-06-05T17:00:00+03:00
+TR-FG-004,VH-604,Acme Foods,Desert Line Transport,Riyadh Hub,Dammam Yard,2026-06-05T07:30:00+03:00,2026-06-05T18:30:00+03:00
+TR-FG-005,VH-605,Najd Pharma,Eastern Freight,Riyadh Pharma Hub,Dammam Hospital,2026-06-05T10:00:00+03:00,2026-06-05T19:00:00+03:00
+TR-FG-006,VH-606,Najd Freight,Najd Freight,Riyadh Yard,Al Kharj DC,2026-06-05T08:00:00+03:00,2026-06-05T18:00:00+03:00
+TR-FG-007,VH-607,Kuwait Retail,Kuwait Line,Kuwait City,Doha DC,2026-06-05T10:00:00+03:00,2026-06-05T20:00:00+03:00

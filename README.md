@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -282,6 +282,61 @@ The app loads realistic GCC synthetic demo data from `gate_truth/demo_data/` whe
 - Late start, late arrival, and early-arrival review thresholds are configurable. Defaults are 15, 15, and 60 minutes.
 - No customer notification workflow, route optimization, legal proof engine, enterprise login, or database backend is included.
 
+## Day 6 Micro-Product: FuelGuard
+
+FuelGuard is a local-first Streamlit app that reconciles fuel transactions against GPS points, GeoReplay visit events, fuel-site masters, and optional trip windows.
+
+![FuelGuard Streamlit screenshot](docs/assets/fuel-guard-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Fleet operations managers
+- Fuel desk and transport analysts
+- Carrier-management teams reviewing fuel-vs-GPS exceptions
+- Anyone checking whether a fuel transaction has supporting location and stop evidence
+
+### Problem
+
+Fuel reports alone do not prove that the assigned truck was near the fuel site, stopped long enough, or operating inside the assigned trip window. Managers still need to review:
+
+- Was there nearby GPS evidence at the fuel time?
+- Was there a GeoReplay stop with enough dwell?
+- Was the fuel event inside the assigned trip window?
+- Are receipt numbers duplicated?
+- Did odometer readings move backward?
+- Is the liters value unusually high for review?
+
+### Inputs
+
+- `fuel_events.csv`: `fuel_event_id`, `vehicle_id`, `fuel_time`, `liters`, optional station, receipt, odometer, amount, driver, carrier, trip, and location fields
+- `visit_events.csv`: optional GeoReplay stop evidence with `vehicle_id`, geofence details, enter/exit times, and dwell minutes
+- `gps_points.csv`: optional GPS evidence with `vehicle_id`, `timestamp`, `lat`, `lon`, and optional `speed_kph`
+- `fuel_sites.csv`: optional known station master with station name, coordinates, and radius
+- `trips.csv`: optional trip windows with `trip_id`, `vehicle_id`, `planned_departure`, and `promised_arrival`
+
+### Outputs
+
+- `fuel_guard/output/fuel_reconciliation_report.csv` with fuel event details, matched evidence type, GPS coordinates, station distance, stop evidence, trip-window status, exception flags, risk bucket, severity, evidence text, and suggested action
+- `fuel_guard/output/fuel_exceptions.csv` with exception type, severity, evidence, and suggested review action
+- KPI cards, Plotly review-status chart, reconciliation table, exceptions-only table, and download buttons inside Streamlit
+
+### Run FuelGuard
+
+```bash
+uv sync
+uv run streamlit run fuel_guard/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `fuel_guard/demo_data/` when no files are uploaded.
+
+### FuelGuard Limitations
+
+- V1 is deterministic and file-based; no fuel card, ERP, payment, or live telematics integration is included.
+- Outputs are review flags, not theft accusations or legal claims.
+- GPS support depends on uploaded point density and fuel-site coordinate quality.
+- Duplicate receipt, odometer, and high-liter checks are first-pass review rules, not final financial conclusions.
+
 ## Quick Start
 
 Install dependencies:
@@ -353,6 +408,7 @@ georeplay/                  Product 2 Streamlit app and geospatial engine
 eta_watch/                  Product 3 Streamlit app and ETA risk engine
 detention_clock/            Product 4 Streamlit app and detention calculation engine
 gate_truth/                 Product 5 Streamlit app and gate evidence engine
+fuel_guard/                 Product 6 Streamlit app and fuel-vs-GPS reconciliation engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -454,6 +510,24 @@ After:
 - `gate_truth_report.csv` and `gate_exceptions.csv` are written for control-tower review.
 - The Streamlit app shows KPI cards, a gate-truth-status chart, a full evidence table, and exceptions-only exports.
 
+### FuelGuard
+
+Before:
+
+- Fuel transactions are reviewed separately from GPS points and GeoReplay visits.
+- A receipt can exist without proving the vehicle was near the fuel site.
+- Short pass-bys can look like valid stops when dwell evidence is not checked.
+- Duplicate receipt numbers, odometer sequence issues, and high-liter fills are found manually.
+- Fuel events outside the assigned trip window can slip into normal reporting.
+
+After:
+
+- FuelGuard matches each fuel event to nearby GPS and GeoReplay stop evidence.
+- Known fuel sites can supply coordinates when the transaction file lacks latitude and longitude.
+- Each row is classified as `OK`, `REVIEW`, `HIGH RISK`, or `DATA MISSING` with readable evidence.
+- `NO GPS EVIDENCE`, `NO STOP NEAR FUEL`, `UNKNOWN STATION`, `DUPLICATE RECEIPT`, `ODOMETER DROP`, `HIGH LITERS`, and `OUTSIDE TRIP WINDOW` flags are exported for review.
+- The Streamlit app shows KPI cards, a review-status chart, reconciliation table, and exceptions-only exports.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -463,13 +537,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, and GateTruth local apps.
+- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, GateTruth, and FuelGuard local apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `plotly`: renders clean ETA Watch, DetentionClock, and GateTruth KPI distribution charts.
-- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, and GateTruth input records.
+- `plotly`: renders clean ETA Watch, DetentionClock, GateTruth, and FuelGuard KPI distribution charts.
+- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, GateTruth, and FuelGuard input records.
 
 ## Public Story
 
@@ -484,6 +558,8 @@ Day 3 is ETA Watch: a Streamlit app that turns trips and visit events into an ET
 Day 4 is DetentionClock: a Streamlit app that turns visit events and detention rules into chargeable detention review packs.
 
 Day 5 is GateTruth: a Streamlit app that turns planned trips and GeoReplay visits into actual start and arrival evidence.
+
+Day 6 is FuelGuard: a Streamlit app that turns fuel transactions, GPS points, fuel-site masters, and trip windows into a fuel reconciliation review pack.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 

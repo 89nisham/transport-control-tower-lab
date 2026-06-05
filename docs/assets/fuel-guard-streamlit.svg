@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">FuelGuard Streamlit app screenshot</title>
+  <desc id="desc">A stylized screenshot of the FuelGuard reconciliation dashboard with KPI cards, status chart, and exception table.</desc>
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <rect x="0" y="0" width="250" height="760" fill="#0f172a"/>
+  <text x="32" y="58" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28" font-weight="700">FuelGuard</text>
+  <text x="32" y="92" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="14">Inputs</text>
+  <g fill="#1e293b" stroke="#334155">
+    <rect x="28" y="124" width="194" height="42" rx="6"/>
+    <rect x="28" y="184" width="194" height="42" rx="6"/>
+    <rect x="28" y="244" width="194" height="42" rx="6"/>
+    <rect x="28" y="304" width="194" height="42" rx="6"/>
+    <rect x="28" y="364" width="194" height="42" rx="6"/>
+  </g>
+  <g fill="#e2e8f0" font-family="Arial, sans-serif" font-size="13">
+    <text x="44" y="150">fuel_events.csv</text>
+    <text x="44" y="210">visit_events.csv</text>
+    <text x="44" y="270">gps_points.csv</text>
+    <text x="44" y="330">fuel_sites.csv</text>
+    <text x="44" y="390">trips.csv</text>
+  </g>
+  <rect x="28" y="442" width="194" height="48" rx="6" fill="#15803d"/>
+  <text x="65" y="472" fill="#ffffff" font-family="Arial, sans-serif" font-size="15" font-weight="700">Run FuelGuard</text>
+
+  <text x="294" y="62" fill="#111827" font-family="Arial, sans-serif" font-size="34" font-weight="700">FuelGuard</text>
+  <text x="294" y="92" fill="#475569" font-family="Arial, sans-serif" font-size="16">Fuel-vs-GPS reconciliation review pack</text>
+
+  <g>
+    <rect x="294" y="126" width="136" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="448" y="126" width="136" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="602" y="126" width="136" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="756" y="126" width="136" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="910" y="126" width="136" height="92" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="314" y="158" fill="#64748b" font-size="13">Fuel events</text>
+    <text x="314" y="194" fill="#111827" font-size="32" font-weight="700">7</text>
+    <text x="468" y="158" fill="#64748b" font-size="13">OK</text>
+    <text x="468" y="194" fill="#15803d" font-size="32" font-weight="700">1</text>
+    <text x="622" y="158" fill="#64748b" font-size="13">Exceptions</text>
+    <text x="622" y="194" fill="#dc2626" font-size="32" font-weight="700">6</text>
+    <text x="776" y="158" fill="#64748b" font-size="13">No GPS evidence</text>
+    <text x="776" y="194" fill="#dc2626" font-size="32" font-weight="700">1</text>
+    <text x="930" y="158" fill="#64748b" font-size="13">Outside trip</text>
+    <text x="930" y="194" fill="#ca8a04" font-size="32" font-weight="700">1</text>
+  </g>
+
+  <rect x="294" y="250" width="856" height="210" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="322" y="288" fill="#111827" font-family="Arial, sans-serif" font-size="18" font-weight="700">Review status</text>
+  <rect x="350" y="342" width="110" height="78" fill="#dc2626"/>
+  <rect x="520" y="310" width="110" height="110" fill="#ca8a04"/>
+  <rect x="690" y="388" width="110" height="32" fill="#15803d"/>
+  <g fill="#475569" font-family="Arial, sans-serif" font-size="13">
+    <text x="352" y="440">High risk</text>
+    <text x="553" y="440">Review</text>
+    <text x="720" y="440">OK</text>
+  </g>
+  <path d="M860 325h224" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="884" cy="325" r="8" fill="#dc2626"/>
+  <text x="902" y="330" fill="#334155" font-family="Arial, sans-serif" font-size="14">No GPS evidence</text>
+  <path d="M860 365h224" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="884" cy="365" r="8" fill="#ca8a04"/>
+  <text x="902" y="370" fill="#334155" font-family="Arial, sans-serif" font-size="14">No stop near fuel</text>
+  <path d="M860 405h224" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="884" cy="405" r="8" fill="#15803d"/>
+  <text x="902" y="410" fill="#334155" font-family="Arial, sans-serif" font-size="14">OK evidence</text>
+
+  <rect x="294" y="492" width="856" height="206" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="322" y="530" fill="#111827" font-family="Arial, sans-serif" font-size="18" font-weight="700">Fuel exceptions</text>
+  <g font-family="Arial, sans-serif" font-size="13">
+    <rect x="322" y="552" width="790" height="34" fill="#f1f5f9"/>
+    <text x="340" y="574" fill="#334155" font-weight="700">Fuel event</text>
+    <text x="470" y="574" fill="#334155" font-weight="700">Vehicle</text>
+    <text x="590" y="574" fill="#334155" font-weight="700">Exception</text>
+    <text x="900" y="574" fill="#334155" font-weight="700">Action</text>
+    <text x="340" y="616" fill="#111827">FG-003</text>
+    <text x="470" y="616" fill="#111827">VH-603</text>
+    <text x="590" y="616" fill="#dc2626">NO GPS EVIDENCE</text>
+    <text x="900" y="616" fill="#334155">Review evidence</text>
+    <line x1="322" y1="632" x2="1112" y2="632" stroke="#e2e8f0"/>
+    <text x="340" y="662" fill="#111827">FG-005</text>
+    <text x="470" y="662" fill="#111827">VH-604</text>
+    <text x="590" y="662" fill="#ca8a04">DUPLICATE RECEIPT; ODOMETER</text>
+    <text x="900" y="662" fill="#334155">Check receipt</text>
+  </g>
+</svg>

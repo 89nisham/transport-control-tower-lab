@@ -1,0 +1,5 @@
+station_id,station_name,lat,lon,radius_m
+FS-RUH-01,Riyadh Industrial Fuel,24.7138,46.6753,300
+FS-DMM-01,Dammam Highway Diesel,26.3961,50.1194,300
+FS-JED-01,Jeddah South Fuel,21.4859,39.1925,300
+FS-KHJ-01,Al Kharj Fuel Stop,24.1550,47.3120,300

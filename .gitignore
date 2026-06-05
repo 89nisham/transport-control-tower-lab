@@ -16,6 +16,8 @@ detention_clock/output/*
 !detention_clock/output/.gitkeep
 gate_truth/output/*
 !gate_truth/output/.gitkeep
+fuel_guard/output/*
+!fuel_guard/output/.gitkeep
 logs/*
 !logs/.gitkeep
 
