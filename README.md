@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -387,6 +387,60 @@ The app loads realistic GCC synthetic demo data from `update_pulse/demo_data/` w
 - Status matching expects `ASSIGNED`, `ARRIVED_ORIGIN`, `DEPARTED_ORIGIN`, `ARRIVED_DESTINATION`, `DELIVERED`, and optional `POD_COLLECTED` milestones.
 - Sparse visit evidence can create review cases that need dispatcher context.
 - Outputs are neutral review flags, not driver punishment or performance penalties.
+
+## Day 8 Micro-Product: DelayLens
+
+DelayLens is a local-first Streamlit app that classifies LTL and linehaul delay causes from trip plans, GeoReplay visit events, and optional lane baselines.
+
+![DelayLens Streamlit screenshot](docs/assets/delay-lens-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Linehaul planners reviewing late trips
+- Customer-service escalation teams needing neutral delay evidence
+
+### Problem
+
+Managers often know a trip is late, but not where time was lost. Control towers still need to separate:
+
+- late origin departure;
+- long origin dwell;
+- hub or intermediate dwell;
+- enroute delay versus lane baseline;
+- long destination dwell;
+- missing GeoReplay signal;
+- missing or weak lane baseline coverage.
+
+### Inputs
+
+- `trips.csv`: `trip_id`, `vehicle_id`, optional customer, carrier, and lane fields, `origin`, `destination`, `planned_departure`, `promised_arrival`
+- `visit_events.csv`: GeoReplay evidence with optional `trip_id`, `vehicle_id`, geofence details, enter time, exit time, and dwell minutes
+- `lane_baselines.csv`: optional lane baselines with `lane_id`, origin, destination, baseline minutes, percentile columns, and sample size
+
+### Outputs
+
+- `delay_lens/output/delay_classification_report.csv` with actual origin exit, destination entry, delay minutes, dwell minutes, travel minutes, baseline delta, delay reason, secondary flags, severity, evidence, and suggested action
+- `delay_lens/output/critical_delays.csv` with high and medium severity delay cases for review
+- KPI cards, Plotly delay chart, classification table, critical-only table, and download buttons inside Streamlit
+
+### Run DelayLens
+
+```bash
+uv sync
+uv run streamlit run delay_lens/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `delay_lens/demo_data/` when no files are uploaded.
+
+### DelayLens Limitations
+
+- V1 is deterministic and file-based; no live traffic, route optimization, or telematics API integration is included.
+- Delay reasons are evidence-backed classifications, not blame or legal root-cause claims.
+- Sparse GeoReplay events can create missing-signal cases that need dispatcher context.
+- Baseline mismatch depends on the quality and coverage of uploaded lane baselines.
 
 ## Quick Start
 

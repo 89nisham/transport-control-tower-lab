@@ -184,3 +184,29 @@ Status discipline breaks down when planned milestones, TMS rows, driver updates,
 - `uv run ruff check .`
 - `uv run python -m py_compile update_pulse/app.py update_pulse/engine.py update_pulse/models.py`
 - Demo smoke run writes `update_pulse/output/update_discipline_report.csv` and `update_pulse/output/update_exceptions.csv`
+
+## v0.8.0-delay-lens
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `delay_lens/` as a separate Streamlit micro-product folder.
+- Added deterministic delay classification from trip plans, GeoReplay visit events, and optional lane baselines.
+- Standardized trip, visit, and baseline timestamps before delay math.
+- Added exact trip matching first, then vehicle and trip-window matching when visit `trip_id` is missing.
+- Added late departure, origin dwell, hub dwell, enroute delay, destination dwell, missing signal, and baseline mismatch classifications.
+- Added neutral evidence text, secondary delay flags, risk buckets, severity, KPI cards, Plotly charts, classification table, critical table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README DelayLens visual and product-specific Before/After section.
+
+### Why It Matters
+
+Late trips are easier to act on when managers can see where time was lost. DelayLens turns trip plans, GeoReplay visits, and lane baselines into a neutral review board for departure, dwell, travel, signal, and baseline issues.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile delay_lens/app.py delay_lens/engine.py delay_lens/models.py`
+- Demo smoke run writes `delay_lens/output/delay_classification_report.csv` and `delay_lens/output/critical_delays.csv`

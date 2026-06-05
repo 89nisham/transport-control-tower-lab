@@ -46,6 +46,7 @@ packages = [
   "gate_truth",
   "fuel_guard",
   "update_pulse",
+  "delay_lens",
 ]
 
 [tool.uv]

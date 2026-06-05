@@ -1,0 +1,8 @@
+lane_id,origin,destination,baseline_minutes,p50_minutes,p75_minutes,p90_minutes,sample_size
+DXB-RUH,Dubai South,Riyadh Dry Port,645,620,645,690,42
+JED-MED,Jeddah Crossdock,Medina Store,330,315,330,360,34
+JED-MAK,Jeddah Port,Makkah DC,240,220,240,270,29
+RUH-DMM,Riyadh Hub,Dammam Hospital,360,340,360,410,51
+DMM-RUH,Dammam Port,Riyadh Store,390,370,390,430,48
+AUH-DXB,Abu Dhabi DC,Dubai Mall Receiving,170,160,170,200,37
+DOH-DMM,Doha Crossdock,Dammam Cold Store,660,630,660,720,22
