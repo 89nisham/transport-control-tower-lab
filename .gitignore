@@ -20,6 +20,8 @@ fuel_guard/output/*
 !fuel_guard/output/.gitkeep
 update_pulse/output/*
 !update_pulse/output/.gitkeep
+pod_pulse/output/*
+!pod_pulse/output/.gitkeep
 logs/*
 !logs/.gitkeep
 

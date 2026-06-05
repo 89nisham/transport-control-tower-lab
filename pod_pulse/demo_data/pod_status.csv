@@ -1,0 +1,11 @@
+trip_id,pod_status,pod_received_time,pod_rejected_time,rejection_reason,uploaded_by,approved_time,resubmitted_time
+PP-OK,APPROVED,2026-06-09T14:00:00+03:00,,,billing-clerk,2026-06-09T16:00:00+03:00,
+PP-MISSING,MISSING,,,,,,
+PP-LATE,RECEIVED,2026-06-09T15:00:00+03:00,,,carrier-portal,,
+PP-REJECTED,REJECTED,2026-06-07T18:00:00+03:00,2026-06-08T09:00:00+03:00,Stamp missing,carrier-portal,,
+PP-INVOICE-BLOCKER,APPROVED,2026-06-09T20:00:00+04:00,,,billing-clerk,2026-06-10T08:00:00+04:00,
+PP-PENDING,RESUBMITTED,2026-06-10T09:00:00+03:00,2026-06-10T10:00:00+03:00,Consignee name mismatch,carrier-portal,,2026-06-10T11:00:00+03:00
+PP-CRITICAL,MISSING,,,,,,
+PP-NOT-REQUIRED,NOT_REQUIRED,,,,,,
+PP-NOT-DELIVERED,MISSING,,,,,,
+

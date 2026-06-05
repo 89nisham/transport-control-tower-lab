@@ -47,6 +47,7 @@ packages = [
   "fuel_guard",
   "update_pulse",
   "delay_lens",
+  "pod_pulse",
 ]
 
 [tool.uv]

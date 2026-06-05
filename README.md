@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -441,6 +441,59 @@ The app loads realistic GCC synthetic demo data from `delay_lens/demo_data/` whe
 - Delay reasons are evidence-backed classifications, not blame or legal root-cause claims.
 - Sparse GeoReplay events can create missing-signal cases that need dispatcher context.
 - Baseline mismatch depends on the quality and coverage of uploaded lane baselines.
+
+## Day 9 Micro-Product: PODPulse
+
+PODPulse is a local-first Streamlit app that tracks POD aging and flags delivered trips with missing, late, rejected, approval pending, or invoice-blocking proof of delivery.
+
+![PODPulse Streamlit screenshot](docs/assets/pod-pulse-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Billing teams
+- Customer-service teams
+- Carrier follow-up owners
+- Operations managers reviewing POD gaps before invoicing
+
+### Problem
+
+Delivery is operationally complete only when POD evidence is usable for billing. Teams still need to review:
+
+- missing POD documents;
+- POD aging against SLA;
+- late POD receipt;
+- rejected PODs;
+- resubmitted PODs waiting for approval;
+- invoice blockers and on-hold cases.
+
+### Inputs
+
+- `deliveries.csv`: `trip_id`, `customer_name`, `delivered_time`, optional vehicle, carrier, origin, destination, and promised arrival fields
+- `pod_status.csv`: `trip_id`, `pod_status`, optional received, rejected, approved, resubmitted, uploader, and rejection reason fields
+- `invoice_status.csv`: optional invoice status with invoice number, invoice date, and blocked reason
+
+### Outputs
+
+- `pod_pulse/output/pod_aging_report.csv` with delivery context, POD status, invoice status, POD age, aging bucket, POD gap type, invoice blocker flag, severity, evidence, and suggested action
+- `pod_pulse/output/overdue_pods.csv` with focused POD gaps and invoice blockers for review
+- KPI cards, Plotly charts, POD aging table, overdue POD table, and download buttons inside Streamlit
+
+### Run PODPulse
+
+```bash
+uv sync
+uv run streamlit run pod_pulse/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `pod_pulse/demo_data/` when no files are uploaded.
+
+### PODPulse Limitations
+
+- V1 is deterministic and file-based; no OCR, ERP posting, automated email, or live integration is included.
+- POD gap types are neutral review flags, not blame or liability decisions.
+- Invoice blocker visibility depends on optional invoice status file quality.
+- Missing or invalid delivered time creates a data-quality review case.
 
 ## Quick Start
 

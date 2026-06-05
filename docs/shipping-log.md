@@ -211,3 +211,29 @@ Late trips are easier to act on when managers can see where time was lost. Delay
 - `uv run ruff check .`
 - `uv run python -m py_compile delay_lens/app.py delay_lens/engine.py delay_lens/models.py`
 - Demo smoke run writes `delay_lens/output/delay_classification_report.csv` and `delay_lens/output/critical_delays.csv`
+
+## v0.9.0-pod-pulse
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `pod_pulse/` as a separate Streamlit micro-product folder.
+- Added deterministic POD aging from delivered trips, POD status rows, and optional invoice status rows.
+- Standardized delivery, POD, approval, rejection, resubmission, and invoice timestamps to UTC before aging math.
+- Added missing document, POD late, rejected POD, approval pending, invoice blocker, POD not required, not delivered, and data missing classifications.
+- Added 24-hour warning, 48-hour SLA, and 168-hour critical POD aging thresholds.
+- Added neutral evidence text, aging buckets, invoice blocker flag, risk buckets, severity, KPI cards, Plotly charts, POD aging table, overdue POD table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README PODPulse visual and product-specific Before/After section.
+
+### Why It Matters
+
+Delivered trips are not financially complete until POD evidence is received, usable, and approved. PODPulse gives operations and billing teams a local review board for POD gaps, aging, rejected documents, approval pending cases, and invoice blockers.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile pod_pulse/app.py pod_pulse/engine.py pod_pulse/models.py`
+- Demo smoke run writes `pod_pulse/output/pod_aging_report.csv` and `pod_pulse/output/overdue_pods.csv`
