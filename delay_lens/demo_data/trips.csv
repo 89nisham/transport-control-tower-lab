@@ -7,3 +7,4 @@ DL-ENROUTE,VH-805,Oasis Electronics,Peninsula Freight,DMM-RUH,Dammam Port,Riyadh
 DL-DEST-DWELL,VH-806,Emirates Home,Desert Line Transport,AUH-DXB,Abu Dhabi DC,Dubai Mall Receiving,2026-06-05T10:00:00+04:00,2026-06-05T13:00:00+04:00
 DL-MISSING-SIGNAL,VH-807,Gulf Fresh Foods,Gulf Road Carriers,DOH-DMM,Doha Crossdock,Dammam Cold Store,2026-06-05T05:00:00+03:00,2026-06-05T16:00:00+03:00
 DL-BASELINE-MISSING,VH-808,Riyadh Auto Parts,Najd Express,BAH-RUH,Bahrain Port,Riyadh Parts DC,2026-06-05T06:30:00+03:00,2026-06-05T14:30:00+03:00
+DL-LATE-ARRIVAL,VH-809,Oman Medical Supply,Peninsula Freight,MCT-DXB,Muscat DC,Dubai Festival City,2026-06-05T08:00:00+04:00,2026-06-05T14:00:00+04:00

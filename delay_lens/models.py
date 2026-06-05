@@ -13,9 +13,10 @@ class DelayLensSettings(BaseModel):
     late_departure_tolerance_minutes: int = Field(default=15, ge=0)
     late_arrival_tolerance_minutes: int = Field(default=15, ge=0)
     origin_dwell_threshold_minutes: int = Field(default=60, ge=0)
-    hub_dwell_threshold_minutes: int = Field(default=90, ge=0)
+    hub_dwell_threshold_minutes: int = Field(default=45, ge=0)
     destination_dwell_threshold_minutes: int = Field(default=60, ge=0)
     baseline_delta_threshold_minutes: int = Field(default=30, ge=0)
+    critical_arrival_delay_threshold_minutes: int = Field(default=120, ge=0)
 
 
 class TripRecord(BaseModel):
@@ -56,4 +57,3 @@ class LaneBaselineRecord(BaseModel):
     p75_minutes: float | None = Field(default=None, ge=0)
     p90_minutes: float | None = Field(default=None, ge=0)
     sample_size: int | None = Field(default=None, ge=0)
-

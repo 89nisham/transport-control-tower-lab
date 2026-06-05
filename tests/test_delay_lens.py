@@ -86,6 +86,15 @@ def _trips() -> pd.DataFrame:
                 "planned_departure": "2026-06-05T06:30:00+03:00",
                 "promised_arrival": "2026-06-05T14:30:00+03:00",
             },
+            {
+                "trip_id": "DL-LATE-ARRIVAL",
+                "vehicle_id": "VH-9",
+                "lane_id": "MCT-DXB",
+                "origin": "Muscat DC",
+                "destination": "Dubai Festival City",
+                "planned_departure": "2026-06-05T08:00:00+04:00",
+                "promised_arrival": "2026-06-05T14:00:00+04:00",
+            },
         ]
     )
 
@@ -108,6 +117,8 @@ def _visits() -> pd.DataFrame:
             ("DL-DEST-DWELL", "VH-6", "Dubai Mall Receiving", "DELIVERY", "2026-06-05T12:50:00+04:00", "2026-06-05T15:00:00+04:00", 130),
             (None, "VH-8", "Bahrain Port", "PORT", "2026-06-05T06:00:00+03:00", "2026-06-05T06:30:00+03:00", 30),
             (None, "VH-8", "Riyadh Parts DC", "DESTINATION", "2026-06-05T15:45:00+03:00", "2026-06-05T16:15:00+03:00", 30),
+            ("DL-LATE-ARRIVAL", "VH-9", "Muscat DC", "ORIGIN", "2026-06-05T07:35:00+04:00", "2026-06-05T08:00:00+04:00", 25),
+            ("DL-LATE-ARRIVAL", "VH-9", "Dubai Festival City", "DESTINATION", "2026-06-05T16:30:00+04:00", "2026-06-05T17:00:00+04:00", 30),
         ],
         columns=[
             "trip_id",
@@ -131,6 +142,7 @@ def _baselines() -> pd.DataFrame:
             ("DMM-RUH", "Dammam Port", "Riyadh Store", 390),
             ("AUH-DXB", "Abu Dhabi DC", "Dubai Mall Receiving", 170),
             ("DOH-DMM", "Doha Crossdock", "Dammam Cold Store", 660),
+            ("MCT-DXB", "Muscat DC", "Dubai Festival City", 510),
         ],
         columns=["lane_id", "origin", "destination", "baseline_minutes"],
     )
@@ -146,8 +158,18 @@ def _row(report: pd.DataFrame, trip_id: str) -> pd.Series:
 
 def test_clean_trip_is_on_track() -> None:
     row = _row(_report(), "DL-OK")
-    assert row["primary_delay_reason"] == "ON TRACK"
-    assert row["risk_bucket"] == "OK"
+    assert row["primary_delay_reason"] == "ON TIME"
+    assert row["risk_bucket"] == "ON TIME"
+
+
+def test_origin_exit_detection() -> None:
+    row = _row(_report(), "DL-OK")
+    assert row["actual_origin_exit"].isoformat() == "2026-06-05T03:00:00+00:00"
+
+
+def test_destination_entry_detection() -> None:
+    row = _row(_report(), "DL-OK")
+    assert row["actual_destination_entry"].isoformat() == "2026-06-05T13:45:00+00:00"
 
 
 def test_late_departure_detection() -> None:
@@ -188,8 +210,23 @@ def test_missing_signal_handling() -> None:
 
 def test_baseline_missing_handling() -> None:
     row = _row(_report(), "DL-BASELINE-MISSING")
-    assert row["primary_delay_reason"] == "BASELINE MISMATCH"
-    assert "BASELINE MISSING" in row["secondary_delay_flags"]
+    assert row["primary_delay_reason"] == "BASELINE MISSING"
+    assert row["risk_bucket"] == "WATCH"
+
+
+def test_late_arrival_fallback_and_critical_risk() -> None:
+    row = _row(_report(), "DL-LATE-ARRIVAL")
+    assert row["primary_delay_reason"] == "LATE ARRIVAL"
+    assert row["arrival_delay_minutes"] == 150
+    assert row["risk_bucket"] == "CRITICAL"
+    assert row["severity"] == "CRITICAL"
+
+
+def test_risk_bucket_classification() -> None:
+    report = _report()
+    assert set(report["risk_bucket"]).issuperset(
+        {"ON TIME", "WATCH", "DELAYED", "CRITICAL", "DATA MISSING"}
+    )
 
 
 def test_export_smoke(tmp_path: Path) -> None:
@@ -208,16 +245,17 @@ def test_demo_data_smoke() -> None:
         pd.read_csv(base / "visit_events.csv"),
         pd.read_csv(base / "lane_baselines.csv"),
     )
-    assert result.kpis["total_trips"] == 8
+    assert result.kpis["total_trips"] == 9
     assert set(result.delay_classification_report["primary_delay_reason"]).issuperset(
         {
-            "ON TRACK",
+            "ON TIME",
             "LATE DEPARTURE",
             "ORIGIN DWELL",
             "HUB DWELL",
             "ENROUTE DELAY",
             "DESTINATION DWELL",
             "MISSING SIGNAL",
-            "BASELINE MISMATCH",
+            "BASELINE MISSING",
+            "LATE ARRIVAL",
         }
     )

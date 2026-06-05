@@ -398,9 +398,9 @@ def _reason_priority(reason: str) -> int:
         "HUB DWELL": 4,
         "ENROUTE DELAY": 5,
         "DESTINATION DWELL": 6,
-        "BASELINE MISMATCH": 7,
-        "BASELINE MISSING": 8,
-        "ON TRACK": 99,
+        "BASELINE MISSING": 7,
+        "LATE ARRIVAL": 8,
+        "ON TIME": 99,
     }
     return priority.get(reason, 50)
 
@@ -411,6 +411,7 @@ def _classify_row(
     destination_event: pd.Series | None,
     hubs: pd.DataFrame,
     baseline: pd.Series | None,
+    baseline_file_provided: bool,
     settings: DelayLensSettings,
 ) -> dict[str, Any]:
     actual_origin_exit = origin_event["exit_time"] if origin_event is not None else pd.NaT
@@ -448,37 +449,42 @@ def _classify_row(
         flags.append("HUB DWELL")
     if destination_dwell is not None and destination_dwell > settings.destination_dwell_threshold_minutes:
         flags.append("DESTINATION DWELL")
-    if baseline_minutes is None:
+    if baseline_file_provided and baseline_minutes is None:
         flags.append("BASELINE MISSING")
     elif baseline_delta is not None and baseline_delta > settings.baseline_delta_threshold_minutes:
         flags.append("ENROUTE DELAY")
 
-    delay_flags = [flag for flag in flags if flag not in {"LATE ARRIVAL"}]
-    primary_delay_reason = min(delay_flags, key=_reason_priority) if delay_flags else "ON TRACK"
-    if (
-        primary_delay_reason == "BASELINE MISSING"
-        and arrival_delay is not None
-        and arrival_delay > settings.late_arrival_tolerance_minutes
-    ):
-        primary_delay_reason = "BASELINE MISMATCH"
+    primary_delay_reason = min(flags, key=_reason_priority) if flags else "ON TIME"
     secondary_flags = [flag for flag in flags if flag != primary_delay_reason]
 
-    if primary_delay_reason == "ON TRACK":
-        risk_bucket = "OK"
+    is_critical_arrival = (
+        arrival_delay is not None
+        and arrival_delay >= settings.critical_arrival_delay_threshold_minutes
+    )
+
+    if primary_delay_reason == "ON TIME":
+        risk_bucket = "ON TIME"
         severity = "OK"
         suggested_action = "No delay review needed."
     elif primary_delay_reason == "MISSING SIGNAL":
         risk_bucket = "DATA MISSING"
         severity = "HIGH"
         suggested_action = "Check GeoReplay coverage or request missing visit evidence."
-    elif primary_delay_reason in {"LATE DEPARTURE", "ENROUTE DELAY", "HUB DWELL"}:
-        risk_bucket = "HIGH RISK"
-        severity = "HIGH"
+    elif is_critical_arrival:
+        risk_bucket = "CRITICAL"
+        severity = "CRITICAL"
+        suggested_action = "Prioritize review and confirm recovery or customer communication status."
+    elif primary_delay_reason in {
+        "LATE DEPARTURE",
+        "ORIGIN DWELL",
+        "HUB DWELL",
+        "ENROUTE DELAY",
+        "DESTINATION DWELL",
+        "LATE ARRIVAL",
+    }:
+        risk_bucket = "DELAYED"
+        severity = "HIGH" if primary_delay_reason in {"LATE DEPARTURE", "HUB DWELL", "ENROUTE DELAY"} else "MEDIUM"
         suggested_action = "Review the trip timeline and confirm where recovery action is needed."
-    elif primary_delay_reason in {"ORIGIN DWELL", "DESTINATION DWELL", "BASELINE MISMATCH"}:
-        risk_bucket = "REVIEW"
-        severity = "MEDIUM"
-        suggested_action = "Review site dwell and baseline evidence before escalation."
     else:
         risk_bucket = "WATCH"
         severity = "LOW"
@@ -496,7 +502,7 @@ def _classify_row(
         evidence_parts.append(f"destination dwell {destination_dwell:.0f} min")
     if baseline_delta is not None:
         evidence_parts.append(f"baseline delta {baseline_delta:.0f} min")
-    elif baseline_minutes is None:
+    elif baseline_file_provided and baseline_minutes is None:
         evidence_parts.append("baseline missing")
 
     return {
@@ -538,6 +544,7 @@ def run_delay_lens(
     settings = settings or DelayLensSettings()
     trips = prepare_trips(trips_df)
     visits = prepare_visit_events(visit_events_df)
+    baseline_file_provided = lane_baselines_df is not None and not lane_baselines_df.dropna(how="all").empty
     baselines = prepare_lane_baselines(lane_baselines_df)
 
     rows: list[dict[str, Any]] = []
@@ -555,18 +562,19 @@ def run_delay_lens(
                 destination_event,
                 hubs,
                 baseline,
+                baseline_file_provided,
                 settings,
             )
         )
 
     report = pd.DataFrame(rows, columns=REPORT_COLUMNS)
-    critical = report[report["severity"].isin(["HIGH", "MEDIUM"])][CRITICAL_COLUMNS].reset_index(
-        drop=True
-    )
+    critical = report[report["severity"].isin(["CRITICAL", "HIGH"])][
+        CRITICAL_COLUMNS
+    ].reset_index(drop=True)
     kpis = {
         "total_trips": float(len(report)),
-        "delayed_trips": float((report["primary_delay_reason"] != "ON TRACK").sum()),
-        "critical_delays": float((report["severity"] == "HIGH").sum()),
+        "delayed_trips": float((report["primary_delay_reason"] != "ON TIME").sum()),
+        "critical_delays": float((report["severity"] == "CRITICAL").sum()),
         "missing_signal": float((report["primary_delay_reason"] == "MISSING SIGNAL").sum()),
         "baseline_missing": float(
             report["secondary_delay_flags"].str.contains("BASELINE MISSING", regex=False).sum()

@@ -423,7 +423,7 @@ Managers often know a trip is late, but not where time was lost. Control towers 
 ### Outputs
 
 - `delay_lens/output/delay_classification_report.csv` with actual origin exit, destination entry, delay minutes, dwell minutes, travel minutes, baseline delta, delay reason, secondary flags, severity, evidence, and suggested action
-- `delay_lens/output/critical_delays.csv` with high and medium severity delay cases for review
+- `delay_lens/output/critical_delays.csv` with critical and high severity delay cases for review
 - KPI cards, Plotly delay chart, classification table, critical-only table, and download buttons inside Streamlit
 
 ### Run DelayLens

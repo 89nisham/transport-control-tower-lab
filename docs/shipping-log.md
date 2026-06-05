@@ -195,7 +195,8 @@ Date: 2026-06-05
 - Added deterministic delay classification from trip plans, GeoReplay visit events, and optional lane baselines.
 - Standardized trip, visit, and baseline timestamps before delay math.
 - Added exact trip matching first, then vehicle and trip-window matching when visit `trip_id` is missing.
-- Added late departure, origin dwell, hub dwell, enroute delay, destination dwell, missing signal, and baseline mismatch classifications.
+- Added late departure, origin dwell, hub dwell, enroute delay, destination dwell, missing signal, baseline missing, and late arrival fallback classifications.
+- Added critical arrival-delay escalation at the 120-minute threshold.
 - Added neutral evidence text, secondary delay flags, risk buckets, severity, KPI cards, Plotly charts, classification table, critical table, and CSV downloads.
 - Added synthetic GCC demo data and tests.
 - Added README DelayLens visual and product-specific Before/After section.

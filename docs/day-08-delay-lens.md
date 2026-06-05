@@ -12,7 +12,7 @@ Managers often know a trip is late, but not why. DelayLens separates likely dela
 - enroute delay;
 - destination dwell;
 - missing signal;
-- baseline missing or mismatch.
+- baseline missing.
 
 The output is a review board for operations teams, not a root-cause verdict.
 
@@ -74,7 +74,7 @@ Origin events match by geofence type `ORIGIN`, `HUB`, `PICKUP`, or origin name. 
 - primary delay reason and secondary delay flags
 - risk bucket, severity, evidence, and suggested action
 
-`critical_delays.csv` includes high and medium severity rows for focused review.
+`critical_delays.csv` includes critical and high severity rows for focused review.
 
 ## Demo Data
 
@@ -87,7 +87,8 @@ The demo pack uses GCC-style logistics scenarios:
 - enroute delay from Dammam to Riyadh;
 - destination dwell in Dubai;
 - missing GeoReplay signal;
-- missing lane baseline for Bahrain to Riyadh.
+- missing lane baseline for Bahrain to Riyadh;
+- critical late arrival from Muscat to Dubai.
 
 ## Run
 
@@ -107,5 +108,4 @@ After DelayLens, the same files produce a neutral classification report with del
 - DelayLens is deterministic and file-based.
 - It does not assign blame, infer traffic, or prove root cause.
 - It depends on trip timestamp quality, GeoReplay event coverage, and baseline coverage.
-- Baseline mismatch is a review signal, not a final operating diagnosis.
-
+- Baseline missing is a review signal, not a final operating diagnosis.

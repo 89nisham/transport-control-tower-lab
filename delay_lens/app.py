@@ -16,10 +16,10 @@ APP_DIR = Path(__file__).resolve().parent
 DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
 RISK_COLORS = {
-    "OK": "#15803d",
+    "ON TIME": "#15803d",
     "WATCH": "#ca8a04",
-    "REVIEW": "#2563eb",
-    "HIGH RISK": "#dc2626",
+    "DELAYED": "#dc2626",
+    "CRITICAL": "#991b1b",
     "DATA MISSING": "#64748b",
 }
 
@@ -86,8 +86,8 @@ def main() -> None:
             hub_dwell_threshold_minutes=st.number_input(
                 "Hub dwell threshold minutes",
                 min_value=0,
-                value=90,
-                step=10,
+                value=45,
+                step=5,
             ),
             destination_dwell_threshold_minutes=st.number_input(
                 "Destination dwell threshold minutes",
@@ -100,6 +100,12 @@ def main() -> None:
                 min_value=0,
                 value=30,
                 step=10,
+            ),
+            critical_arrival_delay_threshold_minutes=st.number_input(
+                "Critical arrival delay threshold minutes",
+                min_value=0,
+                value=120,
+                step=15,
             ),
         )
         chart_by = st.selectbox(
@@ -190,4 +196,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
