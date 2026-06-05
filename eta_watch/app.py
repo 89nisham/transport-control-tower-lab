@@ -80,7 +80,12 @@ def main() -> None:
         else _read_uploaded_or_demo(lane_baselines_file, DEMO_DIR / "lane_baselines.csv")
     )
 
-    result = run_eta_watch(trips_df, visit_events_df, baselines_df, current_time=current_time)
+    try:
+        result = run_eta_watch(trips_df, visit_events_df, baselines_df, current_time=current_time)
+    except ValueError as exc:
+        st.error(str(exc))
+        st.stop()
+
     risk_path, late_path = write_outputs(result, OUTPUT_DIR)
 
     metric_cols = st.columns(6)

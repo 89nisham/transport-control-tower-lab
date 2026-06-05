@@ -5,8 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
-from eta_watch.engine import build_eta_risk_board, run_eta_watch, write_outputs
+from eta_watch.engine import build_eta_risk_board, prepare_trips, run_eta_watch, write_outputs
 
 
 CURRENT_TIME = "2026-06-04T07:00:00Z"
@@ -158,6 +159,15 @@ def test_no_signal_trip_has_no_predicted_eta() -> None:
     assert pd.isna(no_signal["predicted_eta"])
 
 
+def test_has_signal_path_calculates_predicted_eta_and_delta() -> None:
+    """The has-signal pandas .loc path should calculate ETA fields without AttributeError."""
+    board = build_eta_risk_board(_trips(), _visit_events(), _baselines(), CURRENT_TIME)
+    with_signal = board[board["trip_id"] == "T-ON"].iloc[0]
+
+    assert str(with_signal["predicted_eta"]) == "2026-06-04 04:00:00+00:00"
+    assert with_signal["eta_delta_minutes"] == -360.0
+
+
 def test_late_trip_uses_current_time_against_promised_arrival() -> None:
     """Already expired promised arrivals should become late."""
     board = build_eta_risk_board(_trips(), _visit_events(), _baselines(), CURRENT_TIME)
@@ -174,6 +184,14 @@ def test_uploaded_timestamps_are_standardized_to_utc() -> None:
 
     assert str(on_track["latest_event_time"]) == "2026-06-04 02:00:00+00:00"
     assert str(on_track["promised_arrival"]) == "2026-06-04 10:00:00+00:00"
+
+
+def test_missing_required_trip_columns_raise_readable_error() -> None:
+    """Bad trip schemas should raise a readable ValueError instead of a raw pandas error."""
+    trips = _trips().drop(columns=["promised_arrival"])
+
+    with pytest.raises(ValueError, match="trips is missing required columns: promised_arrival"):
+        prepare_trips(trips)
 
 
 def test_eta_watch_exports_smoke(tmp_path: Path) -> None:

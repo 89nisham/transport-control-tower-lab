@@ -5,8 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
-from detention_clock.engine import build_detention_report, run_detention_clock, write_outputs
+from detention_clock.engine import (
+    build_detention_report,
+    prepare_detention_rules,
+    run_detention_clock,
+    write_outputs,
+)
 
 
 def _visit_events() -> pd.DataFrame:
@@ -175,6 +181,40 @@ def test_missing_exit_is_flagged_without_charge() -> None:
     assert "Confirm exit time" in missing["suggested_action"]
 
 
+def test_missing_dwell_minutes_value_is_imputed_from_enter_and_exit() -> None:
+    """Visits with enter/exit times but missing dwell should still calculate dwell."""
+    visits = _visit_events()
+    visits.loc[visits["trip_id"] == "T-CHARGE", "dwell_minutes"] = pd.NA
+    report = build_detention_report(visits, _rules(), _trips())
+    charge = report[report["trip_id"] == "T-CHARGE"].iloc[0]
+
+    assert charge["dwell_minutes"] == 210.0
+    assert charge["chargeable_minutes"] == 90
+    assert charge["risk_bucket"] == "DETENTION"
+
+
+def test_missing_exit_with_missing_dwell_column_does_not_crash() -> None:
+    """Open visits should be flagged even when dwell_minutes is missing."""
+    visits = _visit_events()
+    visits.loc[visits["trip_id"] == "T-MISSING", "dwell_minutes"] = pd.NA
+    report = build_detention_report(visits, _rules(), _trips())
+    missing = report[report["trip_id"] == "T-MISSING"].iloc[0]
+
+    assert missing["risk_bucket"] == "MISSING EXIT"
+    assert missing["chargeable_minutes"] == 0
+
+
+def test_missing_required_rule_columns_raise_readable_error() -> None:
+    """Bad rule schemas should raise readable ValueError messages."""
+    rules = _rules().drop(columns=["free_minutes"])
+
+    with pytest.raises(
+        ValueError,
+        match="detention_rules is missing required columns: free_minutes",
+    ):
+        prepare_detention_rules(rules)
+
+
 def test_detention_clock_exports_smoke(tmp_path: Path) -> None:
     """DetentionClock should write report and chargeable-only CSV exports."""
     result = run_detention_clock(_visit_events(), _rules(), _trips())
@@ -184,4 +224,3 @@ def test_detention_clock_exports_smoke(tmp_path: Path) -> None:
     assert chargeable_path.exists()
     assert "detention_report" in report_path.name
     assert not pd.read_csv(chargeable_path).empty
-

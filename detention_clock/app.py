@@ -78,7 +78,12 @@ def main() -> None:
     )
     trips_df = _read_uploaded_or_demo(trips_file, DEMO_DIR / "trips.csv")
 
-    result = run_detention_clock(visit_events_df, rules_df, trips_df)
+    try:
+        result = run_detention_clock(visit_events_df, rules_df, trips_df)
+    except ValueError as exc:
+        st.error(str(exc))
+        st.stop()
+
     report_path, chargeable_path = write_outputs(result, OUTPUT_DIR)
 
     metric_cols = st.columns(5)
@@ -146,4 +151,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
