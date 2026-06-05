@@ -1,0 +1,7 @@
+trip_id,vehicle_id,customer_name,carrier_name,origin,destination,origin_geofence_id,destination_geofence_id,planned_departure,promised_arrival
+TRIP-5001,VH-501,Acme Foods,Desert Line Transport,Riyadh Dry Port,Jeddah Customer DC,RUH_DRY_PORT,JED_CUSTOMER_DC,2026-06-05T07:00:00+03:00,2026-06-05T17:00:00+03:00
+TRIP-5002,VH-502,Gulf Retail,Gulf Road Carriers,Dammam Port,Riyadh Store 14,DMM_PORT,RUH_STORE_14,2026-06-05T08:00:00+03:00,2026-06-05T15:00:00+03:00
+TRIP-5003,VH-503,Fresh Basket,North Star Logistics,Jeddah Port,Makkah DC,JED_PORT,MAK_DC,2026-06-05T06:30:00+03:00,2026-06-05T11:30:00+03:00
+TRIP-5004,VH-504,Acme Foods,Desert Line Transport,Riyadh Dry Port,Dammam Customer Yard,RUH_DRY_PORT,DMM_CUSTOMER_YARD,2026-06-05T07:30:00+03:00,2026-06-05T16:30:00+03:00
+TRIP-5005,VH-505,Gulf Retail,Gulf Road Carriers,Jebel Ali Yard,Abu Dhabi Store,JEA_YARD,AUH_STORE,2026-06-05T09:00:00+04:00,2026-06-05T13:00:00+04:00
+

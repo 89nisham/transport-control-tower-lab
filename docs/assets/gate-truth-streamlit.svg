@@ -1,0 +1,69 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">GateTruth Streamlit gate evidence screenshot</title>
+  <desc id="desc">Stylized screenshot of a trip gate verification board with KPI cards, evidence chart, and exception table.</desc>
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="0" y="0" width="1200" height="68" fill="#0f172a"/>
+  <text x="36" y="43" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28" font-weight="700">GateTruth</text>
+  <text x="216" y="43" fill="#d1d5db" font-family="Arial, sans-serif" font-size="16">Verify origin and destination gate evidence from GeoReplay visits</text>
+
+  <rect x="36" y="102" width="170" height="94" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="58" y="135" fill="#64748b" font-family="Arial, sans-serif" font-size="15">Total trips</text>
+  <text x="58" y="174" fill="#111827" font-family="Arial, sans-serif" font-size="34" font-weight="700">5</text>
+
+  <rect x="226" y="102" width="170" height="94" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="248" y="135" fill="#166534" font-family="Arial, sans-serif" font-size="15">Confirmed starts</text>
+  <text x="248" y="174" fill="#15803d" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="416" y="102" width="170" height="94" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="438" y="135" fill="#991b1b" font-family="Arial, sans-serif" font-size="15">Exceptions</text>
+  <text x="438" y="174" fill="#dc2626" font-family="Arial, sans-serif" font-size="34" font-weight="700">4</text>
+
+  <rect x="606" y="102" width="190" height="94" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="628" y="135" fill="#9a3412" font-family="Arial, sans-serif" font-size="15">Missing origin exits</text>
+  <text x="628" y="174" fill="#ca8a04" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="816" y="102" width="154" height="94" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="838" y="135" fill="#991b1b" font-family="Arial, sans-serif" font-size="15">Late arrivals</text>
+  <text x="838" y="174" fill="#dc2626" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="990" y="102" width="154" height="94" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="1012" y="135" fill="#991b1b" font-family="Arial, sans-serif" font-size="15">Late arrivals</text>
+  <text x="1012" y="174" fill="#dc2626" font-family="Arial, sans-serif" font-size="34" font-weight="700">1</text>
+
+  <rect x="36" y="232" width="1128" height="180" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="62" y="267" fill="#111827" font-family="Arial, sans-serif" font-size="19" font-weight="700">Gate truth status distribution</text>
+  <rect x="110" y="314" width="100" height="70" fill="#dc2626"/>
+  <rect x="320" y="334" width="100" height="50" fill="#9333ea"/>
+  <rect x="530" y="324" width="100" height="60" fill="#ca8a04"/>
+  <rect x="740" y="354" width="100" height="30" fill="#15803d"/>
+  <text x="94" y="400" fill="#475569" font-family="Arial, sans-serif" font-size="14">EXCEPTION</text>
+  <text x="304" y="400" fill="#475569" font-family="Arial, sans-serif" font-size="14">AMBIGUOUS</text>
+  <text x="518" y="400" fill="#475569" font-family="Arial, sans-serif" font-size="14">INCOMPLETE</text>
+  <text x="738" y="400" fill="#475569" font-family="Arial, sans-serif" font-size="14">VERIFIED</text>
+  <text x="920" y="340" fill="#64748b" font-family="Arial, sans-serif" font-size="14">green = evidence verified</text>
+  <text x="920" y="365" fill="#64748b" font-family="Arial, sans-serif" font-size="14">red/amber/purple = review required</text>
+
+  <rect x="36" y="446" width="1128" height="226" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="62" y="482" fill="#111827" font-family="Arial, sans-serif" font-size="19" font-weight="700">Gate exceptions</text>
+  <rect x="62" y="506" width="1076" height="38" fill="#f1f5f9"/>
+  <text x="82" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Trip</text>
+  <text x="208" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Vehicle</text>
+  <text x="336" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Origin exit</text>
+  <text x="520" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Destination entry</text>
+  <text x="760" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Flags</text>
+  <text x="1010" y="531" fill="#334155" font-family="Arial, sans-serif" font-size="14" font-weight="700">Status</text>
+  <text x="82" y="574" fill="#111827" font-family="Arial, sans-serif" font-size="14">TRIP-5002</text>
+  <text x="208" y="574" fill="#111827" font-family="Arial, sans-serif" font-size="14">VH-502</text>
+  <text x="336" y="574" fill="#111827" font-family="Arial, sans-serif" font-size="14">09:05</text>
+  <text x="520" y="574" fill="#111827" font-family="Arial, sans-serif" font-size="14">15:55</text>
+  <text x="760" y="574" fill="#111827" font-family="Arial, sans-serif" font-size="14">LATE START; LATE ARRIVAL</text>
+  <rect x="1010" y="554" width="104" height="28" rx="5" fill="#dc2626"/>
+  <text x="1026" y="573" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="700">EXCEPTION</text>
+  <text x="82" y="622" fill="#111827" font-family="Arial, sans-serif" font-size="14">TRIP-5004</text>
+  <text x="208" y="622" fill="#111827" font-family="Arial, sans-serif" font-size="14">VH-504</text>
+  <text x="336" y="622" fill="#111827" font-family="Arial, sans-serif" font-size="14">07:25</text>
+  <text x="520" y="622" fill="#111827" font-family="Arial, sans-serif" font-size="14">16:20</text>
+  <text x="760" y="622" fill="#111827" font-family="Arial, sans-serif" font-size="14">AMBIGUOUS EVENT MATCH</text>
+  <rect x="1010" y="602" width="110" height="28" rx="5" fill="#9333ea"/>
+  <text x="1022" y="621" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="700">AMBIGUOUS</text>
+</svg>

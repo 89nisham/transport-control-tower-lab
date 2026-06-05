@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -230,6 +230,58 @@ The app loads realistic GCC synthetic demo data from `detention_clock/demo_data/
 - Missing exits are flagged for evidence review and are not charged automatically.
 - Estimated charges are operational estimates, not final invoices.
 
+## Day 5 Micro-Product: GateTruth
+
+GateTruth is a local-first Streamlit app that turns trip plans and GeoReplay visit events into origin and destination gate evidence.
+
+![GateTruth Streamlit screenshot](docs/assets/gate-truth-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Transport managers
+- Customer-service escalation teams checking actual start and arrival truth
+
+### Problem
+
+TMS timestamps and operational reality often drift apart. Control towers still need to answer:
+
+- Did the truck actually enter and exit the origin hub?
+- Did the truck actually enter the destination customer site?
+- Was the origin exit late versus planned departure?
+- Was the destination entry late versus promised arrival?
+- Are there multiple plausible GeoReplay events that need human review?
+
+### Inputs
+
+- `trips.csv`: `trip_id`, `vehicle_id`, optional `customer_name`, optional `carrier_name`, `origin`, `destination`, optional `origin_geofence_id`, optional `destination_geofence_id`, `planned_departure`, `promised_arrival`
+- `visit_events.csv`: GeoReplay output with optional `trip_id`, `vehicle_id`, `geofence_id`, `geofence_name`, `geofence_type`, `enter_time`, `exit_time`, `dwell_minutes`
+- `planned_stops.csv`: optional geofence hints by trip and stop sequence
+
+### Outputs
+
+- `gate_truth/output/gate_truth_report.csv` with actual gate timestamps, delay minutes, `gate_truth_status`, `exception_type`, evidence text, and confidence bucket
+- `gate_truth/output/gate_exceptions.csv` with exception type, severity, evidence, and suggested action
+- KPI cards, Plotly gate-truth-status chart, gate truth table, exceptions-only table, and download buttons inside Streamlit
+
+### Run GateTruth
+
+```bash
+uv sync
+uv run streamlit run gate_truth/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `gate_truth/demo_data/` when no files are uploaded.
+
+### GateTruth Limitations
+
+- V1 is deterministic and file-based; no TMS integration or live GPS polling is included.
+- Ambiguous matches are flagged for review instead of silently auto-resolved.
+- Late start, late arrival, and early-arrival review thresholds are configurable. Defaults are 15, 15, and 60 minutes.
+- No customer notification workflow, route optimization, legal proof engine, enterprise login, or database backend is included.
+
 ## Quick Start
 
 Install dependencies:
@@ -300,6 +352,7 @@ src/control_tower_lab/      Python package and CLI
 georeplay/                  Product 2 Streamlit app and geospatial engine
 eta_watch/                  Product 3 Streamlit app and ETA risk engine
 detention_clock/            Product 4 Streamlit app and detention calculation engine
+gate_truth/                 Product 5 Streamlit app and gate evidence engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -383,6 +436,24 @@ After:
 - Missing exits are flagged for evidence review before charging.
 - The Streamlit app shows KPI cards, a Plotly charge chart, detention tables, and CSV exports.
 
+### GateTruth
+
+Before:
+
+- Trip milestone timestamps in TMS are accepted or challenged manually.
+- Origin exit and destination entry evidence is buried inside visit-event exports.
+- Dispatchers argue about whether a truck really started or arrived.
+- Missing destination visits are discovered late.
+- Multiple plausible site events can be collapsed into one story without review.
+
+After:
+
+- GateTruth joins planned trips to GeoReplay visit evidence.
+- Each trip gets actual origin entry, origin exit, destination entry, and destination exit timestamps where available.
+- Missing origin exits, missing destination entries, late starts, late arrivals, early arrivals, no visit evidence, and ambiguous matches are flagged deterministically.
+- `gate_truth_report.csv` and `gate_exceptions.csv` are written for control-tower review.
+- The Streamlit app shows KPI cards, a gate-truth-status chart, a full evidence table, and exceptions-only exports.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -392,13 +463,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay, ETA Watch, and DetentionClock local apps.
+- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, and GateTruth local apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `plotly`: renders clean ETA Watch and DetentionClock KPI distribution charts.
-- `pydantic`: validates GeoReplay, ETA Watch, and DetentionClock input records.
+- `plotly`: renders clean ETA Watch, DetentionClock, and GateTruth KPI distribution charts.
+- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, and GateTruth input records.
 
 ## Public Story
 
@@ -411,6 +482,8 @@ Day 2 is GeoReplay: a Streamlit app that turns GPS pings and geofence masters in
 Day 3 is ETA Watch: a Streamlit app that turns trips and visit events into an ETA risk board.
 
 Day 4 is DetentionClock: a Streamlit app that turns visit events and detention rules into chargeable detention review packs.
+
+Day 5 is GateTruth: a Streamlit app that turns planned trips and GeoReplay visits into actual start and arrival evidence.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 

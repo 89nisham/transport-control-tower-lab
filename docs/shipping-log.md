@@ -106,3 +106,29 @@ Detention billing disputes start when dwell evidence, free-time rules, and charg
 - `uv run ruff check .`
 - `uv run python -m py_compile detention_clock/app.py detention_clock/engine.py detention_clock/models.py`
 - Demo smoke run writes `detention_clock/output/detention_report.csv` and `detention_clock/output/chargeable_detention.csv`
+
+## v0.5.0-gate-truth
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `gate_truth/` as a separate Streamlit micro-product folder.
+- Added deterministic origin and destination gate evidence matching from trips and GeoReplay visit events.
+- Standardized trip, visit, and planned-stop timestamps to UTC before gate-time comparisons.
+- Added optional planned-stop support for geofence matching when trip geofence IDs are missing.
+- Added missing-origin-exit, missing-destination-entry, late-start, late-arrival, early-arrival, no-visit-evidence, and ambiguous-match flags.
+- Added evidence text, confidence buckets, exception severity, KPI cards, Plotly gate-truth-status chart, gate truth table, exceptions table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README GateTruth visual and product-specific Before/After section.
+
+### Why It Matters
+
+Start and arrival disputes waste control-tower time when TMS timestamps, GPS visits, and planned stops are reviewed separately. GateTruth gives managers an evidence-first local board for actual origin exit and destination entry truth.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile gate_truth/app.py gate_truth/engine.py gate_truth/models.py`
+- Demo smoke run writes `gate_truth/output/gate_truth_report.csv` and `gate_truth/output/gate_exceptions.csv`

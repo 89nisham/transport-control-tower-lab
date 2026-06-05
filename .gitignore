@@ -14,6 +14,8 @@ eta_watch/output/*
 !eta_watch/output/.gitkeep
 detention_clock/output/*
 !detention_clock/output/.gitkeep
+gate_truth/output/*
+!gate_truth/output/.gitkeep
 logs/*
 !logs/.gitkeep
 
