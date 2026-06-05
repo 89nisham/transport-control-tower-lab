@@ -60,27 +60,34 @@ BanWindow builds a movement interval per trip in this order:
 
 - planned city entry and exit when both exist;
 - planned departure to predicted arrival when ETA data exists;
-- earliest matching visit event to promised arrival when visit evidence exists;
 - planned departure to promised arrival as the default.
 
-It expands user-supplied restriction windows into concrete UTC intervals. Full datetime windows are used directly. Time-of-day windows are expanded across the trip date range, filtered by `days_of_week`, `effective_from`, and `effective_to`.
+It expands user-supplied restriction windows into concrete UTC intervals. Full datetime windows are used directly. Time-of-day windows are expanded against each trip's planned departure date, filtered by `days_of_week`, `effective_from`, and `effective_to`. If `end_time` is earlier than or equal to `start_time`, BanWindow treats it as an overnight window ending the next day.
 
-Matching is by city first. When a restriction window has a vehicle class, it applies only to matching trip classes. If the trip vehicle class is missing, BanWindow marks the row as `VEHICLE CLASS UNKNOWN`.
+Matching is by city first. If trip city is missing, BanWindow attempts simple text inference from destination first, then origin, without geocoding. When a restriction window has a vehicle class, it applies only to matching trip classes. If the trip vehicle class is missing, BanWindow marks the row as `VEHICLE CLASS UNKNOWN`.
 
-Risk statuses:
+Risk buckets:
 
 - `CLEAR`
-- `CONFLICT`
 - `WATCH`
+- `BAN CONFLICT`
 - `MISSING TIMING`
 - `MISSING CITY`
 - `VEHICLE CLASS UNKNOWN`
+- `DATA MISSING`
+
+Confidence buckets:
+
+- `HIGH`
+- `MEDIUM`
+- `LOW`
+- `DATA MISSING`
 
 ## Outputs
 
-`ban_risk_board.csv` includes trip context, movement interval, timing source, matched window count, conflict count, watch count, risk status, severity, evidence, and suggested action.
+`ban_risk_board.csv` includes trip context, planned and predicted timing, selected movement interval, matched ban-window details, overlap minutes, risk bucket, severity, confidence bucket, evidence, and suggested action.
 
-`ban_conflicts.csv` includes one row per trip and uploaded restriction-window overlap, with ban window details, overlap minutes, match type, evidence, and suggested action.
+`ban_conflicts.csv` includes one row per trip and uploaded restriction-window overlap, with exception type, severity, evidence, and suggested action.
 
 ## Demo Data
 
@@ -93,9 +100,10 @@ The demo pack uses GCC-style synthetic planning rows:
 - missing city;
 - Doha vehicle-class uncertainty;
 - Muscat ETA-based overlap;
-- Kuwait planned city-window overlap;
-- Abu Dhabi visit-event fallback overlap;
-- Jeddah all-vehicle window overlap.
+- Muscat overnight restriction-window overlap;
+- Kuwait inactive effective-date window;
+- Abu Dhabi ETA-predicted-arrival overlap;
+- Dubai generic city rule for all vehicle classes.
 
 ## Run
 
@@ -117,4 +125,3 @@ After BanWindow, uploaded trip plans and uploaded restriction windows produce a 
 - It does not include legal rules or legal advice.
 - It does not call live traffic, legal, permit, route-optimization, or messaging APIs.
 - Results depend entirely on the quality and completeness of the uploaded files.
-

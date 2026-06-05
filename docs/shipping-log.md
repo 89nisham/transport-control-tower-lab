@@ -276,10 +276,11 @@ Date: 2026-06-05
 - Added `ban_window/` as a separate Streamlit micro-product folder.
 - Added deterministic restriction-window checks from planned trips and user-supplied `ban_windows.csv`.
 - Standardized trip, ETA, visit, and restriction-window timestamps to UTC before overlap checks.
-- Added movement interval selection from planned city windows, optional ETA predictions, optional visit evidence, or planned trip windows.
-- Added expansion for time-of-day restriction windows using days of week and effective dates.
+- Added movement interval selection from planned city windows, optional ETA predictions, or planned trip windows.
+- Added per-trip expansion for time-of-day restriction windows using planned departure date, days of week, effective dates, and overnight windows.
 - Added city and vehicle-class matching, including vehicle-class uncertainty when the trip class is missing.
-- Added clear, conflict, watch, missing-timing, missing-city, and vehicle-class-unknown risk statuses.
+- Added city inference from destination or origin text when trip city is missing.
+- Added clear, watch, ban-conflict, missing-timing, missing-city, vehicle-class-unknown, and data-missing risk buckets.
 - Added neutral evidence text, suggested actions, KPI cards, Plotly charts, risk board, conflict table, expanded-window table, and CSV downloads.
 - Added synthetic GCC demo data and tests.
 - Added README BanWindow visual and product-specific Before/After section.

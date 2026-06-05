@@ -1,2 +1,1 @@
 trip_id,vehicle_id,geofence_name,geofence_type,enter_time,exit_time,dwell_minutes
-TRIP-VISIT,VH-109,Abu Dhabi Port,ORIGIN,2026-05-04T07:45:00+04:00,2026-05-04T08:00:00+04:00,15

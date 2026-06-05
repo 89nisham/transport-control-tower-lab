@@ -581,11 +581,11 @@ Restriction windows can break a trip plan before dispatch or arrival. Teams stil
 
 ### Outputs
 
-- `ban_window/output/ban_risk_board.csv` with trip context, movement interval, timing source, matched window count, conflict count, watch count, risk status, severity, evidence, and suggested action
+- `ban_window/output/ban_risk_board.csv` with trip context, planned and predicted timing, selected movement interval, matched ban-window details, overlap minutes, risk bucket, severity, confidence bucket, evidence, and suggested action
 - `ban_window/output/ban_conflicts.csv` with one row per overlapping uploaded restriction window
 - KPI cards, Plotly status chart, risk board, conflict table, expanded-window table, and download buttons inside Streamlit
 
-Risk statuses are `CLEAR`, `CONFLICT`, `WATCH`, `MISSING TIMING`, `MISSING CITY`, and `VEHICLE CLASS UNKNOWN`.
+Risk buckets are `CLEAR`, `WATCH`, `BAN CONFLICT`, `MISSING TIMING`, `MISSING CITY`, `VEHICLE CLASS UNKNOWN`, and `DATA MISSING`.
 
 ### Run BanWindow
 
@@ -602,6 +602,7 @@ The app loads realistic GCC synthetic demo data from `ban_window/demo_data/` whe
 - BanWindow does not hard-code truck-ban laws, scrape laws, claim legal compliance, or provide legal advice.
 - All restriction windows must come from the uploaded `ban_windows.csv` file.
 - Missing city, timing, or vehicle-class values reduce the confidence of the planning check.
+- Time-of-day restriction windows are expanded against each trip's planned departure date.
 
 ## Quick Start
 

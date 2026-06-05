@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, time
+from datetime import datetime, time
 from pathlib import Path
 from typing import Any
 
@@ -22,14 +22,16 @@ REQUIRED_TRIP_COLUMNS = {
     "promised_arrival",
 }
 REQUIRED_BAN_COLUMNS = {"ban_id", "city", "start_time", "end_time"}
-RISK_STATUSES = {
+RISK_BUCKETS = {
     "CLEAR",
-    "CONFLICT",
     "WATCH",
+    "BAN CONFLICT",
     "MISSING TIMING",
     "MISSING CITY",
     "VEHICLE CLASS UNKNOWN",
+    "DATA MISSING",
 }
+CONFIDENCE_BUCKETS = {"HIGH", "MEDIUM", "LOW", "DATA MISSING"}
 BAN_RISK_COLUMNS = [
     "trip_id",
     "vehicle_id",
@@ -41,29 +43,34 @@ BAN_RISK_COLUMNS = [
     "vehicle_class",
     "planned_departure",
     "promised_arrival",
+    "predicted_arrival",
     "movement_start",
     "movement_end",
-    "timing_source",
-    "matched_window_count",
-    "conflict_count",
-    "watch_count",
-    "risk_status",
+    "matched_ban_id",
+    "ban_city",
+    "ban_location_name",
+    "ban_vehicle_class",
+    "ban_window_start",
+    "ban_window_end",
+    "overlap_minutes",
+    "risk_bucket",
     "severity",
+    "confidence_bucket",
     "evidence",
     "suggested_action",
 ]
 BAN_CONFLICT_COLUMNS = [
     "trip_id",
     "vehicle_id",
+    "customer_name",
+    "carrier_name",
     "city",
     "vehicle_class",
-    "ban_id",
-    "location_name",
-    "ban_vehicle_class",
-    "ban_start",
-    "ban_end",
+    "matched_ban_id",
+    "ban_window_start",
+    "ban_window_end",
     "overlap_minutes",
-    "match_type",
+    "exception_type",
     "severity",
     "evidence",
     "suggested_action",
@@ -83,6 +90,15 @@ DAY_NAME_ALIASES = {
     "SATURDAY": 5,
     "SUN": 6,
     "SUNDAY": 6,
+}
+RISK_RANK = {
+    "BAN CONFLICT": 6,
+    "VEHICLE CLASS UNKNOWN": 5,
+    "WATCH": 4,
+    "DATA MISSING": 3,
+    "MISSING TIMING": 2,
+    "MISSING CITY": 1,
+    "CLEAR": 0,
 }
 
 
@@ -114,6 +130,11 @@ def _normalize_text(value: Any) -> str | None:
 def _normalize_key(value: Any) -> str | None:
     text = _normalize_text(value)
     return None if text is None else " ".join(text.upper().replace("_", " ").split())
+
+
+def _search_key(value: Any) -> str:
+    text = _normalize_text(value) or ""
+    return "".join(character for character in text.upper() if character.isalnum())
 
 
 def _require_columns(df: pd.DataFrame, required: set[str], label: str) -> None:
@@ -152,22 +173,25 @@ def _parse_time(value: Any) -> time | None:
 
 def _parse_days(value: Any) -> set[int] | None:
     text = _normalize_text(value)
-    if text is None or text.upper() in {"ALL", "DAILY", "EVERYDAY", "EVERY DAY"}:
+    if text is None:
         return None
     days: set[int] = set()
     for token in text.replace("|", ",").replace(";", ",").split(","):
         key = token.strip().upper()
         if not key:
             continue
-        if key.isdigit():
-            number = int(key)
-            days.add(number if 0 <= number <= 6 else number - 1)
-        elif key in DAY_NAME_ALIASES:
+        if key in DAY_NAME_ALIASES:
             days.add(DAY_NAME_ALIASES[key])
     return days or None
 
 
-def _overlap_minutes(start_a: pd.Timestamp, end_a: pd.Timestamp, start_b: pd.Timestamp, end_b: pd.Timestamp) -> float:
+def interval_overlap_minutes(
+    start_a: pd.Timestamp,
+    end_a: pd.Timestamp,
+    start_b: pd.Timestamp,
+    end_b: pd.Timestamp,
+) -> float:
+    """Return positive overlap minutes between two datetime intervals."""
     latest_start = max(start_a, start_b)
     earliest_end = min(end_a, end_b)
     if latest_start >= earliest_end:
@@ -196,16 +220,16 @@ def prepare_trips(df: pd.DataFrame) -> pd.DataFrame:
     source["vehicle_class"] = source["vehicle_class"].map(_normalize_key)
     for column in ["planned_departure", "promised_arrival", "planned_city_entry", "planned_city_exit"]:
         source[column] = _to_utc(source[column])
-    source = source.dropna(subset=["trip_id", "vehicle_id", "origin", "destination"]).copy()
+    source = source.dropna(subset=["trip_id"]).copy()
 
     errors: list[str] = []
     for row in source.itertuples(index=False):
         try:
             TripRecord(
                 trip_id=str(row.trip_id),
-                vehicle_id=str(row.vehicle_id),
-                origin=str(row.origin),
-                destination=str(row.destination),
+                vehicle_id=None if pd.isna(row.vehicle_id) else str(row.vehicle_id),
+                origin=None if pd.isna(row.origin) else str(row.origin),
+                destination=None if pd.isna(row.destination) else str(row.destination),
                 planned_departure=None
                 if pd.isna(row.planned_departure)
                 else row.planned_departure.to_pydatetime(),
@@ -338,251 +362,421 @@ def prepare_visit_events(df: pd.DataFrame | None) -> pd.DataFrame:
     return source[columns].dropna(subset=["trip_id", "vehicle_id"], how="all").reset_index(drop=True)
 
 
-def _date_range_for_expansion(trips: pd.DataFrame, settings: BanWindowSettings) -> tuple[pd.Timestamp, pd.Timestamp]:
-    times = pd.concat(
-        [
-            trips["planned_departure"],
-            trips["promised_arrival"],
-            trips["planned_city_entry"],
-            trips["planned_city_exit"],
-        ],
-        ignore_index=True,
-    ).dropna()
-    if times.empty:
-        today = pd.Timestamp.now(tz="UTC").normalize()
-        return today, today
-    start = times.min().normalize() - pd.Timedelta(days=settings.expansion_padding_days)
-    end = times.max().normalize() + pd.Timedelta(days=settings.expansion_padding_days)
-    return start, end
+def _infer_city(trip: pd.Series, ban_windows: pd.DataFrame) -> tuple[str | None, bool]:
+    if pd.notna(trip.city):
+        return trip.city, False
+    for field in ["destination", "origin"]:
+        haystack = _search_key(trip.get(field))
+        for city in ban_windows["city"].dropna().drop_duplicates():
+            city_key = _search_key(city)
+            if city_key and city_key in haystack:
+                return city, True
+    return None, False
 
 
-def expand_ban_windows(
-    ban_windows: pd.DataFrame,
-    trips: pd.DataFrame,
-    *,
-    settings: BanWindowSettings | None = None,
-) -> pd.DataFrame:
-    """Expand user-supplied restriction rows into concrete UTC datetime intervals."""
-    active_settings = settings or BanWindowSettings()
-    start_date, end_date = _date_range_for_expansion(trips, active_settings)
-    rows: list[dict[str, Any]] = []
-
-    for ban in ban_windows.itertuples(index=False):
-        start_is_time = _is_time_only(ban.start_time)
-        end_is_time = _is_time_only(ban.end_time)
-        days = _parse_days(ban.days_of_week)
-        effective_from = ban.effective_from if pd.notna(ban.effective_from) else start_date
-        effective_to = ban.effective_to if pd.notna(ban.effective_to) else end_date
-        effective_from = max(effective_from.normalize(), start_date)
-        effective_to = min(effective_to.normalize(), end_date)
-
-        if start_is_time and end_is_time:
-            start_clock = _parse_time(ban.start_time)
-            end_clock = _parse_time(ban.end_time)
-            if start_clock is None or end_clock is None:
-                continue
-            current = effective_from
-            while current <= effective_to:
-                if days is None or current.weekday() in days:
-                    interval_start = pd.Timestamp(
-                        datetime.combine(date(current.year, current.month, current.day), start_clock),
-                        tz="UTC",
-                    )
-                    interval_end = pd.Timestamp(
-                        datetime.combine(date(current.year, current.month, current.day), end_clock),
-                        tz="UTC",
-                    )
-                    if interval_end <= interval_start:
-                        interval_end += pd.Timedelta(days=1)
-                    rows.append(_expanded_row(ban, interval_start, interval_end))
-                current += pd.Timedelta(days=1)
-            continue
-
-        interval_start = pd.to_datetime(ban.start_time, errors="coerce", utc=True)
-        interval_end = pd.to_datetime(ban.end_time, errors="coerce", utc=True)
-        if pd.isna(interval_start) or pd.isna(interval_end):
-            continue
-        if interval_end <= interval_start:
-            interval_end += pd.Timedelta(days=1)
-        rows.append(_expanded_row(ban, interval_start, interval_end))
-
-    return pd.DataFrame(rows, columns=[
-        "ban_id",
-        "city",
-        "location_name",
-        "vehicle_class",
-        "ban_start",
-        "ban_end",
-        "rule_note",
-    ])
-
-
-def _expanded_row(ban: Any, interval_start: pd.Timestamp, interval_end: pd.Timestamp) -> dict[str, Any]:
-    return {
-        "ban_id": ban.ban_id,
-        "city": ban.city,
-        "location_name": ban.location_name,
-        "vehicle_class": ban.vehicle_class,
-        "ban_start": interval_start,
-        "ban_end": interval_end,
-        "rule_note": ban.rule_note,
-    }
-
-
-def _movement_interval(trip: pd.Series, eta: pd.Series | None, visits: pd.DataFrame) -> tuple[pd.Timestamp | pd.NaT, pd.Timestamp | pd.NaT, str]:
+def _movement_interval(
+    trip: pd.Series,
+    eta: pd.Series | None,
+) -> tuple[pd.Timestamp | pd.NaT, pd.Timestamp | pd.NaT, pd.Timestamp | pd.NaT, str]:
+    predicted_arrival = pd.NaT
+    if eta is not None and pd.notna(eta.get("predicted_arrival")):
+        predicted_arrival = eta["predicted_arrival"]
     if pd.notna(trip.planned_city_entry) and pd.notna(trip.planned_city_exit):
-        return trip.planned_city_entry, trip.planned_city_exit, "planned_city_window"
-
-    if eta is not None and pd.notna(eta.get("predicted_arrival")) and pd.notna(trip.planned_departure):
-        return trip.planned_departure, eta["predicted_arrival"], "eta_risk_board"
-
-    visit_matches = visits[visits["trip_id"] == trip.trip_id]
-    if visit_matches.empty:
-        visit_matches = visits[visits["vehicle_id"] == trip.vehicle_id]
-    visit_times = pd.concat([visit_matches["enter_time"], visit_matches["exit_time"]], ignore_index=True).dropna()
-    if not visit_times.empty and pd.notna(trip.promised_arrival):
-        return visit_times.min(), trip.promised_arrival, "visit_events_to_promised_arrival"
-
-    return trip.planned_departure, trip.promised_arrival, "planned_trip_window"
+        return trip.planned_city_entry, trip.planned_city_exit, predicted_arrival, "planned_city_window"
+    if pd.notna(predicted_arrival) and pd.notna(trip.planned_departure):
+        return trip.planned_departure, predicted_arrival, predicted_arrival, "eta_risk_board"
+    return trip.planned_departure, trip.promised_arrival, predicted_arrival, "planned_trip_window"
 
 
-def _window_matches_trip(trip: pd.Series, window: pd.Series) -> tuple[bool, str]:
-    if _normalize_key(trip.city) != _normalize_key(window.city):
-        return False, "city"
-    if pd.isna(window.vehicle_class):
-        return True, "city"
-    if pd.isna(trip.vehicle_class):
-        return True, "vehicle_class_unknown"
-    if _normalize_key(trip.vehicle_class) == _normalize_key(window.vehicle_class):
-        return True, "city_vehicle_class"
-    return False, "vehicle_class"
+def _base_date_for_trip(trip: pd.Series, movement_start: pd.Timestamp | pd.NaT) -> pd.Timestamp | pd.NaT:
+    if pd.notna(trip.planned_departure):
+        return trip.planned_departure.normalize()
+    if pd.notna(movement_start):
+        return movement_start.normalize()
+    if pd.notna(trip.promised_arrival):
+        return trip.promised_arrival.normalize()
+    return pd.NaT
 
 
-def _classify_trip(
+def _expanded_window_for_trip(
+    ban: pd.Series,
     trip: pd.Series,
     movement_start: pd.Timestamp | pd.NaT,
+) -> tuple[pd.Timestamp | pd.NaT, pd.Timestamp | pd.NaT] | None:
+    start_is_time = _is_time_only(ban.start_time)
+    end_is_time = _is_time_only(ban.end_time)
+    if start_is_time and end_is_time:
+        base_date = _base_date_for_trip(trip, movement_start)
+        start_clock = _parse_time(ban.start_time)
+        end_clock = _parse_time(ban.end_time)
+        if pd.isna(base_date) or start_clock is None or end_clock is None:
+            return None
+        days = _parse_days(ban.days_of_week)
+        if days is not None and base_date.weekday() not in days:
+            return None
+        effective_from = ban.effective_from if pd.notna(ban.effective_from) else pd.NaT
+        effective_to = ban.effective_to if pd.notna(ban.effective_to) else pd.NaT
+        if pd.notna(effective_from) and base_date < effective_from.normalize():
+            return None
+        if pd.notna(effective_to) and base_date > effective_to.normalize():
+            return None
+        interval_start = pd.Timestamp(
+            datetime.combine(base_date.date(), start_clock),
+            tz="UTC",
+        )
+        interval_end = pd.Timestamp(
+            datetime.combine(base_date.date(), end_clock),
+            tz="UTC",
+        )
+        if interval_end <= interval_start:
+            interval_end += pd.Timedelta(days=1)
+        return interval_start, interval_end
+
+    interval_start = pd.to_datetime(ban.start_time, errors="coerce", utc=True)
+    interval_end = pd.to_datetime(ban.end_time, errors="coerce", utc=True)
+    if pd.isna(interval_start) or pd.isna(interval_end):
+        return None
+    if interval_end <= interval_start:
+        interval_end += pd.Timedelta(days=1)
+    return interval_start, interval_end
+
+
+def expand_ban_windows_for_trips(
+    ban_windows: pd.DataFrame,
+    trips: pd.DataFrame,
+) -> pd.DataFrame:
+    """Expand user-supplied restriction windows against each trip's planned date."""
+    rows: list[dict[str, Any]] = []
+    for trip_tuple in trips.itertuples(index=False):
+        trip = pd.Series(trip_tuple._asdict())
+        movement_start, _, _, _ = _movement_interval(trip, None)
+        for _, ban in ban_windows.iterrows():
+            interval = _expanded_window_for_trip(ban, trip, movement_start)
+            if interval is None:
+                continue
+            interval_start, interval_end = interval
+            rows.append(
+                {
+                    "trip_id": trip.trip_id,
+                    "ban_id": ban.ban_id,
+                    "city": ban.city,
+                    "location_name": ban.location_name,
+                    "vehicle_class": ban.vehicle_class,
+                    "ban_start": interval_start,
+                    "ban_end": interval_end,
+                    "rule_note": ban.rule_note,
+                }
+            )
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "trip_id",
+            "ban_id",
+            "city",
+            "location_name",
+            "vehicle_class",
+            "ban_start",
+            "ban_end",
+            "rule_note",
+        ],
+    )
+
+
+def _matching_windows(
+    trip: pd.Series,
+    city: str | None,
+    ban_windows: pd.DataFrame,
+    movement_start: pd.Timestamp | pd.NaT,
+) -> tuple[list[dict[str, Any]], bool]:
+    matches: list[dict[str, Any]] = []
+    unknown_class = False
+    for _, ban in ban_windows.iterrows():
+        if _normalize_key(city) != _normalize_key(ban.city):
+            continue
+        interval = _expanded_window_for_trip(ban, trip, movement_start)
+        if interval is None:
+            continue
+        if pd.notna(ban.vehicle_class):
+            if pd.isna(trip.vehicle_class):
+                unknown_class = True
+                matches.append({"ban": ban, "match_type": "vehicle_class_unknown", "interval": interval})
+            elif _normalize_key(trip.vehicle_class) == _normalize_key(ban.vehicle_class):
+                matches.append({"ban": ban, "match_type": "vehicle_class_exact", "interval": interval})
+        else:
+            matches.append({"ban": ban, "match_type": "generic_vehicle_class", "interval": interval})
+    return matches, unknown_class
+
+
+def _severity(risk_bucket: str, overlap_minutes: float = 0.0) -> str:
+    if risk_bucket == "BAN CONFLICT" and overlap_minutes >= 120:
+        return "CRITICAL"
+    if risk_bucket == "BAN CONFLICT":
+        return "HIGH"
+    if risk_bucket in {"WATCH", "VEHICLE CLASS UNKNOWN"}:
+        return "MEDIUM"
+    if risk_bucket in {"MISSING CITY", "MISSING TIMING", "DATA MISSING"}:
+        return "LOW"
+    return "OK"
+
+
+def _confidence(
+    risk_bucket: str,
+    *,
+    city_inferred: bool,
+    timing_source: str,
+    matched_vehicle_class_required: bool,
+    generic_vehicle_rule: bool,
+) -> str:
+    if risk_bucket in {"DATA MISSING", "MISSING CITY", "MISSING TIMING"}:
+        return "DATA MISSING"
+    if city_inferred or timing_source == "eta_risk_board":
+        return "LOW"
+    if generic_vehicle_rule or not matched_vehicle_class_required:
+        return "MEDIUM"
+    return "HIGH"
+
+
+def _empty_board_row(
+    trip: pd.Series,
+    city: str | None,
+    predicted_arrival: pd.Timestamp | pd.NaT,
+    movement_start: pd.Timestamp | pd.NaT,
     movement_end: pd.Timestamp | pd.NaT,
-    windows: pd.DataFrame,
-    settings: BanWindowSettings,
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    base = {
+    risk_bucket: str,
+    confidence_bucket: str,
+    evidence: str,
+    suggested_action: str,
+) -> dict[str, Any]:
+    return {
         "trip_id": trip.trip_id,
         "vehicle_id": trip.vehicle_id,
         "customer_name": trip.customer_name,
         "carrier_name": trip.carrier_name,
         "origin": trip.origin,
         "destination": trip.destination,
-        "city": trip.city,
+        "city": city,
         "vehicle_class": trip.vehicle_class,
         "planned_departure": trip.planned_departure,
         "promised_arrival": trip.promised_arrival,
+        "predicted_arrival": predicted_arrival,
         "movement_start": movement_start,
         "movement_end": movement_end,
+        "matched_ban_id": None,
+        "ban_city": None,
+        "ban_location_name": None,
+        "ban_vehicle_class": None,
+        "ban_window_start": pd.NaT,
+        "ban_window_end": pd.NaT,
+        "overlap_minutes": 0.0,
+        "risk_bucket": risk_bucket,
+        "severity": _severity(risk_bucket),
+        "confidence_bucket": confidence_bucket,
+        "evidence": evidence,
+        "suggested_action": suggested_action,
     }
-    if pd.isna(trip.city):
-        return {
-            **base,
-            "matched_window_count": 0,
-            "conflict_count": 0,
-            "watch_count": 0,
-            "risk_status": "MISSING CITY",
-            "severity": "MEDIUM",
-            "evidence": "Trip has no city value for matching user-supplied restriction windows.",
-            "suggested_action": "Add the planning city before dispatch review.",
-        }, []
-    if pd.isna(movement_start) or pd.isna(movement_end) or movement_end <= movement_start:
-        return {
-            **base,
-            "matched_window_count": 0,
-            "conflict_count": 0,
-            "watch_count": 0,
-            "risk_status": "MISSING TIMING",
-            "severity": "MEDIUM",
-            "evidence": "Trip movement interval is missing or not usable.",
-            "suggested_action": "Add planned city entry and exit, ETA, or valid departure and arrival times.",
-        }, []
 
-    matched: list[pd.Series] = []
+
+def _row_for_match(
+    trip: pd.Series,
+    city: str,
+    predicted_arrival: pd.Timestamp | pd.NaT,
+    movement_start: pd.Timestamp,
+    movement_end: pd.Timestamp,
+    match: dict[str, Any],
+    risk_bucket: str,
+    overlap_minutes: float,
+    confidence_bucket: str,
+    evidence: str,
+    suggested_action: str,
+) -> dict[str, Any]:
+    ban = match["ban"]
+    ban_start, ban_end = match["interval"]
+    return {
+        "trip_id": trip.trip_id,
+        "vehicle_id": trip.vehicle_id,
+        "customer_name": trip.customer_name,
+        "carrier_name": trip.carrier_name,
+        "origin": trip.origin,
+        "destination": trip.destination,
+        "city": city,
+        "vehicle_class": trip.vehicle_class,
+        "planned_departure": trip.planned_departure,
+        "promised_arrival": trip.promised_arrival,
+        "predicted_arrival": predicted_arrival,
+        "movement_start": movement_start,
+        "movement_end": movement_end,
+        "matched_ban_id": ban.ban_id,
+        "ban_city": ban.city,
+        "ban_location_name": ban.location_name,
+        "ban_vehicle_class": ban.vehicle_class,
+        "ban_window_start": ban_start,
+        "ban_window_end": ban_end,
+        "overlap_minutes": overlap_minutes,
+        "risk_bucket": risk_bucket,
+        "severity": _severity(risk_bucket, overlap_minutes),
+        "confidence_bucket": confidence_bucket,
+        "evidence": evidence,
+        "suggested_action": suggested_action,
+    }
+
+
+def _classify_trip(
+    trip: pd.Series,
+    ban_windows: pd.DataFrame,
+    eta: pd.Series | None,
+    settings: BanWindowSettings,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    city, city_inferred = _infer_city(trip, ban_windows)
+    movement_start, movement_end, predicted_arrival, timing_source = _movement_interval(trip, eta)
+
+    if pd.isna(trip.trip_id) or pd.isna(trip.vehicle_id) or pd.isna(trip.origin) or pd.isna(trip.destination):
+        return _empty_board_row(
+            trip,
+            city,
+            predicted_arrival,
+            movement_start,
+            movement_end,
+            "DATA MISSING",
+            "DATA MISSING",
+            "A required trip field is missing or invalid.",
+            "Fix required trip fields before restriction-window review.",
+        ), []
+    if city is None:
+        return _empty_board_row(
+            trip,
+            city,
+            predicted_arrival,
+            movement_start,
+            movement_end,
+            "MISSING CITY",
+            "DATA MISSING",
+            "Trip has no city and no simple city inference from origin or destination text.",
+            "Add the planning city before dispatch review.",
+        ), []
+    if pd.isna(movement_start) or pd.isna(movement_end) or movement_end <= movement_start:
+        return _empty_board_row(
+            trip,
+            city,
+            predicted_arrival,
+            movement_start,
+            movement_end,
+            "MISSING TIMING",
+            "DATA MISSING",
+            "Trip has no usable planned, predicted, or city-entry movement interval.",
+            "Add planned departure and arrival, city entry and exit, or predicted arrival timing.",
+        ), []
+
+    matches, unknown_class = _matching_windows(trip, city, ban_windows, movement_start)
+    if unknown_class:
+        unknown_match = next(match for match in matches if match["match_type"] == "vehicle_class_unknown")
+        return _row_for_match(
+            trip,
+            city,
+            predicted_arrival,
+            movement_start,
+            movement_end,
+            unknown_match,
+            "VEHICLE CLASS UNKNOWN",
+            0.0,
+            "MEDIUM",
+            "An uploaded restriction window requires vehicle class, but this trip has no vehicle class.",
+            "Confirm vehicle class before relying on this plan.",
+        ), []
+
+    candidate_rows: list[dict[str, Any]] = []
     conflict_rows: list[dict[str, Any]] = []
-    watch_count = 0
-    unknown_class = False
-    for _, window in windows.iterrows():
-        is_match, match_type = _window_matches_trip(trip, window)
-        if not is_match:
-            continue
-        matched.append(window)
-        overlap = _overlap_minutes(movement_start, movement_end, window.ban_start, window.ban_end)
-        buffer_start = movement_start - pd.Timedelta(minutes=settings.watch_buffer_minutes)
-        buffer_end = movement_end + pd.Timedelta(minutes=settings.watch_buffer_minutes)
-        buffered_overlap = _overlap_minutes(buffer_start, buffer_end, window.ban_start, window.ban_end)
-        if match_type == "vehicle_class_unknown":
-            unknown_class = True
-        if overlap > 0:
-            severity = "HIGH" if match_type != "vehicle_class_unknown" else "MEDIUM"
+    for match in matches:
+        ban_start, ban_end = match["interval"]
+        overlap = interval_overlap_minutes(movement_start, movement_end, ban_start, ban_end)
+        buffer_start = movement_start - pd.Timedelta(minutes=settings.watch_buffer_before_minutes)
+        buffer_end = movement_end + pd.Timedelta(minutes=settings.watch_buffer_after_minutes)
+        buffered_overlap = interval_overlap_minutes(buffer_start, buffer_end, ban_start, ban_end)
+        required_class = pd.notna(match["ban"].vehicle_class)
+        generic_rule = match["match_type"] == "generic_vehicle_class"
+        confidence_bucket = _confidence(
+            "CLEAR",
+            city_inferred=city_inferred,
+            timing_source=timing_source,
+            matched_vehicle_class_required=required_class,
+            generic_vehicle_rule=generic_rule,
+        )
+        if overlap >= settings.minimum_conflict_overlap_minutes:
+            evidence = f"Movement overlaps uploaded restriction window by {overlap:.0f} minutes."
+            row = _row_for_match(
+                trip,
+                city,
+                predicted_arrival,
+                movement_start,
+                movement_end,
+                match,
+                "BAN CONFLICT",
+                overlap,
+                confidence_bucket,
+                evidence,
+                "Needs planning review before dispatch or arrival commitment.",
+            )
+            candidate_rows.append(row)
             conflict_rows.append(
                 {
                     "trip_id": trip.trip_id,
                     "vehicle_id": trip.vehicle_id,
-                    "city": trip.city,
+                    "customer_name": trip.customer_name,
+                    "carrier_name": trip.carrier_name,
+                    "city": city,
                     "vehicle_class": trip.vehicle_class,
-                    "ban_id": window.ban_id,
-                    "location_name": window.location_name,
-                    "ban_vehicle_class": window.vehicle_class,
-                    "ban_start": window.ban_start,
-                    "ban_end": window.ban_end,
+                    "matched_ban_id": match["ban"].ban_id,
+                    "ban_window_start": ban_start,
+                    "ban_window_end": ban_end,
                     "overlap_minutes": overlap,
-                    "match_type": match_type,
-                    "severity": severity,
-                    "evidence": f"Movement overlaps user-supplied restriction window by {overlap:.0f} minutes.",
+                    "exception_type": "BAN CONFLICT",
+                    "severity": _severity("BAN CONFLICT", overlap),
+                    "evidence": evidence,
                     "suggested_action": "Review dispatch or arrival plan against the uploaded restriction window.",
                 }
             )
         elif buffered_overlap > 0:
-            watch_count += 1
+            candidate_rows.append(
+                _row_for_match(
+                    trip,
+                    city,
+                    predicted_arrival,
+                    movement_start,
+                    movement_end,
+                    match,
+                    "WATCH",
+                    0.0,
+                    confidence_bucket,
+                    "Movement is within the configured buffer around an uploaded restriction window.",
+                    "Monitor timing and keep a planning buffer.",
+                )
+            )
 
-    if conflict_rows:
-        return {
-            **base,
-            "matched_window_count": len(matched),
-            "conflict_count": len(conflict_rows),
-            "watch_count": watch_count,
-            "risk_status": "CONFLICT" if not unknown_class else "VEHICLE CLASS UNKNOWN",
-            "severity": "HIGH" if not unknown_class else "MEDIUM",
-            "evidence": f"{len(conflict_rows)} overlapping uploaded restriction windows found.",
-            "suggested_action": "Needs planning review before dispatch or arrival commitment.",
-        }, conflict_rows
-    if unknown_class:
-        return {
-            **base,
-            "matched_window_count": len(matched),
-            "conflict_count": 0,
-            "watch_count": watch_count,
-            "risk_status": "VEHICLE CLASS UNKNOWN",
-            "severity": "MEDIUM",
-            "evidence": "A city restriction exists for a vehicle class, but the trip vehicle class is missing.",
-            "suggested_action": "Confirm vehicle class before using this plan.",
-        }, []
-    if watch_count:
-        return {
-            **base,
-            "matched_window_count": len(matched),
-            "conflict_count": 0,
-            "watch_count": watch_count,
-            "risk_status": "WATCH",
-            "severity": "LOW",
-            "evidence": f"Trip is within {settings.watch_buffer_minutes} minutes of an uploaded restriction window.",
-            "suggested_action": "Monitor timing and keep a planning buffer.",
-        }, []
-    return {
-        **base,
-        "matched_window_count": len(matched),
-        "conflict_count": 0,
-        "watch_count": 0,
-        "risk_status": "CLEAR",
-        "severity": "LOW",
-        "evidence": "No overlap with matching user-supplied restriction windows.",
-        "suggested_action": "No restriction-window action needed from this file check.",
-    }, []
+    if candidate_rows:
+        strongest = sorted(
+            candidate_rows,
+            key=lambda row: (RISK_RANK[row["risk_bucket"]], row["overlap_minutes"]),
+            reverse=True,
+        )[0]
+        return strongest, conflict_rows
+
+    confidence_bucket = _confidence(
+        "CLEAR",
+        city_inferred=city_inferred,
+        timing_source=timing_source,
+        matched_vehicle_class_required=False,
+        generic_vehicle_rule=True,
+    )
+    return _empty_board_row(
+        trip,
+        city,
+        predicted_arrival,
+        movement_start,
+        movement_end,
+        "CLEAR",
+        confidence_bucket,
+        "No overlap or watch condition found against applicable uploaded restriction windows.",
+        "No restriction-window action needed from this file check.",
+    ), []
 
 
 def run_ban_window(
@@ -598,8 +792,8 @@ def run_ban_window(
     trips = prepare_trips(trips_df)
     ban_windows = prepare_ban_windows(ban_windows_df)
     eta = prepare_eta_risk_board(eta_risk_board_df)
-    visits = prepare_visit_events(visit_events_df)
-    expanded = expand_ban_windows(ban_windows, trips, settings=active_settings)
+    prepare_visit_events(visit_events_df)
+    expanded = expand_ban_windows_for_trips(ban_windows, trips)
     eta_by_trip = eta.set_index("trip_id") if not eta.empty else pd.DataFrame()
 
     risk_rows: list[dict[str, Any]] = []
@@ -607,15 +801,7 @@ def run_ban_window(
     for trip_tuple in trips.itertuples(index=False):
         trip = pd.Series(trip_tuple._asdict())
         eta_row = eta_by_trip.loc[trip.trip_id] if trip.trip_id in eta_by_trip.index else None
-        movement_start, movement_end, timing_source = _movement_interval(trip, eta_row, visits)
-        risk_row, trip_conflicts = _classify_trip(
-            trip,
-            movement_start,
-            movement_end,
-            expanded,
-            active_settings,
-        )
-        risk_row["timing_source"] = timing_source
+        risk_row, trip_conflicts = _classify_trip(trip, ban_windows, eta_row, active_settings)
         risk_rows.append(risk_row)
         conflict_rows.extend(trip_conflicts)
 
@@ -623,9 +809,13 @@ def run_ban_window(
     conflicts = pd.DataFrame(conflict_rows, columns=BAN_CONFLICT_COLUMNS)
     kpis = {
         "total_trips": float(len(risk_board)),
-        "conflict_trips": float((risk_board["risk_status"] == "CONFLICT").sum()) if not risk_board.empty else 0.0,
-        "watch_trips": float((risk_board["risk_status"] == "WATCH").sum()) if not risk_board.empty else 0.0,
-        "missing_data_trips": float(risk_board["risk_status"].isin(["MISSING TIMING", "MISSING CITY", "VEHICLE CLASS UNKNOWN"]).sum())
+        "conflict_trips": float((risk_board["risk_bucket"] == "BAN CONFLICT").sum()) if not risk_board.empty else 0.0,
+        "watch_trips": float((risk_board["risk_bucket"] == "WATCH").sum()) if not risk_board.empty else 0.0,
+        "missing_data_trips": float(
+            risk_board["risk_bucket"].isin(
+                ["MISSING TIMING", "MISSING CITY", "VEHICLE CLASS UNKNOWN", "DATA MISSING"]
+            ).sum()
+        )
         if not risk_board.empty
         else 0.0,
         "conflict_rows": float(len(conflicts)),
@@ -648,4 +838,3 @@ def write_outputs(result: BanWindowResult, output_dir: str | Path) -> tuple[Path
     result.ban_risk_board.to_csv(risk_path, index=False)
     result.ban_conflicts.to_csv(conflict_path, index=False)
     return risk_path, conflict_path
-

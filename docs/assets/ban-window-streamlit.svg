@@ -13,7 +13,7 @@
   <text x="50" y="260" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">optional ETA / visits</text>
   <text x="34" y="326" font-family="Arial, sans-serif" font-size="15" fill="#cbd5e1">Settings</text>
   <rect x="32" y="350" width="196" height="42" rx="6" fill="#1e293b"/>
-  <text x="50" y="376" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Watch buffer: 60 min</text>
+  <text x="50" y="376" font-family="Arial, sans-serif" font-size="14" fill="#e2e8f0">Watch buffer: 30 min</text>
   <rect x="32" y="414" width="196" height="46" rx="6" fill="#ef4444"/>
   <text x="82" y="443" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Run BanWindow</text>
 
@@ -47,14 +47,14 @@
     <text x="326" y="382" fill="#64748b">trip_id</text>
     <text x="486" y="382" fill="#64748b">city</text>
     <text x="626" y="382" fill="#64748b">vehicle_class</text>
-    <text x="800" y="382" fill="#64748b">risk_status</text>
+    <text x="800" y="382" fill="#64748b">risk_bucket</text>
     <text x="982" y="382" fill="#64748b">action</text>
     <line x1="326" y1="398" x2="1124" y2="398" stroke="#e2e8f0"/>
     <text x="326" y="432" fill="#0f172a">TRIP-CONFLICT</text>
     <text x="486" y="432" fill="#0f172a">Riyadh</text>
     <text x="626" y="432" fill="#0f172a">HEAVY</text>
     <rect x="800" y="411" width="92" height="28" rx="4" fill="#dc2626"/>
-    <text x="816" y="430" fill="#ffffff" font-weight="700">CONFLICT</text>
+    <text x="810" y="430" fill="#ffffff" font-weight="700">BAN CONFLICT</text>
     <text x="982" y="432" fill="#0f172a">Planning review</text>
     <text x="326" y="486" fill="#0f172a">TRIP-WATCH</text>
     <text x="486" y="486" fill="#0f172a">Jeddah</text>

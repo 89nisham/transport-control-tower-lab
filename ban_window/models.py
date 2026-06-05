@@ -10,17 +10,18 @@ from pydantic import BaseModel, Field
 class BanWindowSettings(BaseModel):
     """User-adjustable BanWindow planning settings."""
 
-    watch_buffer_minutes: int = Field(default=60, ge=0)
-    expansion_padding_days: int = Field(default=1, ge=0)
+    watch_buffer_before_minutes: int = Field(default=30, ge=0)
+    watch_buffer_after_minutes: int = Field(default=30, ge=0)
+    minimum_conflict_overlap_minutes: int = Field(default=1, ge=0)
 
 
 class TripRecord(BaseModel):
     """Validated planned trip row."""
 
     trip_id: str
-    vehicle_id: str
-    origin: str
-    destination: str
+    vehicle_id: str | None = None
+    origin: str | None = None
+    destination: str | None = None
     planned_departure: datetime | None = None
     promised_arrival: datetime | None = None
     customer_name: str | None = None
@@ -44,4 +45,3 @@ class BanWindowRecord(BaseModel):
     effective_from: datetime | None = None
     effective_to: datetime | None = None
     rule_note: str | None = None
-

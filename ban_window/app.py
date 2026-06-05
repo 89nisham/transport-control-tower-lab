@@ -17,11 +17,12 @@ DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
 STATUS_COLORS = {
     "CLEAR": "#15803d",
-    "CONFLICT": "#dc2626",
+    "BAN CONFLICT": "#dc2626",
     "WATCH": "#ca8a04",
     "MISSING TIMING": "#64748b",
     "MISSING CITY": "#7f1d1d",
     "VEHICLE CLASS UNKNOWN": "#9333ea",
+    "DATA MISSING": "#475569",
 }
 
 
@@ -59,20 +60,26 @@ def main() -> None:
 
         st.header("Settings")
         settings = BanWindowSettings(
-            watch_buffer_minutes=st.number_input(
-                "Watch buffer minutes",
+            watch_buffer_before_minutes=st.number_input(
+                "Watch buffer before minutes",
                 min_value=0,
-                value=60,
+                value=30,
                 step=15,
             ),
-            expansion_padding_days=st.number_input(
-                "Window expansion padding days",
+            watch_buffer_after_minutes=st.number_input(
+                "Watch buffer after minutes",
+                min_value=0,
+                value=30,
+                step=15,
+            ),
+            minimum_conflict_overlap_minutes=st.number_input(
+                "Minimum conflict overlap minutes",
                 min_value=0,
                 value=1,
                 step=1,
             ),
         )
-        chart_by = st.selectbox("Chart by", ["risk_status", "city", "vehicle_class", "carrier_name"])
+        chart_by = st.selectbox("Chart by", ["risk_bucket", "city", "vehicle_class", "carrier_name"])
         run_button = st.button("Run BanWindow", type="primary")
 
     st.info(
@@ -120,7 +127,7 @@ def main() -> None:
     )
 
     with tab_board:
-        styled = result.ban_risk_board.style.map(_style_status, subset=["risk_status"])
+        styled = result.ban_risk_board.style.map(_style_status, subset=["risk_bucket"])
         st.dataframe(styled, use_container_width=True, hide_index=True)
 
     with tab_conflicts:
@@ -160,4 +167,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
