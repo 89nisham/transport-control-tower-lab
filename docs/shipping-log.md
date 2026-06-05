@@ -237,3 +237,32 @@ Delivered trips are not financially complete until POD evidence is received, usa
 - `uv run ruff check .`
 - `uv run python -m py_compile pod_pulse/app.py pod_pulse/engine.py pod_pulse/models.py`
 - Demo smoke run writes `pod_pulse/output/pod_aging_report.csv` and `pod_pulse/output/overdue_pods.csv`
+
+## v0.10.0-lane-lab
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `lane_lab/` as a separate Streamlit micro-product folder.
+- Added deterministic lane baseline generation from historical trips and GeoReplay visit events.
+- Standardized trip and visit timestamps to UTC before travel-time math.
+- Added exact trip-ID matching first, then vehicle and trip-window matching when visit `trip_id` is missing.
+- Added origin event matching by `ORIGIN`, `HUB`, `PICKUP`, or origin name match.
+- Added destination event matching by `DESTINATION`, `CUSTOMER`, `DELIVERY`, or destination name match.
+- Added p50, p75, p90, average, minimum, maximum, standard deviation, sample-size, invalid-trip, and outlier calculations.
+- Added confidence buckets for strong, medium, low-sample, unstable, and data-missing lanes.
+- Added neutral evidence text, suggested actions, KPI cards, Plotly charts, baseline table, outlier table, trip-duration table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README LaneLab visual and product-specific Before/After section.
+
+### Why It Matters
+
+ETA, delay, and SLA review workflows need realistic lane travel-time profiles. LaneLab turns historical trip files and GeoReplay visit events into local percentile baselines with confidence and data-quality context.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile lane_lab/app.py lane_lab/engine.py lane_lab/models.py`
+- Demo smoke run writes `lane_lab/output/lane_baselines.csv` and `lane_lab/output/lane_outliers.csv`

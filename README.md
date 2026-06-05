@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -494,6 +494,57 @@ The app loads realistic GCC synthetic demo data from `pod_pulse/demo_data/` when
 - POD gap types are neutral review flags, not blame or liability decisions.
 - Invoice blocker visibility depends on optional invoice status file quality.
 - Missing or invalid delivered time creates a data-quality review case.
+
+## Day 10 Micro-Product: LaneLab
+
+LaneLab is a local-first Streamlit app that builds lane travel-time baselines from historical trips and GeoReplay visit events.
+
+![LaneLab Streamlit screenshot](docs/assets/lane-lab-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- ETA and SLA owners
+- Transport planners
+- Operations analysts
+- Fleet managers reviewing lane assumptions
+
+### Problem
+
+ETA and delay workflows need realistic lane baselines. Teams still need to check:
+
+- which lanes have enough historical samples;
+- whether a lane is stable enough for ETA review;
+- which trips look like outliers;
+- which lanes have missing or invalid visit evidence;
+- whether current lane assumptions should be refreshed.
+
+### Inputs
+
+- `historical_trips.csv`: `trip_id`, `vehicle_id`, `origin`, `destination`, optional lane, customer, carrier, planned departure, and promised arrival fields
+- `historical_visit_events.csv`: GeoReplay-style visits with vehicle, geofence, event type, enter time, exit time, dwell minutes, and optional trip ID
+
+### Outputs
+
+- `lane_lab/output/lane_baselines.csv` with lane context, sample size, usable and invalid counts, p50/p75/p90, average, min, max, standard deviation, outlier count, confidence bucket, evidence, and suggested action
+- `lane_lab/output/lane_outliers.csv` with trip-level duration outliers and review evidence
+- KPI cards, Plotly confidence chart, baseline table, outlier table, trip-duration table, and download buttons inside Streamlit
+
+### Run LaneLab
+
+```bash
+uv sync
+uv run streamlit run lane_lab/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `lane_lab/demo_data/` when no files are uploaded.
+
+### LaneLab Limitations
+
+- V1 is deterministic and file-based; no live traffic API, route optimization, ML prediction, or database backend is included.
+- Confidence buckets are data-quality review signals, not operational blame.
+- Baselines depend on historical trip coverage and GeoReplay visit-event quality.
+- Missing, zero, or negative durations are excluded from percentile calculations and counted as invalid trips.
 
 ## Quick Start
 

@@ -48,6 +48,7 @@ packages = [
   "update_pulse",
   "delay_lens",
   "pod_pulse",
+  "lane_lab",
 ]
 
 [tool.uv]

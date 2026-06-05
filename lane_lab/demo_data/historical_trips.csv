@@ -1,0 +1,13 @@
+trip_id,vehicle_id,lane_id,customer_name,carrier_name,origin,destination,planned_departure,promised_arrival
+LL-RUH-DMM-01,VH-L01,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-01T06:00:00+03:00,2026-05-01T13:00:00+03:00
+LL-RUH-DMM-02,VH-L02,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-02T06:30:00+03:00,2026-05-02T13:30:00+03:00
+LL-RUH-DMM-03,VH-L03,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-03T07:00:00+03:00,2026-05-03T14:00:00+03:00
+LL-RUH-DMM-04,VH-L04,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-04T06:00:00+03:00,2026-05-04T13:00:00+03:00
+LL-RUH-DMM-05,VH-L05,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-05T06:00:00+03:00,2026-05-05T13:00:00+03:00
+LL-RUH-DMM-06,VH-L06,RUH-DMM,Gulf Fresh Foods,Gulf Bridge Freight,Riyadh Dry Port,Dammam DC,2026-05-06T06:00:00+03:00,2026-05-06T13:00:00+03:00
+LL-JED-RUH-01,VH-L07,JED-RUH,Red Sea Pharma,Hejaz Line Logistics,Jeddah Port,Riyadh DC,2026-05-01T08:00:00+03:00,2026-05-01T20:00:00+03:00
+LL-JED-RUH-02,VH-L08,JED-RUH,Red Sea Pharma,Hejaz Line Logistics,Jeddah Port,Riyadh DC,2026-05-02T08:00:00+03:00,2026-05-02T20:00:00+03:00
+LL-DXB-AUH-01,VH-L09,DXB-AUH,Emirates Home Supply,Desert Falcon Transport,Dubai JAFZA,Abu Dhabi Store,2026-05-03T09:00:00+04:00,2026-05-03T13:00:00+04:00
+LL-DXB-AUH-02,VH-L10,DXB-AUH,Emirates Home Supply,Desert Falcon Transport,Dubai JAFZA,Abu Dhabi Store,2026-05-04T09:00:00+04:00,2026-05-04T13:00:00+04:00
+LL-DXB-AUH-03,VH-L11,DXB-AUH,Emirates Home Supply,Desert Falcon Transport,Dubai JAFZA,Abu Dhabi Store,2026-05-05T09:00:00+04:00,2026-05-05T13:00:00+04:00
+LL-MISSING-01,VH-L12,KWI-DOH,GCC Electronics,Peninsula Freight,Kuwait DC,Doha Retail Hub,2026-05-06T06:00:00+03:00,2026-05-06T18:00:00+03:00
