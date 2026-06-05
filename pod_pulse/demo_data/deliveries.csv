@@ -1,11 +1,11 @@
 trip_id,customer_name,delivered_time,vehicle_id,carrier_name,origin,destination,promised_arrival
 PP-OK,Gulf Fresh Foods,2026-06-09T09:00:00+03:00,VH-P01,Desert Line Transport,Dubai South,Riyadh Dry Port,2026-06-09T09:30:00+03:00
-PP-MISSING,Arabian Retail Group,2026-06-08T08:00:00+03:00,VH-P02,Najd Express,Jeddah Crossdock,Medina Store,2026-06-08T09:00:00+03:00
-PP-LATE,Red Sea Pharma,2026-06-06T10:00:00+03:00,VH-P03,Hejaz Logistics,Jeddah Port,Makkah DC,2026-06-06T11:00:00+03:00
-PP-REJECTED,GCC Electronics,2026-06-07T12:00:00+03:00,VH-P04,Gulf Bridge Freight,Riyadh Hub,Dammam Store,2026-06-07T12:30:00+03:00
-PP-INVOICE-BLOCKER,Emirates Home Supply,2026-06-09T16:00:00+04:00,VH-P05,Desert Line Transport,Abu Dhabi DC,Dubai Mall Receiving,2026-06-09T16:15:00+04:00
-PP-PENDING,Qatar Cold Chain,2026-06-09T18:00:00+03:00,VH-P06,Gulf Bridge Freight,Doha Crossdock,Dammam Cold Store,2026-06-09T18:30:00+03:00
-PP-CRITICAL,Saudi Parts Co,2026-06-01T07:00:00+03:00,VH-P07,Najd Express,Bahrain Port,Riyadh Parts DC,2026-06-01T08:00:00+03:00
-PP-NOT-REQUIRED,Oman Project Cargo,2026-06-09T13:00:00+04:00,VH-P08,Muscat Line,Muscat DC,Dubai Festival City,2026-06-09T14:00:00+04:00
+PP-MISSING-WARN,Arabian Retail Group,2026-06-10T09:00:00+03:00,VH-P02,Najd Express,Jeddah Crossdock,Medina Store,2026-06-10T09:30:00+03:00
+PP-OVERDUE,Red Sea Pharma,2026-06-07T08:00:00+03:00,VH-P03,Hejaz Logistics,Jeddah Port,Makkah DC,2026-06-07T09:00:00+03:00
+PP-CRITICAL,Saudi Parts Co,2026-06-01T07:00:00+03:00,VH-P04,Najd Express,Bahrain Port,Riyadh Parts DC,2026-06-01T08:00:00+03:00
+PP-REJECTED,GCC Electronics,2026-06-07T12:00:00+03:00,VH-P05,Gulf Bridge Freight,Riyadh Hub,Dammam Store,2026-06-07T12:30:00+03:00
+PP-RESUBMITTED,Qatar Cold Chain,2026-06-09T18:00:00+03:00,VH-P06,Gulf Bridge Freight,Doha Crossdock,Dammam Cold Store,2026-06-09T18:30:00+03:00
+PP-LATE,Red Sea Pharma,2026-06-06T10:00:00+03:00,VH-P07,Hejaz Logistics,Jeddah Port,Makkah DC,2026-06-06T11:00:00+03:00
+PP-INVOICE-BLOCKED,Emirates Home Supply,2026-06-09T16:00:00+04:00,VH-P08,Desert Line Transport,Abu Dhabi DC,Dubai Mall Receiving,2026-06-09T16:15:00+04:00
 PP-NOT-DELIVERED,Kuwait Retail Hub,,VH-P09,Gulf Bridge Freight,Kuwait DC,Dammam Store,2026-06-10T10:00:00+03:00
-
+PP-DATA-MISSING,,2026-06-09T11:00:00+03:00,VH-P10,Muscat Line,Muscat DC,Dubai Festival City,2026-06-09T12:00:00+03:00

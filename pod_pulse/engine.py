@@ -14,6 +14,7 @@ from pod_pulse.models import DeliveryRecord, InvoiceStatusRecord, PODPulseSettin
 
 ACCEPTED_POD_STATUSES = {"NOT_REQUIRED", "MISSING", "RECEIVED", "REJECTED", "RESUBMITTED", "APPROVED"}
 ACCEPTED_INVOICE_STATUSES = {"NOT READY", "READY", "BLOCKED", "INVOICED", "PAID", "ON HOLD"}
+TERMINAL_POD_STATUSES = {"RECEIVED", "APPROVED"}
 REQUIRED_DELIVERY_COLUMNS = {"trip_id", "customer_name", "delivered_time"}
 REQUIRED_POD_COLUMNS = {"trip_id", "pod_status"}
 REQUIRED_INVOICE_COLUMNS = {"trip_id", "invoice_status"}
@@ -307,8 +308,12 @@ def _classify_row(row: pd.Series, review_time: pd.Timestamp, settings: PODPulseS
     pod_age_days = None if pod_age_hours is None else round(pod_age_hours / 24, 2)
     aging_bucket = _age_bucket(pod_age_hours)
 
-    invoice_blocked = invoice_status in {"BLOCKED", "ON HOLD"} or (
-        invoice_status in {"NOT READY", "READY"} and pod_status not in {"NOT_REQUIRED", "APPROVED"}
+    pod_approved = pod_status == "APPROVED" or pd.notna(approved_time)
+    pod_received = pod_status in TERMINAL_POD_STATUSES and pd.notna(received_time)
+    invoice_blocked = (
+        invoice_status in {"BLOCKED", "ON HOLD"}
+        or pd.notna(row.blocked_reason)
+        or (invoice_status == "NOT READY" and pod_status not in {"NOT_REQUIRED", "APPROVED"})
     )
 
     if not_delivered:
@@ -323,55 +328,56 @@ def _classify_row(row: pd.Series, review_time: pd.Timestamp, settings: PODPulseS
         suggested_action = "Complete required delivery fields before POD follow-up."
     elif pod_status == "NOT_REQUIRED":
         pod_gap_type = "POD NOT REQUIRED"
-        risk_bucket = "ON TIME"
+        risk_bucket = "OK"
         severity = "OK"
         suggested_action = "No POD follow-up needed for this delivery."
     elif pod_status == "REJECTED":
-        pod_gap_type = "REJECTED POD"
-        risk_bucket = "CRITICAL" if pod_age_hours and pod_age_hours >= settings.critical_threshold_hours else "DELAYED"
-        severity = "CRITICAL" if risk_bucket == "CRITICAL" else "HIGH"
+        pod_gap_type = "POD REJECTED"
+        severity = "CRITICAL" if invoice_blocked else "HIGH"
+        risk_bucket = "HIGH RISK"
         suggested_action = "Review rejection reason and request corrected POD document."
     elif pod_status == "RESUBMITTED":
-        pod_gap_type = "APPROVAL PENDING"
-        risk_bucket = "WATCH" if pod_age_hours and pod_age_hours < settings.pod_sla_hours else "DELAYED"
-        severity = "MEDIUM" if risk_bucket == "WATCH" else "HIGH"
+        pod_gap_type = "POD RESUBMITTED"
+        risk_bucket = "REVIEW"
+        severity = "MEDIUM"
         suggested_action = "Check approval queue for the resubmitted POD."
-    elif pod_status in {"RECEIVED", "APPROVED"} and pd.notna(received_time):
+    elif pod_received:
         if pod_age_hours is not None and pod_age_hours > settings.pod_sla_hours:
             pod_gap_type = "POD LATE"
-            risk_bucket = "DELAYED"
+            risk_bucket = "REVIEW"
             severity = "MEDIUM"
             suggested_action = "Record late POD receipt and confirm invoice readiness."
-        elif pod_status == "APPROVED" or pd.notna(approved_time):
-            pod_gap_type = "POD RECEIVED"
-            risk_bucket = "ON TIME"
+        elif pod_approved and not invoice_blocked:
+            pod_gap_type = "OK"
+            risk_bucket = "OK"
             severity = "OK"
             suggested_action = "POD is usable for billing review."
         else:
-            pod_gap_type = "APPROVAL PENDING"
+            pod_gap_type = "POD RECEIVED"
             risk_bucket = "WATCH"
             severity = "LOW"
             suggested_action = "Monitor POD approval before invoice release."
     else:
-        pod_gap_type = "MISSING DOCUMENT"
+        overdue = pod_age_hours is not None and pod_age_hours > settings.pod_sla_hours
+        pod_gap_type = "POD OVERDUE" if overdue else "POD MISSING"
         if pod_age_hours is not None and pod_age_hours >= settings.critical_threshold_hours:
-            risk_bucket = "CRITICAL"
+            risk_bucket = "HIGH RISK"
             severity = "CRITICAL"
-        elif pod_age_hours is not None and pod_age_hours > settings.pod_sla_hours:
-            risk_bucket = "DELAYED"
+        elif overdue:
+            risk_bucket = "HIGH RISK"
             severity = "HIGH"
         elif pod_age_hours is not None and pod_age_hours >= settings.warning_threshold_hours:
             risk_bucket = "WATCH"
             severity = "MEDIUM"
         else:
             risk_bucket = "WATCH"
-            severity = "LOW"
+            severity = "MEDIUM"
         suggested_action = "Follow up for missing POD document."
 
-    if invoice_status in {"BLOCKED", "ON HOLD"}:
-        pod_gap_type = "INVOICE BLOCKER" if pod_gap_type == "POD RECEIVED" else pod_gap_type
-        risk_bucket = "CRITICAL" if severity == "CRITICAL" else "DELAYED"
-        severity = "HIGH" if severity in {"OK", "LOW", "MEDIUM"} else severity
+    if invoice_blocked and pod_gap_type in {"OK", "POD RECEIVED"}:
+        pod_gap_type = "INVOICE BLOCKED"
+        risk_bucket = "HIGH RISK"
+        severity = "HIGH"
         suggested_action = "Resolve invoice blocker before billing can progress."
 
     evidence_parts = []
@@ -448,7 +454,7 @@ def run_pod_pulse(
             ascending=[True, False, True],
         )
     overdue = report[
-        ~report["pod_gap_type"].isin({"POD RECEIVED", "POD NOT REQUIRED"})
+        ~report["pod_gap_type"].isin({"OK", "POD NOT REQUIRED"})
         | report["invoice_blocked"]
     ].copy()
     if overdue.empty:
@@ -458,17 +464,19 @@ def run_pod_pulse(
         overdue = overdue[OVERDUE_COLUMNS].reset_index(drop=True)
 
     total = float(len(report))
-    missing = float((report["pod_gap_type"] == "MISSING DOCUMENT").sum()) if total else 0.0
+    missing = float((report["pod_gap_type"] == "POD MISSING").sum()) if total else 0.0
+    overdue_count = float((report["pod_gap_type"] == "POD OVERDUE").sum()) if total else 0.0
     late = float((report["pod_gap_type"] == "POD LATE").sum()) if total else 0.0
-    rejected = float((report["pod_gap_type"] == "REJECTED POD").sum()) if total else 0.0
+    rejected = float((report["pod_gap_type"] == "POD REJECTED").sum()) if total else 0.0
     blockers = float(report["invoice_blocked"].sum()) if total else 0.0
     kpis = {
         "total_deliveries": total,
         "missing_pods": missing,
+        "overdue_pods": overdue_count,
         "late_pods": late,
         "rejected_pods": rejected,
         "invoice_blockers": blockers,
-        "critical_pod_gaps": float((report["risk_bucket"] == "CRITICAL").sum()) if total else 0.0,
+        "critical_pod_gaps": float((report["severity"] == "CRITICAL").sum()) if total else 0.0,
     }
     return PODPulseResult(pod_aging_report=report.reset_index(drop=True), overdue_pods=overdue, kpis=kpis)
 

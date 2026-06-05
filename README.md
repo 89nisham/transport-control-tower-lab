@@ -475,7 +475,7 @@ Delivery is operationally complete only when POD evidence is usable for billing.
 
 ### Outputs
 
-- `pod_pulse/output/pod_aging_report.csv` with delivery context, POD status, invoice status, POD age, aging bucket, POD gap type, invoice blocker flag, severity, evidence, and suggested action
+- `pod_pulse/output/pod_aging_report.csv` with delivery context, POD status, invoice status, POD age, aging bucket, POD gap type, invoice blocker flag, risk bucket, severity, evidence, and suggested action
 - `pod_pulse/output/overdue_pods.csv` with focused POD gaps and invoice blockers for review
 - KPI cards, Plotly charts, POD aging table, overdue POD table, and download buttons inside Streamlit
 

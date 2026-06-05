@@ -221,10 +221,10 @@ Date: 2026-06-05
 - Added `pod_pulse/` as a separate Streamlit micro-product folder.
 - Added deterministic POD aging from delivered trips, POD status rows, and optional invoice status rows.
 - Standardized delivery, POD, approval, rejection, resubmission, and invoice timestamps to UTC before aging math.
-- Added missing document, POD late, rejected POD, approval pending, invoice blocker, POD not required, not delivered, and data missing classifications.
+- Added POD missing, POD overdue, POD late, POD rejected, POD resubmitted, invoice blocked, POD not required, OK, not delivered, and data missing classifications.
 - Added 24-hour warning, 48-hour SLA, and 168-hour critical POD aging thresholds.
 - Added neutral evidence text, aging buckets, invoice blocker flag, risk buckets, severity, KPI cards, Plotly charts, POD aging table, overdue POD table, and CSV downloads.
-- Added synthetic GCC demo data and tests.
+- Added 10-scenario synthetic GCC demo data and tests.
 - Added README PODPulse visual and product-specific Before/After section.
 
 ### Why It Matters

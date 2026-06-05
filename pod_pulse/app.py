@@ -16,10 +16,10 @@ APP_DIR = Path(__file__).resolve().parent
 DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
 RISK_COLORS = {
-    "ON TIME": "#15803d",
+    "OK": "#15803d",
     "WATCH": "#ca8a04",
-    "DELAYED": "#dc2626",
-    "CRITICAL": "#991b1b",
+    "REVIEW": "#dc2626",
+    "HIGH RISK": "#991b1b",
     "DATA MISSING": "#64748b",
 }
 
@@ -108,8 +108,8 @@ def main() -> None:
     metric_cols = st.columns(6)
     _metric_card(metric_cols[0], "Deliveries", result.kpis["total_deliveries"])
     _metric_card(metric_cols[1], "Missing PODs", result.kpis["missing_pods"])
-    _metric_card(metric_cols[2], "Late PODs", result.kpis["late_pods"])
-    _metric_card(metric_cols[3], "Rejected", result.kpis["rejected_pods"])
+    _metric_card(metric_cols[2], "Overdue PODs", result.kpis["overdue_pods"])
+    _metric_card(metric_cols[3], "Late PODs", result.kpis["late_pods"])
     _metric_card(metric_cols[4], "Invoice blockers", result.kpis["invoice_blockers"])
     _metric_card(metric_cols[5], "Critical gaps", result.kpis["critical_pod_gaps"])
 
@@ -168,4 +168,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

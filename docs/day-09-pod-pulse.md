@@ -14,6 +14,7 @@ PODPulse creates a neutral POD aging board for:
 - approval pending cases;
 - late POD receipt;
 - invoice blockers.
+- data-missing delivery records.
 
 ## Inputs
 
@@ -87,14 +88,15 @@ Accepted invoice statuses are `NOT READY`, `READY`, `BLOCKED`, `INVOICED`, `PAID
 The demo pack uses GCC-style logistics scenarios:
 
 - approved POD received inside SLA;
-- missing POD;
-- late POD receipt;
-- rejected POD;
-- invoice blocker despite approved POD;
+- missing POD inside the warning threshold;
+- overdue POD beyond SLA;
+- 7D+ critical missing POD;
+- rejected POD with rejection reason;
 - resubmitted POD awaiting approval;
-- critical 7-day missing POD;
-- POD not required;
-- not-delivered / missing delivery timestamp case.
+- late POD receipt;
+- invoice blocker because POD is not approved;
+- not-delivered / missing delivery timestamp case;
+- data-missing required field case.
 
 ## Run
 
@@ -116,4 +118,3 @@ After PODPulse, the same files produce a neutral aging report with POD gap type,
 - It does not perform OCR, ERP posting, automated emails, or live integrations.
 - It does not decide commercial liability.
 - Results depend on delivered time, POD status, and invoice status data quality.
-
