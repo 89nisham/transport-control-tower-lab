@@ -53,6 +53,23 @@ The baseline duration is:
 
 Missing, zero, or negative durations are excluded from baseline percentiles but kept in each lane's invalid trip count.
 
+Default settings:
+
+- low sample threshold: 5 trips
+- unstable p90/p50 ratio threshold: 1.5
+- outlier IQR multiplier: 1.5
+- extreme duration minimum: 30 minutes
+- extreme duration maximum: 2880 minutes
+- minimum usable trips for percentile calculation: 2
+
+Confidence buckets:
+
+- `GOOD`
+- `LOW SAMPLE`
+- `UNSTABLE`
+- `CHECK DATA`
+- `NO BASELINE`
+
 ## Outputs
 
 `lane_baselines.csv` includes:
@@ -70,10 +87,14 @@ Missing, zero, or negative durations are excluded from baseline percentiles but 
 
 The demo pack uses GCC-style logistics lanes:
 
-- Riyadh Dry Port to Dammam DC with enough samples and one long-duration outlier;
+- Riyadh Dry Port to Dammam DC with enough consistent samples;
 - Jeddah Port to Riyadh DC with low sample size and vehicle-window matching;
-- Dubai JAFZA to Abu Dhabi Store with an invalid negative duration;
-- Kuwait DC to Doha Retail Hub with missing destination evidence.
+- Doha Hub to Muscat DC with an unstable p90/p50 ratio;
+- Dubai JAFZA to Abu Dhabi Store with a clear high-duration outlier;
+- Kuwait DC to Doha Retail Hub with missing origin and destination evidence;
+- Bahrain Hub to Dammam DC with a negative duration;
+- Medina DC to Tabuk Store with no usable baseline;
+- customer-specific and carrier-specific lane groupings.
 
 ## Run
 

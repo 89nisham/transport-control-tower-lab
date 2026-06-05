@@ -10,11 +10,12 @@ from pydantic import BaseModel, Field
 class LaneLabSettings(BaseModel):
     """User-adjustable lane baseline settings."""
 
-    low_sample_threshold: int = Field(default=3, ge=1)
-    strong_sample_threshold: int = Field(default=5, ge=1)
-    unstable_std_threshold_minutes: int = Field(default=90, ge=0)
-    unstable_spread_threshold_minutes: int = Field(default=180, ge=0)
+    low_sample_threshold: int = Field(default=5, ge=1)
+    unstable_p90_p50_ratio_threshold: float = Field(default=1.5, ge=0)
     outlier_iqr_multiplier: float = Field(default=1.5, ge=0)
+    extreme_duration_min_minutes: int = Field(default=30, ge=0)
+    extreme_duration_max_minutes: int = Field(default=2880, ge=1)
+    min_usable_trips_for_percentiles: int = Field(default=2, ge=1)
 
 
 class HistoricalTripRecord(BaseModel):

@@ -16,11 +16,11 @@ APP_DIR = Path(__file__).resolve().parent
 DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
 CONFIDENCE_COLORS = {
-    "STRONG": "#15803d",
-    "MEDIUM": "#2563eb",
+    "GOOD": "#15803d",
     "LOW SAMPLE": "#ca8a04",
     "UNSTABLE": "#dc2626",
-    "DATA MISSING": "#64748b",
+    "CHECK DATA": "#7f1d1d",
+    "NO BASELINE": "#64748b",
 }
 
 
@@ -55,30 +55,36 @@ def main() -> None:
 
         st.header("Settings")
         settings = LaneLabSettings(
-            low_sample_threshold=st.number_input("Low sample threshold", min_value=1, value=3, step=1),
-            strong_sample_threshold=st.number_input(
-                "Strong sample threshold",
-                min_value=1,
-                value=5,
-                step=1,
-            ),
-            unstable_std_threshold_minutes=st.number_input(
-                "Unstable std minutes",
-                min_value=0,
-                value=90,
-                step=15,
-            ),
-            unstable_spread_threshold_minutes=st.number_input(
-                "Unstable spread minutes",
-                min_value=0,
-                value=180,
-                step=30,
+            low_sample_threshold=st.number_input("Low sample threshold", min_value=1, value=5, step=1),
+            unstable_p90_p50_ratio_threshold=st.number_input(
+                "Unstable p90/p50 ratio",
+                min_value=0.0,
+                value=1.5,
+                step=0.1,
             ),
             outlier_iqr_multiplier=st.number_input(
                 "Outlier IQR multiplier",
                 min_value=0.0,
                 value=1.5,
                 step=0.25,
+            ),
+            extreme_duration_min_minutes=st.number_input(
+                "Extreme duration minimum minutes",
+                min_value=0,
+                value=30,
+                step=5,
+            ),
+            extreme_duration_max_minutes=st.number_input(
+                "Extreme duration maximum minutes",
+                min_value=1,
+                value=2880,
+                step=60,
+            ),
+            min_usable_trips_for_percentiles=st.number_input(
+                "Minimum usable trips for percentiles",
+                min_value=1,
+                value=2,
+                step=1,
             ),
         )
         chart_by = st.selectbox("Chart by", ["confidence_bucket", "carrier_name", "customer_name"])

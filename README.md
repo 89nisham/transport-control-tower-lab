@@ -530,6 +530,8 @@ ETA and delay workflows need realistic lane baselines. Teams still need to check
 - `lane_lab/output/lane_outliers.csv` with trip-level duration outliers and review evidence
 - KPI cards, Plotly confidence chart, baseline table, outlier table, trip-duration table, and download buttons inside Streamlit
 
+Confidence buckets are `GOOD`, `LOW SAMPLE`, `UNSTABLE`, `CHECK DATA`, and `NO BASELINE`.
+
 ### Run LaneLab
 
 ```bash

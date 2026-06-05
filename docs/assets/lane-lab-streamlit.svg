@@ -23,19 +23,19 @@
   <g font-family="Arial, sans-serif">
     <rect x="290" y="122" width="135" height="84" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="310" y="153" fill="#64748b" font-size="13">Lanes</text>
-    <text x="310" y="186" fill="#0f172a" font-size="30" font-weight="700">4</text>
+    <text x="310" y="186" fill="#0f172a" font-size="30" font-weight="700">7</text>
     <rect x="445" y="122" width="135" height="84" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="465" y="153" fill="#64748b" font-size="13">Usable trips</text>
-    <text x="465" y="186" fill="#0f172a" font-size="30" font-weight="700">10</text>
+    <text x="465" y="186" fill="#0f172a" font-size="30" font-weight="700">18</text>
     <rect x="600" y="122" width="135" height="84" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="620" y="153" fill="#64748b" font-size="13">Invalid trips</text>
     <text x="620" y="186" fill="#0f172a" font-size="30" font-weight="700">2</text>
     <rect x="755" y="122" width="135" height="84" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="775" y="153" fill="#64748b" font-size="13">Outliers</text>
-    <text x="775" y="186" fill="#0f172a" font-size="30" font-weight="700">1</text>
+    <text x="775" y="186" fill="#0f172a" font-size="30" font-weight="700">2</text>
     <rect x="910" y="122" width="190" height="84" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="930" y="153" fill="#64748b" font-size="13">Risky lanes</text>
-    <text x="930" y="186" fill="#0f172a" font-size="30" font-weight="700">3</text>
+    <text x="930" y="186" fill="#0f172a" font-size="30" font-weight="700">5</text>
   </g>
 
   <rect x="290" y="238" width="380" height="210" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
@@ -47,13 +47,13 @@
   <line x1="315" y1="404" x2="635" y2="404" stroke="#cbd5e1"/>
   <text x="318" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">UNSTABLE</text>
   <text x="395" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">LOW</text>
-  <text x="479" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">MISSING</text>
-  <text x="558" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">STRONG</text>
+  <text x="479" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">NO BASE</text>
+  <text x="558" y="430" fill="#64748b" font-family="Arial, sans-serif" font-size="12">GOOD</text>
 
   <rect x="700" y="238" width="400" height="210" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
   <text x="725" y="274" fill="#0f172a" font-family="Arial, sans-serif" font-size="18" font-weight="700">Outlier review</text>
   <rect x="725" y="308" width="350" height="40" rx="5" fill="#fee2e2"/>
-  <text x="742" y="333" fill="#991b1b" font-family="Arial, sans-serif" font-size="14" font-weight="700">LL-RUH-DMM-06 · LONG DURATION · HIGH</text>
+  <text x="742" y="333" fill="#991b1b" font-family="Arial, sans-serif" font-size="14" font-weight="700">OUT-5 · LONG DURATION · HIGH</text>
   <text x="742" y="374" fill="#475569" font-family="Arial, sans-serif" font-size="14">Duration outside expected lane range</text>
   <text x="742" y="405" fill="#475569" font-family="Arial, sans-serif" font-size="14">Suggested action: check data quality before use.</text>
 
@@ -69,10 +69,10 @@
     <text x="850" y="570" fill="#64748b">confidence</text>
     <text x="315" y="608" fill="#0f172a">RUH-DMM</text>
     <text x="460" y="608" fill="#0f172a">6</text>
-    <text x="555" y="608" fill="#0f172a">375</text>
-    <text x="645" y="608" fill="#0f172a">379</text>
-    <text x="735" y="608" fill="#0f172a">573</text>
-    <text x="850" y="608" fill="#dc2626" font-weight="700">UNSTABLE</text>
+    <text x="555" y="608" fill="#0f172a">370</text>
+    <text x="645" y="608" fill="#0f172a">375</text>
+    <text x="735" y="608" fill="#0f172a">378</text>
+    <text x="850" y="608" fill="#15803d" font-weight="700">GOOD</text>
     <text x="315" y="638" fill="#0f172a">JED-RUH</text>
     <text x="460" y="638" fill="#0f172a">2</text>
     <text x="555" y="638" fill="#0f172a">610</text>

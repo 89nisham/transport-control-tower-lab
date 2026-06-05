@@ -251,7 +251,7 @@ Date: 2026-06-05
 - Added origin event matching by `ORIGIN`, `HUB`, `PICKUP`, or origin name match.
 - Added destination event matching by `DESTINATION`, `CUSTOMER`, `DELIVERY`, or destination name match.
 - Added p50, p75, p90, average, minimum, maximum, standard deviation, sample-size, invalid-trip, and outlier calculations.
-- Added confidence buckets for strong, medium, low-sample, unstable, and data-missing lanes.
+- Added confidence buckets for good, low-sample, unstable, check-data, and no-baseline lanes.
 - Added neutral evidence text, suggested actions, KPI cards, Plotly charts, baseline table, outlier table, trip-duration table, and CSV downloads.
 - Added synthetic GCC demo data and tests.
 - Added README LaneLab visual and product-specific Before/After section.

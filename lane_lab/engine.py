@@ -24,6 +24,7 @@ REQUIRED_VISIT_COLUMNS = {
 }
 ORIGIN_TYPES = {"ORIGIN", "HUB", "PICKUP"}
 DESTINATION_TYPES = {"DESTINATION", "CUSTOMER", "DELIVERY"}
+CONFIDENCE_BUCKETS = {"GOOD", "LOW SAMPLE", "UNSTABLE", "CHECK DATA", "NO BASELINE"}
 BASELINE_COLUMNS = [
     "lane_id",
     "origin",
@@ -335,26 +336,36 @@ def _extract_trip_duration(trip: pd.Series, visits: pd.DataFrame) -> dict[str, A
 
 
 def _confidence_bucket(
+    sample_size: int,
     usable_count: int,
     invalid_count: int,
     outlier_count: int,
-    std_minutes: float,
-    spread_minutes: float,
+    p50_minutes: float | None,
+    p90_minutes: float | None,
     settings: LaneLabSettings,
 ) -> tuple[str, str]:
     if usable_count == 0:
-        return "DATA MISSING", "Add usable origin and destination visit events before using this lane."
+        return "NO BASELINE", "Add usable origin and destination visit events before using this lane."
+
+    invalid_rate = invalid_count / sample_size if sample_size else 0.0
+    outlier_rate = outlier_count / usable_count if usable_count else 0.0
+    if invalid_count >= 2 or invalid_rate >= 0.4:
+        return "CHECK DATA", "Review missing or impossible event evidence before using this lane."
+    if usable_count < settings.min_usable_trips_for_percentiles:
+        return "NO BASELINE", "Add usable origin and destination visit events before using this lane."
     if usable_count < settings.low_sample_threshold:
         return "LOW SAMPLE", "Use as a temporary reference and add more completed trips."
+
+    ratio = None
+    if p50_minutes and p90_minutes is not None:
+        ratio = p90_minutes / p50_minutes
     if (
-        std_minutes >= settings.unstable_std_threshold_minutes
-        or spread_minutes >= settings.unstable_spread_threshold_minutes
-        or outlier_count >= max(2, usable_count // 3)
+        ratio is not None
+        and ratio > settings.unstable_p90_p50_ratio_threshold
+        or outlier_rate > 0.2
     ):
         return "UNSTABLE", "Check data quality and split the lane if operating patterns differ."
-    if invalid_count > 0 or usable_count < settings.strong_sample_threshold:
-        return "MEDIUM", "Review missing or invalid trips and refresh the baseline after more samples."
-    return "STRONG", "Use this lane baseline for ETA and SLA review."
+    return "GOOD", "Use this lane baseline for ETA and SLA review."
 
 
 def _outlier_bounds(durations: pd.Series, settings: LaneLabSettings) -> tuple[float, float]:
@@ -364,6 +375,16 @@ def _outlier_bounds(durations: pd.Series, settings: LaneLabSettings) -> tuple[fl
     if iqr == 0:
         return q1, q3
     return q1 - settings.outlier_iqr_multiplier * iqr, q3 + settings.outlier_iqr_multiplier * iqr
+
+
+def _outlier_mask(durations: pd.Series, settings: LaneLabSettings) -> pd.Series:
+    lower_bound, upper_bound = _outlier_bounds(durations, settings)
+    return (
+        (durations < lower_bound)
+        | (durations > upper_bound)
+        | (durations < settings.extreme_duration_min_minutes)
+        | (durations > settings.extreme_duration_max_minutes)
+    )
 
 
 def _build_lane_rows(
@@ -379,9 +400,20 @@ def _build_lane_rows(
         usable = group[group["is_usable"]].copy()
         invalid_count = int((~group["is_usable"]).sum())
         sample_size = int(len(group))
-        if usable.empty:
-            confidence, action = _confidence_bucket(0, invalid_count, 0, 0.0, 0.0, settings)
-            evidence = f"0 usable trips from {sample_size} samples; {invalid_count} invalid trips"
+        if len(usable) < settings.min_usable_trips_for_percentiles:
+            confidence, action = _confidence_bucket(
+                sample_size,
+                len(usable),
+                invalid_count,
+                0,
+                None,
+                None,
+                settings,
+            )
+            evidence = (
+                f"{len(usable)} usable trips from {sample_size} samples; "
+                f"{invalid_count} invalid trips"
+            )
             baseline_rows.append(
                 {
                     "lane_id": lane_id,
@@ -390,7 +422,7 @@ def _build_lane_rows(
                     "customer_name": customer_name,
                     "carrier_name": carrier_name,
                     "sample_size": sample_size,
-                    "usable_trip_count": 0,
+                    "usable_trip_count": int(len(usable)),
                     "invalid_trip_count": invalid_count,
                     "p50_minutes": None,
                     "p75_minutes": None,
@@ -409,17 +441,20 @@ def _build_lane_rows(
 
         duration_series = usable["duration_minutes"].astype(float)
         lower_bound, upper_bound = _outlier_bounds(duration_series, settings)
-        outlier_mask = (duration_series < lower_bound) | (duration_series > upper_bound)
+        outlier_mask = _outlier_mask(duration_series, settings)
         outliers = usable[outlier_mask].copy()
         outlier_count = int(len(outliers))
         std_minutes = round(float(duration_series.std(ddof=0)), 2)
-        spread_minutes = round(float(duration_series.max() - duration_series.min()), 2)
+        p50_minutes = round(float(duration_series.quantile(0.50)), 2)
+        p75_minutes = round(float(duration_series.quantile(0.75)), 2)
+        p90_minutes = round(float(duration_series.quantile(0.90)), 2)
         confidence, action = _confidence_bucket(
+            sample_size,
             len(usable),
             invalid_count,
             outlier_count,
-            std_minutes,
-            spread_minutes,
+            p50_minutes,
+            p90_minutes,
             settings,
         )
         evidence = (
@@ -437,9 +472,9 @@ def _build_lane_rows(
                 "sample_size": sample_size,
                 "usable_trip_count": int(len(usable)),
                 "invalid_trip_count": invalid_count,
-                "p50_minutes": round(float(duration_series.quantile(0.50)), 2),
-                "p75_minutes": round(float(duration_series.quantile(0.75)), 2),
-                "p90_minutes": round(float(duration_series.quantile(0.90)), 2),
+                "p50_minutes": p50_minutes,
+                "p75_minutes": p75_minutes,
+                "p90_minutes": p90_minutes,
                 "avg_minutes": round(float(duration_series.mean()), 2),
                 "min_minutes": round(float(duration_series.min()), 2),
                 "max_minutes": round(float(duration_series.max()), 2),
@@ -452,6 +487,10 @@ def _build_lane_rows(
         )
         for row in outliers.itertuples(index=False):
             outlier_type = "LONG DURATION" if row.duration_minutes > upper_bound else "SHORT DURATION"
+            if row.duration_minutes > settings.extreme_duration_max_minutes:
+                outlier_type = "EXTREME LONG DURATION"
+            elif row.duration_minutes < settings.extreme_duration_min_minutes:
+                outlier_type = "EXTREME SHORT DURATION"
             severity = "HIGH" if confidence == "UNSTABLE" else "MEDIUM"
             outlier_rows.append(
                 {
@@ -469,7 +508,9 @@ def _build_lane_rows(
                     "severity": severity,
                     "evidence": (
                         f"duration {row.duration_minutes:.0f} min outside "
-                        f"{lower_bound:.0f}-{upper_bound:.0f} min lane range"
+                        f"{lower_bound:.0f}-{upper_bound:.0f} min lane range "
+                        f"or outside {settings.extreme_duration_min_minutes}-"
+                        f"{settings.extreme_duration_max_minutes} min limits"
                     ),
                     "suggested_action": "Check data quality before using this trip in the lane baseline.",
                 }
@@ -504,7 +545,7 @@ def run_lane_lab(
         "invalid_trips": float((~trip_durations["is_usable"]).sum()) if not trip_durations.empty else 0.0,
         "outlier_trips": float(len(outliers)),
         "low_confidence_lanes": float(
-            baselines["confidence_bucket"].isin(["LOW SAMPLE", "UNSTABLE", "DATA MISSING"]).sum()
+            baselines["confidence_bucket"].isin(["LOW SAMPLE", "UNSTABLE", "CHECK DATA", "NO BASELINE"]).sum()
         )
         if not baselines.empty
         else 0.0,
