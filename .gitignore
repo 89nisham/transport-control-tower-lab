@@ -12,6 +12,8 @@ data/output/*
 georeplay/output/*
 eta_watch/output/*
 !eta_watch/output/.gitkeep
+detention_clock/output/*
+!detention_clock/output/.gitkeep
 logs/*
 !logs/.gitkeep
 

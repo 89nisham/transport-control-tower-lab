@@ -1,0 +1,6 @@
+rule_id,customer_name,geofence_type,geofence_id,free_minutes,rate_type,rate_per_hour,minimum_charge,currency
+RULE-RUH-ACME,Acme Foods,ORIGIN,RUH_DC,120,hourly,180,250,SAR
+RULE-JED-ACME,Acme Foods,DESTINATION,JED_PORT,150,hourly,220,300,SAR
+RULE-DMM-GULF,Gulf Retail,ORIGIN,DMM_YARD,120,hourly,160,200,SAR
+RULE-DEFAULT,,ORIGIN,,120,hourly,150,200,SAR
+RULE-DEST-DEFAULT,,DESTINATION,,150,hourly,180,250,SAR

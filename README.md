@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -178,6 +178,58 @@ The app loads synthetic demo data from `eta_watch/demo_data/` when no files are 
 - `NO SIGNAL` means no matching GeoReplay event was available for the vehicle.
 - No traffic API, route optimization, SMS/email alerting, driver app, enterprise login, or database backend is included.
 
+## Day 4 Micro-Product: DetentionClock
+
+DetentionClock is a local-first Streamlit app that turns GeoReplay visit events and user-supplied detention rules into a chargeable detention report.
+
+![DetentionClock Streamlit screenshot](docs/assets/detention-clock-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Transport managers
+- Billing and customer-service teams reviewing detention claims
+
+### Problem
+
+After site visits are reconstructed, control towers still need to answer billing-sensitive questions:
+
+- Which visits exceeded free time?
+- Which visits are close to free-time expiry?
+- Which visits are missing exit evidence?
+- How many chargeable minutes should be reviewed?
+- Which detention cases need customer or carrier evidence before billing?
+
+### Inputs
+
+- `visit_events.csv`: GeoReplay output with `trip_id`, `vehicle_id`, `geofence_id`, `geofence_name`, `geofence_type`, `enter_time`, `exit_time`, `dwell_minutes`
+- `detention_rules.csv`: user-supplied free-time and rate rules
+- `trips.csv`: optional customer, carrier, origin, destination, and plan context
+
+### Outputs
+
+- `detention_clock/output/detention_report.csv`
+- `detention_clock/output/chargeable_detention.csv`
+- KPI cards, Plotly detention charge chart, detention table, chargeable-only table, and download buttons inside Streamlit
+
+### Run DetentionClock
+
+```bash
+uv sync
+uv run streamlit run detention_clock/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `detention_clock/demo_data/` when no files are uploaded.
+
+### DetentionClock Limitations
+
+- V1 is deterministic and file-based; no billing system integration is included.
+- Detention rules must be supplied by the user; no contract terms are hardcoded.
+- Missing exits are flagged for evidence review and are not charged automatically.
+- Estimated charges are operational estimates, not final invoices.
+
 ## Quick Start
 
 Install dependencies:
@@ -247,6 +299,7 @@ Each micro-product follows the same lean journey:
 src/control_tower_lab/      Python package and CLI
 georeplay/                  Product 2 Streamlit app and geospatial engine
 eta_watch/                  Product 3 Streamlit app and ETA risk engine
+detention_clock/            Product 4 Streamlit app and detention calculation engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -312,6 +365,24 @@ After:
 - Each trip is classified as `ON TRACK`, `WATCH`, `AT RISK`, `LATE`, or `NO SIGNAL`.
 - The Streamlit app shows KPI cards, a Plotly risk chart, a color-coded table, trip detail, and CSV exports.
 
+### DetentionClock
+
+Before:
+
+- GeoReplay visit events show dwell time, but detention review still happens manually.
+- Customer free-time rules live in side spreadsheets.
+- Missing exits can accidentally become billing disputes.
+- Chargeable minutes are calculated by hand.
+- Managers lack a clean split between watchlist dwell and chargeable detention.
+
+After:
+
+- DetentionClock joins visit events to optional trip context and user-supplied rules.
+- Each visit is classified as `MISSING EXIT`, `NO DETENTION`, `WITHIN FREE TIME`, `APPROACHING FREE TIME`, or `DETENTION`.
+- Chargeable minutes, hours, estimated charges, minimum charges, and currency are calculated deterministically.
+- Missing exits are flagged for evidence review before charging.
+- The Streamlit app shows KPI cards, a Plotly charge chart, detention tables, and CSV exports.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -321,13 +392,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay and ETA Watch local apps.
+- `streamlit`: runs the GeoReplay, ETA Watch, and DetentionClock local apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `plotly`: renders clean ETA Watch KPI distribution charts.
-- `pydantic`: validates GeoReplay and ETA Watch input records.
+- `plotly`: renders clean ETA Watch and DetentionClock KPI distribution charts.
+- `pydantic`: validates GeoReplay, ETA Watch, and DetentionClock input records.
 
 ## Public Story
 
@@ -338,6 +409,8 @@ Day 1 is Trip Sheet Doctor: a CLI tool that turns messy trip sheets into an expl
 Day 2 is GeoReplay: a Streamlit app that turns GPS pings and geofence masters into visit events and exceptions.
 
 Day 3 is ETA Watch: a Streamlit app that turns trips and visit events into an ETA risk board.
+
+Day 4 is DetentionClock: a Streamlit app that turns visit events and detention rules into chargeable detention review packs.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 

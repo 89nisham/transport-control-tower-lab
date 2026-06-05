@@ -1,0 +1,7 @@
+trip_id,customer_name,carrier_name,origin,destination,planned_arrival,planned_departure
+TRIP-4001,Acme Foods,Desert Line Transport,Riyadh,Jeddah,2026-06-05T12:00:00+03:00,2026-06-05T04:00:00+03:00
+TRIP-4002,Acme Foods,Red Sea Freight,Jeddah,Riyadh,2026-06-05T13:00:00+03:00,2026-06-05T03:30:00+03:00
+TRIP-4003,Gulf Retail,Eastern Haulage,Dammam,Riyadh,2026-06-05T14:30:00+03:00,2026-06-05T05:30:00+03:00
+TRIP-4004,Acme Foods,Desert Line Transport,Riyadh,Dammam,2026-06-05T15:30:00+03:00,2026-06-05T05:45:00+03:00
+TRIP-4005,Acme Foods,Red Sea Freight,Jeddah,Makkah,2026-06-05T10:30:00+03:00,2026-06-05T07:30:00+03:00
+TRIP-4006,Gulf Retail,Eastern Haulage,Dammam,Jubail,2026-06-05T09:30:00+03:00,2026-06-05T01:30:00+03:00

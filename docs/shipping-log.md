@@ -79,3 +79,30 @@ Control towers need to move from manual ETA checking to a risk board that separa
 - `uv run ruff check .`
 - `uv run python -m py_compile eta_watch/app.py eta_watch/engine.py eta_watch/models.py`
 - Demo smoke run writes `eta_watch/output/eta_risk_board.csv` and `eta_watch/output/late_trips.csv`
+
+## v0.4.0-detention-clock
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `detention_clock/` as a separate Streamlit micro-product folder.
+- Added deterministic detention calculation from GeoReplay visit events and user-supplied detention rules.
+- Standardized visit and trip timestamps to UTC before dwell and rule review.
+- Added optional trip context for customer, carrier, origin, and destination fields.
+- Added free-time, approaching-free-time, missing-exit, chargeable-minute, hourly-rate, and minimum-charge logic.
+- Added KPI cards, Plotly charge chart, detention table, chargeable-only table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README DetentionClock visual and product-specific Before/After section.
+- Tagged the public release as `v0.4.0-detention-clock`.
+
+### Why It Matters
+
+Detention billing disputes start when dwell evidence, free-time rules, and charge estimates are reviewed separately. DetentionClock gives the control tower a local evidence board before billing or customer escalation.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile detention_clock/app.py detention_clock/engine.py detention_clock/models.py`
+- Demo smoke run writes `detention_clock/output/detention_report.csv` and `detention_clock/output/chargeable_detention.csv`
