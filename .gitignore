@@ -18,6 +18,8 @@ gate_truth/output/*
 !gate_truth/output/.gitkeep
 fuel_guard/output/*
 !fuel_guard/output/.gitkeep
+update_pulse/output/*
+!update_pulse/output/.gitkeep
 logs/*
 !logs/.gitkeep
 

@@ -1,0 +1,1 @@
+"""UpdatePulse Streamlit product package."""

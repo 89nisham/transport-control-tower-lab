@@ -158,3 +158,29 @@ Fuel reports become useful control-tower evidence only when they are reviewed be
 - `uv run ruff check .`
 - `uv run python -m py_compile fuel_guard/app.py fuel_guard/engine.py fuel_guard/models.py`
 - Demo smoke run writes `fuel_guard/output/fuel_reconciliation_report.csv` and `fuel_guard/output/fuel_exceptions.csv`
+
+## v0.7.0-update-pulse
+
+Date: 2026-06-05
+
+### Shipped
+
+- Added `update_pulse/` as a separate Streamlit micro-product folder.
+- Added deterministic update-discipline review from trip plans, TMS or driver updates, and optional GeoReplay visit evidence.
+- Standardized trip, update, and visit timestamps to UTC before milestone matching.
+- Added expected origin-departure and destination-arrival milestone reconstruction.
+- Added missing-update, late-update, early-update, duplicate-update, sequence-issue, and no-actual-event-evidence flags.
+- Added neutral review language, KPI cards, Plotly status chart, update report table, exceptions table, and CSV downloads.
+- Added synthetic GCC demo data and tests.
+- Added README UpdatePulse visual and product-specific Before/After section.
+
+### Why It Matters
+
+Status discipline breaks down when planned milestones, TMS rows, driver updates, and actual visit evidence are reviewed separately. UpdatePulse gives the control tower a neutral local board for stale or unsupported updates before customer escalation.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile update_pulse/app.py update_pulse/engine.py update_pulse/models.py`
+- Demo smoke run writes `update_pulse/output/update_discipline_report.csv` and `update_pulse/output/update_exceptions.csv`

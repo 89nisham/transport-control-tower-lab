@@ -45,6 +45,7 @@ packages = [
   "detention_clock",
   "gate_truth",
   "fuel_guard",
+  "update_pulse",
 ]
 
 [tool.uv]

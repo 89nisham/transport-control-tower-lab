@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -337,6 +337,57 @@ The app loads realistic GCC synthetic demo data from `fuel_guard/demo_data/` whe
 - GPS support depends on uploaded point density and fuel-site coordinate quality.
 - Duplicate receipt, odometer, and high-liter checks are first-pass review rules, not final financial conclusions.
 
+## Day 7 Micro-Product: UpdatePulse
+
+UpdatePulse is a local-first Streamlit app that audits TMS and driver update discipline against planned milestones and optional GeoReplay visit evidence.
+
+![UpdatePulse Streamlit screenshot](docs/assets/update-pulse-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Dispatch teams
+- Fleet operations managers
+- Customer-service escalation teams checking stale or missing trip updates
+
+### Problem
+
+A trip can be physically moving, waiting, delivered, or delayed while the system status remains outdated. Control towers still need to review:
+
+- Which planned departure or arrival milestones have no matching update?
+- Which updates were late or unusually early?
+- Which trips have duplicate or out-of-sequence updates?
+- Which updates lack actual GeoReplay event evidence?
+- Which cases need neutral follow-up before customer or manager reporting?
+
+### Inputs
+
+- `trips.csv`: `trip_id`, `vehicle_id`, optional driver, carrier, and customer fields, `origin`, `destination`, `planned_departure`, `promised_arrival`
+- `tms_updates.csv` or `driver_updates.csv`: `vehicle_id`, `update_time`, `status`, optional trip, source, update ID, and note fields
+- `visit_events.csv`: optional GeoReplay evidence with vehicle, site type, enter time, and exit time
+
+### Outputs
+
+- `update_pulse/output/update_discipline_report.csv` with expected milestone, planned time, matched update time, delay minutes, event evidence, review status, exception type, evidence text, and suggested action
+- `update_pulse/output/update_exceptions.csv` with update gaps, late updates, early updates, duplicate updates, sequence issues, and missing actual event evidence
+- KPI cards, Plotly status chart, update report table, exceptions-only table, and download buttons inside Streamlit
+
+### Run UpdatePulse
+
+```bash
+uv sync
+uv run streamlit run update_pulse/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `update_pulse/demo_data/` when no files are uploaded.
+
+### UpdatePulse Limitations
+
+- V1 is deterministic and file-based; no TMS, driver app, WhatsApp, or telematics integration is included.
+- Status matching uses common operational labels and may need mapping for unusual TMS codes.
+- Sparse visit evidence can create review cases that need dispatcher context.
+- Outputs are neutral review flags, not driver punishment or performance penalties.
+
 ## Quick Start
 
 Install dependencies:
@@ -409,6 +460,7 @@ eta_watch/                  Product 3 Streamlit app and ETA risk engine
 detention_clock/            Product 4 Streamlit app and detention calculation engine
 gate_truth/                 Product 5 Streamlit app and gate evidence engine
 fuel_guard/                 Product 6 Streamlit app and fuel-vs-GPS reconciliation engine
+update_pulse/               Product 7 Streamlit app and update-discipline review engine
 data/samples/               Public-safe sample files
 demo_data/                  Intentionally messy public demo files
 data/input/                 Operator-provided raw files, ignored by git
@@ -528,6 +580,24 @@ After:
 - `NO GPS EVIDENCE`, `NO STOP NEAR FUEL`, `UNKNOWN STATION`, `DUPLICATE RECEIPT`, `ODOMETER DROP`, `HIGH LITERS`, and `OUTSIDE TRIP WINDOW` flags are exported for review.
 - The Streamlit app shows KPI cards, a review-status chart, reconciliation table, and exceptions-only exports.
 
+### UpdatePulse
+
+Before:
+
+- TMS and driver updates are checked separately from planned milestones and GeoReplay evidence.
+- A trip may have physically departed or arrived while the system status stays stale.
+- Duplicate updates and out-of-sequence statuses are found by manual timeline review.
+- Customer-service teams may learn about update gaps only after escalation.
+- Managers lack a neutral exception pack for follow-up without blaming drivers.
+
+After:
+
+- UpdatePulse reconstructs expected origin departure and destination arrival milestones from trip rows.
+- TMS or driver updates are matched against planned departure and promised arrival timestamps.
+- Optional GeoReplay visit events show whether actual event evidence supports the milestone.
+- Each milestone is classified as `OK`, `UPDATE GAP`, or `NEEDS REVIEW` with readable evidence.
+- Missing, late, early, duplicate, sequence, and no-event-evidence flags are exported for dispatch review.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -537,13 +607,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, GateTruth, and FuelGuard local apps.
+- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse local apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `plotly`: renders clean ETA Watch, DetentionClock, GateTruth, and FuelGuard KPI distribution charts.
-- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, GateTruth, and FuelGuard input records.
+- `plotly`: renders clean ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse KPI distribution charts.
+- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse input records.
 
 ## Public Story
 
@@ -560,6 +630,8 @@ Day 4 is DetentionClock: a Streamlit app that turns visit events and detention r
 Day 5 is GateTruth: a Streamlit app that turns planned trips and GeoReplay visits into actual start and arrival evidence.
 
 Day 6 is FuelGuard: a Streamlit app that turns fuel transactions, GPS points, fuel-site masters, and trip windows into a fuel reconciliation review pack.
+
+Day 7 is UpdatePulse: a Streamlit app that turns trip plans, TMS or driver updates, and optional GeoReplay visits into an update-discipline review pack.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 
