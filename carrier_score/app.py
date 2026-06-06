@@ -16,11 +16,11 @@ APP_DIR = Path(__file__).resolve().parent
 DEMO_DIR = APP_DIR / "demo_data"
 OUTPUT_DIR = APP_DIR / "output"
 STATUS_COLORS = {
-    "STRONG": "#15803d",
-    "STABLE": "#2563eb",
-    "WATCHLIST": "#ca8a04",
-    "NEEDS REVIEW": "#dc2626",
-    "DATA GAP": "#64748b",
+    "EXCELLENT": "#15803d",
+    "GOOD": "#2563eb",
+    "WATCH": "#ca8a04",
+    "AT RISK": "#dc2626",
+    "INSUFFICIENT DATA": "#64748b",
 }
 
 
@@ -60,14 +60,28 @@ def main() -> None:
         rules_file = st.file_uploader("carrier_score_rules.csv (optional)", type=["csv"])
 
         st.header("Settings")
+        allow_rules = st.checkbox("Allow uploaded scoring rules", value=True)
         settings = CarrierScoreSettings(
-            strong_threshold=st.slider("Strong threshold", 0, 100, 90),
-            stable_threshold=st.slider("Stable threshold", 0, 100, 75),
-            watchlist_threshold=st.slider("Watchlist threshold", 0, 100, 60),
-            minimum_high_confidence_trips=st.number_input("High-confidence minimum trips", min_value=1, value=5),
-            minimum_medium_confidence_trips=st.number_input("Medium-confidence minimum trips", min_value=1, value=3),
+            minimum_trips_for_reliable_score=st.number_input(
+                "Minimum trips for reliable score",
+                min_value=1,
+                value=3,
+            ),
+            excellent_threshold=st.slider("Excellent threshold", 0, 100, 90),
+            good_threshold=st.slider("Good threshold", 0, 100, 75),
+            watch_threshold=st.slider("Watch threshold", 0, 100, 60),
+            detention_exposure_high_threshold=st.number_input(
+                "High detention exposure threshold",
+                min_value=0.0,
+                value=500.0,
+                step=100.0,
+            ),
+            allow_uploaded_scoring_rules=allow_rules,
         )
-        chart_by = st.selectbox("Chart by", ["risk_bucket", "confidence_bucket", "top_issue"])
+        chart_by = st.selectbox(
+            "Chart by",
+            ["score", "risk_bucket", "carrier_name", "top_issue", "confidence_bucket"],
+        )
         run_button = st.button("Run CarrierScore", type="primary")
 
     st.info(
@@ -97,28 +111,43 @@ def main() -> None:
     )
     scorecard_path, summary_path = write_outputs(result, OUTPUT_DIR)
 
-    metric_cols = st.columns(5)
+    if result.config_warnings:
+        st.warning("Scoring rule warnings: " + " | ".join(result.config_warnings))
+
+    metric_cols = st.columns(7)
     _metric_card(metric_cols[0], "Carriers", result.kpis["total_carriers"])
     _metric_card(metric_cols[1], "Trips", result.kpis["total_trips"])
-    _metric_card(metric_cols[2], "Avg score", result.kpis["average_score"])
-    _metric_card(metric_cols[3], "Needs review", result.kpis["needs_review_carriers"])
-    _metric_card(metric_cols[4], "Summary rows", result.kpis["summary_rows"])
+    _metric_card(metric_cols[2], "At risk", result.kpis["at_risk_carriers"])
+    _metric_card(metric_cols[3], "Watch", result.kpis["watch_carriers"])
+    _metric_card(metric_cols[4], "Avg score", result.kpis["average_carrier_score"])
+    _metric_card(metric_cols[5], "Lowest score", result.kpis["lowest_carrier_score"])
+    _metric_card(metric_cols[6], "Insufficient", result.kpis["insufficient_data_carriers"])
 
-    chart_data = result.carrier_scorecard.groupby(chart_by, dropna=False, as_index=False).size()
-    chart_data = chart_data.rename(columns={"size": "carriers"})
-    chart = px.bar(
-        chart_data,
-        x=chart_by,
-        y="carriers",
-        color=chart_by,
-        color_discrete_map=STATUS_COLORS,
-        text_auto=".0f",
-    )
+    if chart_by == "score":
+        chart = px.bar(
+            result.carrier_scorecard,
+            x="carrier_name",
+            y="score",
+            color="risk_bucket",
+            color_discrete_map=STATUS_COLORS,
+            text_auto=".1f",
+        )
+    else:
+        chart_data = result.carrier_scorecard.groupby(chart_by, dropna=False, as_index=False).size()
+        chart_data = chart_data.rename(columns={"size": "carriers"})
+        chart = px.bar(
+            chart_data,
+            x=chart_by,
+            y="carriers",
+            color=chart_by,
+            color_discrete_map=STATUS_COLORS,
+            text_auto=".0f",
+        )
     chart.update_layout(showlegend=False, height=320, margin=dict(l=10, r=10, t=20, b=10))
     st.plotly_chart(chart, use_container_width=True)
 
-    tab_scorecard, tab_summary, tab_exports, tab_notes = st.tabs(
-        ["Scorecard", "Exception summary", "Exports", "Notes"]
+    tab_scorecard, tab_summary, tab_exports, tab_read, tab_notes = st.tabs(
+        ["Scorecard", "Exception summary", "Exports", "How to read this", "Limitations"]
     )
     with tab_scorecard:
         styled = result.carrier_scorecard.style.map(_style_status, subset=["risk_bucket"])
@@ -139,13 +168,12 @@ def main() -> None:
             "carrier_exception_summary.csv",
             "text/csv",
         )
-    with tab_notes:
-        st.subheader("Review Use")
+    with tab_read:
         st.write(
-            "Use the score, top issue, confidence bucket, and exception summary to prepare an evidence-based "
-            "carrier performance view before review meetings."
+            "Start with the confidence bucket, then read the score, top issue, evidence, and exception summary. "
+            "A low score with limited data should be treated as a review prompt, not a final vendor judgment."
         )
-        st.subheader("Important Limitation")
+    with tab_notes:
         st.write(
             "CarrierScore is deterministic and file-based. It does not contact carriers, change procurement "
             "systems, calculate penalties, create legal claims, or use live integrations."
@@ -154,4 +182,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -1,6 +1,8 @@
-trip_id,risk_bucket,carrier_name,detention_minutes,chargeable_minutes,severity,evidence
-CS-002,CHARGEABLE,Gulf Bridge,220,100,HIGH,Synthetic origin dwell above free time
-CS-004,APPROACHING FREE TIME,Gulf Bridge,105,0,MEDIUM,Synthetic site dwell watch
-CS-006,OK,Desert Line,45,0,OK,Synthetic short dwell
-CS-009,OK,Desert Line,50,0,OK,Synthetic short dwell
-CS-014,MISSING EXIT,One Trip Express,0,0,MEDIUM,Synthetic missing exit evidence
+trip_id,risk_bucket,carrier_name,chargeable_minutes,estimated_charge,currency,severity,evidence
+EX-001,OK,Atlas Roadlink,0,0,SAR,OK,Synthetic no detention
+GD-001,OK,Cedar Freight,0,0,SAR,OK,Synthetic no detention
+DET-001,DETENTION,Dock Time Logistics,180,450,SAR,HIGH,Synthetic detention exposure
+DET-002,DETENTION,Dock Time Logistics,220,650,SAR,HIGH,Synthetic detention exposure
+DET-003,OK,Dock Time Logistics,0,0,SAR,OK,Synthetic no detention
+POD-001,OK,Peninsula Cargo,0,0,SAR,OK,Synthetic no detention
+INV-001,OK,Invoice Hold Express,0,0,SAR,OK,Synthetic no detention

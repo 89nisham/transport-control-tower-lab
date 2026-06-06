@@ -640,7 +640,7 @@ Carrier reviews get messy when performance data is scattered. Teams still need t
 - `fuel_exceptions.csv`: optional FuelGuard output
 - `gate_truth_report.csv`: optional GateTruth output
 - `ban_risk_board.csv`: optional BanWindow output
-- `carrier_score_rules.csv`: optional `metric`, `weight` scoring rules
+- `carrier_score_rules.csv`: optional `metric_name`, `weight`, `direction`, `enabled`, `good_threshold`, and `bad_threshold` scoring rules
 
 ### Outputs
 
@@ -648,7 +648,9 @@ Carrier reviews get messy when performance data is scattered. Teams still need t
 - `carrier_score/output/carrier_exception_summary.csv` with one row per carrier and exception area needing review
 - KPI cards, Plotly bucket chart, scorecard table, exception summary, and download buttons inside Streamlit
 
-Risk buckets are `STRONG`, `STABLE`, `WATCHLIST`, `NEEDS REVIEW`, and `DATA GAP`.
+Risk buckets are `EXCELLENT`, `GOOD`, `WATCH`, `AT RISK`, and `INSUFFICIENT DATA`.
+
+Confidence buckets are `HIGH`, `MEDIUM`, `LOW SAMPLE`, `DATA LIMITED`, and `DATA MISSING`.
 
 ### Run CarrierScore
 

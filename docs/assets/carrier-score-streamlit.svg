@@ -50,29 +50,29 @@
     <text x="826" y="382" fill="#64748b">top issue</text>
     <text x="1010" y="382" fill="#64748b">confidence</text>
     <line x1="326" y1="398" x2="1124" y2="398" stroke="#e2e8f0"/>
-    <text x="326" y="432" fill="#0f172a">Gulf Bridge</text>
-    <text x="540" y="432" fill="#0f172a">48.0</text>
+    <text x="326" y="432" fill="#0f172a">Peninsula Cargo</text>
+    <text x="540" y="432" fill="#0f172a">42.9</text>
     <rect x="654" y="411" width="116" height="28" rx="4" fill="#dc2626"/>
-    <text x="670" y="430" fill="#ffffff" font-weight="700">NEEDS REVIEW</text>
-    <text x="826" y="432" fill="#0f172a">Delay performance</text>
+    <text x="670" y="430" fill="#ffffff" font-weight="700">AT RISK</text>
+    <text x="826" y="432" fill="#0f172a">missing POD</text>
     <text x="1010" y="432" fill="#0f172a">HIGH</text>
-    <text x="326" y="486" fill="#0f172a">Desert Line</text>
-    <text x="540" y="486" fill="#0f172a">85.0</text>
+    <text x="326" y="486" fill="#0f172a">Red Sea Haulage</text>
+    <text x="540" y="486" fill="#0f172a">82.6</text>
     <rect x="654" y="465" width="74" height="28" rx="4" fill="#2563eb"/>
-    <text x="670" y="484" fill="#ffffff" font-weight="700">STABLE</text>
-    <text x="826" y="486" fill="#0f172a">Gate-truth gaps</text>
+    <text x="670" y="484" fill="#ffffff" font-weight="700">GOOD</text>
+    <text x="826" y="486" fill="#0f172a">late trips</text>
     <text x="1010" y="486" fill="#0f172a">HIGH</text>
-    <text x="326" y="540" fill="#0f172a">North Star Logistics</text>
+    <text x="326" y="540" fill="#0f172a">Atlas Roadlink</text>
     <text x="540" y="540" fill="#0f172a">100.0</text>
     <rect x="654" y="519" width="76" height="28" rx="4" fill="#15803d"/>
-    <text x="670" y="538" fill="#ffffff" font-weight="700">STRONG</text>
+    <text x="670" y="538" fill="#ffffff" font-weight="700">EXCELLENT</text>
     <text x="826" y="540" fill="#0f172a">No dominant issue</text>
     <text x="1010" y="540" fill="#0f172a">MEDIUM</text>
-    <text x="326" y="594" fill="#0f172a">One Trip Express</text>
-    <text x="540" y="594" fill="#0f172a">0.0</text>
-    <rect x="654" y="573" width="116" height="28" rx="4" fill="#dc2626"/>
-    <text x="670" y="592" fill="#ffffff" font-weight="700">NEEDS REVIEW</text>
+    <text x="326" y="594" fill="#0f172a">New Route Pilot</text>
+    <text x="540" y="594" fill="#0f172a">66.1</text>
+    <rect x="654" y="573" width="156" height="28" rx="4" fill="#64748b"/>
+    <text x="666" y="592" fill="#ffffff" font-weight="700">INSUFFICIENT DATA</text>
     <text x="826" y="594" fill="#0f172a">Delay performance</text>
-    <text x="1010" y="594" fill="#0f172a">LOW</text>
+    <text x="1010" y="594" fill="#0f172a">LOW SAMPLE</text>
   </g>
 </svg>

@@ -1,8 +1,42 @@
 trip_id,primary_delay_reason,risk_bucket,carrier_name,arrival_delay_minutes,severity,evidence
-CS-001,On time,ON TRACK,Gulf Bridge,0,OK,Synthetic on-time arrival
-CS-002,Origin dwell,LATE,Gulf Bridge,140,CRITICAL,Synthetic origin dwell and late arrival
-CS-004,Destination dwell,AT RISK,Gulf Bridge,45,MEDIUM,Synthetic destination dwell
-CS-005,Enroute delay,LATE,Gulf Bridge,140,HIGH,Synthetic enroute delay
-CS-006,On time,ON TRACK,Desert Line,0,OK,Synthetic on-time arrival
-CS-008,Minor late arrival,AT RISK,Desert Line,15,LOW,Synthetic minor delay
-CS-014,Enroute delay,LATE,One Trip Express,80,HIGH,Synthetic late arrival
+EX-001,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-002,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-003,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-004,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-005,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-006,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-007,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-008,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-009,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+EX-010,ON TIME,ON TIME,Atlas Roadlink,0,OK,Synthetic on-time delivery
+GD-001,ON TIME,ON TIME,Cedar Freight,5,OK,Synthetic minor arrival variance
+GD-002,LATE ARRIVAL,DELAYED,Cedar Freight,20,LOW,Synthetic minor delay
+GD-003,ON TIME,ON TIME,Cedar Freight,0,OK,Synthetic on-time delivery
+GD-004,ON TIME,ON TIME,Cedar Freight,10,OK,Synthetic minor arrival variance
+GD-005,ON TIME,ON TIME,Cedar Freight,5,OK,Synthetic minor arrival variance
+WL-001,LATE ARRIVAL,DELAYED,Red Sea Haulage,70,HIGH,Synthetic late arrival
+WL-002,ENROUTE DELAY,CRITICAL,Red Sea Haulage,90,HIGH,Synthetic enroute delay
+WL-003,LATE DEPARTURE,DELAYED,Red Sea Haulage,70,HIGH,Synthetic late departure
+WL-004,ON TIME,ON TIME,Red Sea Haulage,10,OK,Synthetic on-time delivery
+WL-005,HUB DWELL,DELAYED,Red Sea Haulage,40,MEDIUM,Synthetic hub dwell
+POD-001,ON TIME,ON TIME,Peninsula Cargo,5,OK,Synthetic on-time delivery
+POD-002,ON TIME,ON TIME,Peninsula Cargo,10,OK,Synthetic on-time delivery
+POD-003,ON TIME,ON TIME,Peninsula Cargo,5,OK,Synthetic on-time delivery
+POD-004,ON TIME,ON TIME,Peninsula Cargo,0,OK,Synthetic on-time delivery
+POD-005,ON TIME,ON TIME,Peninsula Cargo,0,OK,Synthetic on-time delivery
+INV-001,ON TIME,ON TIME,Invoice Hold Express,10,OK,Synthetic on-time delivery
+INV-002,ON TIME,ON TIME,Invoice Hold Express,20,OK,Synthetic on-time delivery
+INV-003,ON TIME,ON TIME,Invoice Hold Express,30,OK,Synthetic on-time delivery
+DET-001,ON TIME,ON TIME,Dock Time Logistics,10,OK,Synthetic on-time delivery
+DET-002,ON TIME,ON TIME,Dock Time Logistics,10,OK,Synthetic on-time delivery
+DET-003,ON TIME,ON TIME,Dock Time Logistics,10,OK,Synthetic on-time delivery
+UPD-001,ON TIME,ON TIME,Signal Gap Transport,0,OK,Synthetic on-time delivery
+UPD-002,ON TIME,ON TIME,Signal Gap Transport,0,OK,Synthetic on-time delivery
+UPD-003,ON TIME,ON TIME,Signal Gap Transport,0,OK,Synthetic on-time delivery
+FUEL-001,ON TIME,ON TIME,Fuel Review Fleet,0,OK,Synthetic on-time delivery
+FUEL-002,ON TIME,ON TIME,Fuel Review Fleet,0,OK,Synthetic on-time delivery
+FUEL-003,ON TIME,ON TIME,Fuel Review Fleet,0,OK,Synthetic on-time delivery
+BAN-001,ON TIME,ON TIME,City Window Movers,0,OK,Synthetic on-time delivery
+BAN-002,ON TIME,ON TIME,City Window Movers,0,OK,Synthetic on-time delivery
+BAN-003,ON TIME,ON TIME,City Window Movers,0,OK,Synthetic on-time delivery
+LOW-001,LATE ARRIVAL,DELAYED,New Route Pilot,30,MEDIUM,Synthetic low-sample delay

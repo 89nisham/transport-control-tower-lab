@@ -1,10 +1,9 @@
 trip_id,risk_bucket,carrier_name,city,overlap_minutes,severity,evidence
-CS-001,CLEAR,Gulf Bridge,Riyadh,0,OK,Synthetic clear restriction check
-CS-002,BAN CONFLICT,Gulf Bridge,Jeddah,45,HIGH,Synthetic city-window conflict
-CS-004,WATCH,Gulf Bridge,Jeddah,0,MEDIUM,Synthetic near-window watch
-CS-006,CLEAR,Desert Line,Dammam,0,OK,Synthetic clear restriction check
-CS-010,WATCH,Desert Line,Riyadh,0,MEDIUM,Synthetic near-window watch
-CS-011,CLEAR,North Star Logistics,Riyadh,0,OK,Synthetic clear restriction check
-CS-012,CLEAR,North Star Logistics,Dammam,0,OK,Synthetic clear restriction check
-CS-013,CLEAR,North Star Logistics,Dubai,0,OK,Synthetic clear restriction check
-CS-014,VEHICLE CLASS UNKNOWN,One Trip Express,Jeddah,0,MEDIUM,Synthetic missing vehicle class for window
+EX-001,CLEAR,Atlas Roadlink,Riyadh,0,OK,Synthetic clear restriction check
+EX-002,CLEAR,Atlas Roadlink,Jeddah,0,OK,Synthetic clear restriction check
+GD-001,CLEAR,Cedar Freight,Riyadh,0,OK,Synthetic clear restriction check
+WL-001,CLEAR,Red Sea Haulage,Riyadh,0,OK,Synthetic clear restriction check
+BAN-001,BAN CONFLICT,City Window Movers,Riyadh,150,CRITICAL,Synthetic city-window conflict
+BAN-002,BAN CONFLICT,City Window Movers,Dammam,45,HIGH,Synthetic city-window conflict
+BAN-003,WATCH,City Window Movers,Dubai,0,MEDIUM,Synthetic watch case not scored as conflict
+LOW-001,BAN CONFLICT,New Route Pilot,Riyadh,30,HIGH,Synthetic low-sample ban conflict

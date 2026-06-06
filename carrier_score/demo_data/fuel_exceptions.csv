@@ -1,6 +1,6 @@
-trip_id,risk_bucket,carrier_name,exception_type,severity,evidence
-CS-002,HIGH LITERS,Gulf Bridge,High liters,HIGH,Synthetic liters above policy threshold
-CS-005,UNKNOWN STATION,Gulf Bridge,Unknown station,MEDIUM,Synthetic station not in master
-CS-007,OK,Desert Line,None,OK,Synthetic clean fuel event
-CS-009,NO GPS EVIDENCE,Desert Line,No GPS evidence,MEDIUM,Synthetic missing GPS near fuel event
-CS-014,NO STOP NEAR FUEL,One Trip Express,No stop near fuel,HIGH,Synthetic fuel event without nearby stop
+fuel_event_id,vehicle_id,exception_type,severity,trip_id,carrier_name,liters,evidence
+FE-001,VH-101,OK,OK,EX-001,Atlas Roadlink,0,Synthetic clean fuel event
+FE-002,VH-801,HIGH LITERS,HIGH,FUEL-001,Fuel Review Fleet,180,Synthetic high liters exception
+FE-003,VH-802,UNKNOWN STATION,MEDIUM,FUEL-002,Fuel Review Fleet,95,Synthetic station not in master
+FE-004,VH-803,NO STOP NEAR FUEL,HIGH,FUEL-003,Fuel Review Fleet,120,Synthetic no stop near fuel
+FE-005,VH-1001,NO GPS EVIDENCE,MEDIUM,LOW-001,New Route Pilot,70,Synthetic low-sample fuel evidence gap

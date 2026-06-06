@@ -1,11 +1,8 @@
-trip_id,risk_bucket,carrier_name,missing_update_count,late_update_count,severity,evidence
-CS-001,OK,Gulf Bridge,0,0,OK,Synthetic updates on time
-CS-002,LATE UPDATE,Gulf Bridge,0,2,MEDIUM,Synthetic late origin update
-CS-003,OK,Gulf Bridge,0,0,OK,Synthetic updates on time
-CS-005,MISSING UPDATE,Gulf Bridge,2,1,HIGH,Synthetic missing destination update
-CS-006,OK,Desert Line,0,0,OK,Synthetic updates on time
-CS-008,LATE UPDATE,Desert Line,0,1,LOW,Synthetic minor late update
-CS-011,OK,North Star Logistics,0,0,OK,Synthetic updates on time
-CS-012,OK,North Star Logistics,0,0,OK,Synthetic updates on time
-CS-013,OK,North Star Logistics,0,0,OK,Synthetic updates on time
-CS-014,SEQUENCE ISSUE,One Trip Express,1,1,HIGH,Synthetic sequence issue
+trip_id,update_gap_type,risk_bucket,carrier_name,update_delay_minutes,severity,evidence
+EX-001,OK,OK,Atlas Roadlink,0,OK,Synthetic updates on time
+EX-002,OK,OK,Atlas Roadlink,0,OK,Synthetic updates on time
+GD-001,OK,OK,Cedar Freight,0,OK,Synthetic updates on time
+WL-001,OK,OK,Red Sea Haulage,0,OK,Synthetic updates on time
+UPD-001,MISSING UPDATE,NEEDS REVIEW,Signal Gap Transport,0,HIGH,Synthetic missing destination update
+UPD-002,LATE UPDATE,NEEDS REVIEW,Signal Gap Transport,75,MEDIUM,Synthetic late status update
+UPD-003,SEQUENCE ISSUE,NEEDS REVIEW,Signal Gap Transport,20,HIGH,Synthetic milestone sequence issue

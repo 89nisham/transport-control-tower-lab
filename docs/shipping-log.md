@@ -305,11 +305,11 @@ Date: 2026-06-06
 - Added `carrier_score/` as a separate Streamlit micro-product folder.
 - Added deterministic carrier-level KPI aggregation from required trips and optional product output files.
 - Joined optional report rows back to trip ownership by `trip_id`, with report carrier names used only as fallback context.
-- Added configurable score weights through `carrier_score_rules.csv`.
-- Added late-trip, missing-POD, detention-review, update-gap, fuel-exception, gate-gap, and ban-watch exception rates.
-- Added weighted SLA score, risk bucket, confidence bucket, top issue, neutral evidence text, and suggested actions.
+- Added configurable score weights and directions through exact-contract `carrier_score_rules.csv`.
+- Added late-trip, missing-POD, overdue-POD, rejected-POD, detention-case, update-exception, fuel-exception, gate-exception, ban-conflict, invoice-blocker, and data-completeness rates.
+- Added weighted SLA score, score penalty, risk bucket, confidence bucket, top issue, neutral evidence text, and suggested actions.
 - Added carrier exception summary rows for review meeting prep.
-- Added synthetic GCC demo data and tests.
+- Added synthetic GCC demo data covering 10 required carrier scenarios and 20 focused tests.
 - Added README CarrierScore visual and product-specific Before/After section.
 
 ### Why It Matters

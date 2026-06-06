@@ -1,9 +1,20 @@
-trip_id,pod_gap_type,risk_bucket,carrier_name,pod_age_hours,aging_bucket,invoice_blocked,severity,evidence
-CS-002,POD missing,POD OVERDUE,Gulf Bridge,72,48-168h,true,HIGH,Synthetic POD overdue
-CS-003,No gap,OK,Gulf Bridge,8,<24h,false,OK,Synthetic POD received
-CS-005,POD rejected,POD REJECTED,Gulf Bridge,54,48-168h,true,HIGH,Synthetic rejected POD
-CS-006,No gap,OK,Desert Line,5,<24h,false,OK,Synthetic POD received
-CS-009,POD pending,WATCH,Desert Line,22,<24h,false,LOW,Synthetic watch case
-CS-011,No gap,OK,North Star Logistics,4,<24h,false,OK,Synthetic POD received
-CS-012,No gap,OK,North Star Logistics,6,<24h,false,OK,Synthetic POD received
-CS-014,POD missing,POD MISSING,One Trip Express,30,24-48h,true,MEDIUM,Synthetic missing POD
+trip_id,pod_gap_type,risk_bucket,carrier_name,pod_age_hours,aging_bucket,invoice_blocked,invoice_status,severity,evidence
+EX-001,OK,OK,Atlas Roadlink,4,<24H,false,READY,OK,Synthetic POD received
+EX-002,OK,OK,Atlas Roadlink,5,<24H,false,READY,OK,Synthetic POD received
+EX-003,OK,OK,Atlas Roadlink,4,<24H,false,READY,OK,Synthetic POD received
+EX-004,OK,OK,Atlas Roadlink,6,<24H,false,READY,OK,Synthetic POD received
+EX-005,OK,OK,Atlas Roadlink,5,<24H,false,READY,OK,Synthetic POD received
+GD-001,OK,OK,Cedar Freight,8,<24H,false,READY,OK,Synthetic POD received
+GD-002,OK,OK,Cedar Freight,9,<24H,false,READY,OK,Synthetic POD received
+GD-003,OK,OK,Cedar Freight,8,<24H,false,READY,OK,Synthetic POD received
+WL-001,OK,OK,Red Sea Haulage,10,<24H,false,READY,OK,Synthetic POD received
+WL-002,OK,OK,Red Sea Haulage,12,<24H,false,READY,OK,Synthetic POD received
+POD-001,POD MISSING,NEEDS REVIEW,Peninsula Cargo,80,72H+,false,NOT READY,HIGH,Synthetic missing overdue POD
+POD-002,POD MISSING,NEEDS REVIEW,Peninsula Cargo,190,7D+,false,NOT READY,HIGH,Synthetic missing overdue POD
+POD-003,POD MISSING,NEEDS REVIEW,Peninsula Cargo,88,72H+,false,NOT READY,HIGH,Synthetic missing overdue POD
+POD-004,POD MISSING,NEEDS REVIEW,Peninsula Cargo,90,72H+,false,NOT READY,HIGH,Synthetic missing overdue POD
+POD-005,POD MISSING,NEEDS REVIEW,Peninsula Cargo,192,7D+,false,NOT READY,HIGH,Synthetic missing overdue POD
+INV-001,POD REJECTED,NEEDS REVIEW,Invoice Hold Express,60,72H+,true,BLOCKED,CRITICAL,Synthetic rejected POD blocking invoice
+INV-002,POD REJECTED,NEEDS REVIEW,Invoice Hold Express,52,72H+,true,ON HOLD,CRITICAL,Synthetic rejected POD blocking invoice
+INV-003,OK,OK,Invoice Hold Express,6,<24H,false,READY,OK,Synthetic POD received
+LOW-001,POD MISSING,NEEDS REVIEW,New Route Pilot,30,24-48H,false,NOT READY,MEDIUM,Synthetic low-sample missing POD

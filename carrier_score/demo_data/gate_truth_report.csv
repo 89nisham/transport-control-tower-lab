@@ -1,10 +1,8 @@
-trip_id,risk_bucket,carrier_name,gate_status,confidence_bucket,evidence
-CS-001,OK,Gulf Bridge,Matched,HIGH,Synthetic origin and destination matched
-CS-002,MISSING DESTINATION ENTRY,Gulf Bridge,Needs review,LOW,Synthetic missing destination entry
-CS-003,OK,Gulf Bridge,Matched,HIGH,Synthetic gate evidence matched
-CS-006,OK,Desert Line,Matched,HIGH,Synthetic gate evidence matched
-CS-008,AMBIGUOUS MATCH,Desert Line,Needs review,MEDIUM,Synthetic multiple plausible visits
-CS-011,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
-CS-012,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
-CS-013,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
-CS-014,NO VISIT EVIDENCE,One Trip Express,Needs review,LOW,Synthetic no visit evidence
+trip_id,gate_truth_status,exception_type,carrier_name,severity,evidence
+EX-001,OK,OK,Atlas Roadlink,OK,Synthetic gate evidence matched
+EX-002,OK,OK,Atlas Roadlink,OK,Synthetic gate evidence matched
+GD-001,OK,OK,Cedar Freight,OK,Synthetic gate evidence matched
+WL-001,OK,OK,Red Sea Haulage,OK,Synthetic gate evidence matched
+UPD-001,OK,OK,Signal Gap Transport,OK,Synthetic gate evidence matched
+BAN-001,OK,OK,City Window Movers,OK,Synthetic gate evidence matched
+LOW-001,NEEDS REVIEW,MISSING DESTINATION ENTRY,New Route Pilot,MEDIUM,Synthetic low-sample missing destination gate

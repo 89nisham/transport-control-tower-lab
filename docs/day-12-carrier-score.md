@@ -4,88 +4,74 @@ CarrierScore is a local-first Streamlit app for creating a neutral carrier perfo
 
 ## Business Problem
 
-Carrier reviews often become emotional when performance evidence is scattered across late trips, POD gaps, detention exposure, update discipline, fuel exceptions, gate-truth gaps, and restriction-window risks.
+Carrier reviews often become emotional when performance evidence is scattered across late trips, missing PODs, detention exposure, fuel exceptions, update discipline, ban-window risks, and gate-truth gaps.
 
 CarrierScore creates a deterministic SLA scorecard for:
 
 - carrier-level KPI review;
 - configurable weighted scoring;
-- watchlist and needs-review buckets;
-- data-gap visibility;
+- watch and at-risk buckets;
+- insufficient-data visibility;
 - top-issue explanation per carrier;
 - exception summary rows for review meetings.
 
 ## Inputs
 
-`trips.csv` requires:
-
-- `trip_id`
-- `carrier_name`
-- `vehicle_id` optional
-- `customer_name` optional
-- `origin` optional
-- `destination` optional
-- `lane_id` optional
-- `planned_departure` optional
-- `promised_arrival` optional
-- `delivered_time` optional
+`trips.csv` requires `trip_id` and `carrier_name`. Optional trip fields are `vehicle_id`, `customer_name`, `origin`, `destination`, `lane_id`, `planned_departure`, `promised_arrival`, and `delivered_time`.
 
 Optional supporting files:
 
-- `delay_classification_report.csv` with `trip_id`, `primary_delay_reason`, `risk_bucket`, optional `carrier_name`, `arrival_delay_minutes`, `severity`, and `evidence`
-- `pod_aging_report.csv` with `trip_id`, `pod_gap_type`, `risk_bucket`, optional `carrier_name`, `pod_age_hours`, `aging_bucket`, `invoice_blocked`, `severity`, and `evidence`
-- `detention_report.csv` with `trip_id`, `risk_bucket`, optional detention context, `severity`, and `evidence`
-- `update_discipline_report.csv` with `trip_id`, `risk_bucket`, optional update counts, `severity`, and `evidence`
-- `fuel_exceptions.csv` with `trip_id`, `risk_bucket`, optional exception type, `severity`, and `evidence`
-- `gate_truth_report.csv` with `trip_id`, `risk_bucket`, optional gate status, confidence, and evidence
-- `ban_risk_board.csv` with `trip_id`, `risk_bucket`, optional city, overlap, severity, and evidence
-- `carrier_score_rules.csv` with `metric` and `weight`
+- `delay_classification_report.csv`: `trip_id`, `primary_delay_reason`, `risk_bucket`, optional `carrier_name`, `arrival_delay_minutes`, `severity`, `evidence`
+- `pod_aging_report.csv`: `trip_id`, `pod_gap_type`, `risk_bucket`, optional `carrier_name`, `pod_age_hours`, `aging_bucket`, `invoice_blocked`, `invoice_status`, `severity`, `evidence`
+- `detention_report.csv`: `trip_id`, `risk_bucket`, optional `carrier_name`, `chargeable_minutes`, `estimated_charge`, `currency`, `severity`, `evidence`
+- `update_discipline_report.csv`: `trip_id`, `update_gap_type`, `risk_bucket`, optional `carrier_name`, `update_delay_minutes`, `severity`, `evidence`
+- `fuel_exceptions.csv`: `fuel_event_id`, `vehicle_id`, `exception_type`, `severity`, optional `trip_id`, `carrier_name`, `liters`, `evidence`
+- `gate_truth_report.csv`: `trip_id`, `gate_truth_status`, `exception_type`, optional `carrier_name`, `severity`, `evidence`
+- `ban_risk_board.csv`: `trip_id`, `risk_bucket`, optional `carrier_name`, `city`, `overlap_minutes`, `severity`, `evidence`
+- `carrier_score_rules.csv`: `metric_name`, `weight`, `direction`, `enabled`, `good_threshold`, `bad_threshold`
 
 ## Logic
 
-CarrierScore joins every optional report back to the required trip file by `trip_id`. The trip file is the source of carrier ownership, while report-level `carrier_name` is used only as a fallback.
+CarrierScore joins optional report rows back to trip ownership by `trip_id`. Report-level `carrier_name` is used as fallback context when a row cannot be matched to the trip file.
 
-Each source contributes a carrier-level exception rate:
-
-- late trips;
-- missing or blocked POD cases;
-- detention rows needing review;
-- update discipline gaps;
-- fuel exceptions;
-- gate-truth gaps;
-- restriction-window watch or conflict cases.
-
-The score starts at 100 and subtracts weighted exception-rate penalties. Weights can be changed with `carrier_score_rules.csv`; when no rules are uploaded, the demo defaults are used.
+The score starts at 100 and subtracts weighted penalties. Lower-is-better metrics penalize by `weight * metric_rate`. Higher-is-better metrics, such as data completeness, penalize by `weight * (1 - metric_rate)`. Uploaded scoring rules can override default weights and directions; disabled rows are ignored, and invalid rows become config warnings rather than crashes.
 
 Risk buckets:
 
-- `STRONG`
-- `STABLE`
-- `WATCHLIST`
-- `NEEDS REVIEW`
-- `DATA GAP`
+- `EXCELLENT`
+- `GOOD`
+- `WATCH`
+- `AT RISK`
+- `INSUFFICIENT DATA`
 
 Confidence buckets:
 
 - `HIGH`
 - `MEDIUM`
-- `LOW`
-- `DATA GAP`
+- `LOW SAMPLE`
+- `DATA LIMITED`
+- `DATA MISSING`
 
 ## Outputs
 
-`carrier_scorecard.csv` includes carrier KPIs, exception rates, weighted score, risk bucket, confidence bucket, top issue, evidence, and suggested action.
+`carrier_scorecard.csv` includes exactly the contract fields for carrier name, trip/customer/lane counts, source completeness, all exception rates, detention exposure, fuel liters, score, penalty, risk bucket, confidence bucket, top issue, evidence, and suggested action.
 
-`carrier_exception_summary.csv` includes one row per carrier and exception area that has review flags.
+`carrier_exception_summary.csv` includes exactly carrier name, exception source, exception type, affected trips, affected rate, severity, evidence, and suggested action.
 
 ## Demo Data
 
-The demo pack uses GCC-style synthetic operational rows:
+The demo pack uses GCC-style synthetic operational rows covering:
 
-- Gulf Bridge with delay, POD, detention, update, fuel, gate, and ban-window review flags;
-- Desert Line with smaller update, gate, fuel, and restriction-window watch cases;
-- North Star Logistics with clean high-confidence source rows;
-- One Trip Express with one trip and low-confidence review flags.
+- excellent carrier with clean performance;
+- good carrier with minor delay rate;
+- watch carrier with repeated late trips;
+- at-risk carrier with overdue PODs;
+- rejected POD and invoice blocker;
+- detention exposure;
+- update discipline exceptions;
+- fuel exceptions;
+- ban-window conflicts;
+- low-sample insufficient-data carrier.
 
 ## Run
 
