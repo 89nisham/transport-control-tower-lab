@@ -1,0 +1,8 @@
+trip_id,primary_delay_reason,risk_bucket,carrier_name,arrival_delay_minutes,severity,evidence
+CS-001,On time,ON TRACK,Gulf Bridge,0,OK,Synthetic on-time arrival
+CS-002,Origin dwell,LATE,Gulf Bridge,140,CRITICAL,Synthetic origin dwell and late arrival
+CS-004,Destination dwell,AT RISK,Gulf Bridge,45,MEDIUM,Synthetic destination dwell
+CS-005,Enroute delay,LATE,Gulf Bridge,140,HIGH,Synthetic enroute delay
+CS-006,On time,ON TRACK,Desert Line,0,OK,Synthetic on-time arrival
+CS-008,Minor late arrival,AT RISK,Desert Line,15,LOW,Synthetic minor delay
+CS-014,Enroute delay,LATE,One Trip Express,80,HIGH,Synthetic late arrival

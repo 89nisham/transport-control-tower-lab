@@ -1,0 +1,11 @@
+trip_id,risk_bucket,carrier_name,missing_update_count,late_update_count,severity,evidence
+CS-001,OK,Gulf Bridge,0,0,OK,Synthetic updates on time
+CS-002,LATE UPDATE,Gulf Bridge,0,2,MEDIUM,Synthetic late origin update
+CS-003,OK,Gulf Bridge,0,0,OK,Synthetic updates on time
+CS-005,MISSING UPDATE,Gulf Bridge,2,1,HIGH,Synthetic missing destination update
+CS-006,OK,Desert Line,0,0,OK,Synthetic updates on time
+CS-008,LATE UPDATE,Desert Line,0,1,LOW,Synthetic minor late update
+CS-011,OK,North Star Logistics,0,0,OK,Synthetic updates on time
+CS-012,OK,North Star Logistics,0,0,OK,Synthetic updates on time
+CS-013,OK,North Star Logistics,0,0,OK,Synthetic updates on time
+CS-014,SEQUENCE ISSUE,One Trip Express,1,1,HIGH,Synthetic sequence issue

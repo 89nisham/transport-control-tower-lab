@@ -1,0 +1,6 @@
+trip_id,risk_bucket,carrier_name,exception_type,severity,evidence
+CS-002,HIGH LITERS,Gulf Bridge,High liters,HIGH,Synthetic liters above policy threshold
+CS-005,UNKNOWN STATION,Gulf Bridge,Unknown station,MEDIUM,Synthetic station not in master
+CS-007,OK,Desert Line,None,OK,Synthetic clean fuel event
+CS-009,NO GPS EVIDENCE,Desert Line,No GPS evidence,MEDIUM,Synthetic missing GPS near fuel event
+CS-014,NO STOP NEAR FUEL,One Trip Express,No stop near fuel,HIGH,Synthetic fuel event without nearby stop

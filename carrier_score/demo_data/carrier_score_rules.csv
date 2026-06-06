@@ -1,0 +1,8 @@
+metric,weight
+late_trip_rate,0.25
+missing_pod_rate,0.20
+detention_review_rate,0.15
+update_gap_rate,0.15
+fuel_exception_rate,0.10
+gate_gap_rate,0.10
+ban_watch_rate,0.05

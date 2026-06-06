@@ -1,0 +1,10 @@
+trip_id,risk_bucket,carrier_name,gate_status,confidence_bucket,evidence
+CS-001,OK,Gulf Bridge,Matched,HIGH,Synthetic origin and destination matched
+CS-002,MISSING DESTINATION ENTRY,Gulf Bridge,Needs review,LOW,Synthetic missing destination entry
+CS-003,OK,Gulf Bridge,Matched,HIGH,Synthetic gate evidence matched
+CS-006,OK,Desert Line,Matched,HIGH,Synthetic gate evidence matched
+CS-008,AMBIGUOUS MATCH,Desert Line,Needs review,MEDIUM,Synthetic multiple plausible visits
+CS-011,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
+CS-012,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
+CS-013,OK,North Star Logistics,Matched,HIGH,Synthetic gate evidence matched
+CS-014,NO VISIT EVIDENCE,One Trip Express,Needs review,LOW,Synthetic no visit evidence

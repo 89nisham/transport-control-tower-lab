@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab%20%2B%20BanWindow-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab%20%2B%20BanWindow%20%2B%20CarrierScore-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -603,6 +603,68 @@ The app loads realistic GCC synthetic demo data from `ban_window/demo_data/` whe
 - All restriction windows must come from the uploaded `ban_windows.csv` file.
 - Missing city, timing, or vehicle-class values reduce the confidence of the planning check.
 - Time-of-day restriction windows are expanded against each trip's planned departure date.
+
+## Day 12 Micro-Product: CarrierScore
+
+CarrierScore is a local-first Streamlit app that builds a neutral carrier SLA scorecard from simple trip files and optional exception outputs.
+
+![CarrierScore Streamlit screenshot](docs/assets/carrier-score-streamlit.svg)
+
+### Who It Is For
+
+- Control tower teams
+- Transport managers
+- Carrier performance reviewers
+- Dispatch and service-quality leads
+- Operations teams preparing evidence-based review packs
+
+### Problem
+
+Carrier reviews get messy when performance data is scattered. Teams still need to combine:
+
+- late trips and delay causes;
+- missing POD and invoice-blocking document gaps;
+- detention exposure;
+- update discipline;
+- fuel exceptions;
+- gate-truth gaps;
+- restriction-window risks.
+
+### Inputs
+
+- `trips.csv`: required `trip_id`, `carrier_name`, optional vehicle, customer, lane, origin, destination, planned, promised, and delivered fields
+- `delay_classification_report.csv`: optional delay output
+- `pod_aging_report.csv`: optional PODPulse output
+- `detention_report.csv`: optional DetentionClock output
+- `update_discipline_report.csv`: optional UpdatePulse output
+- `fuel_exceptions.csv`: optional FuelGuard output
+- `gate_truth_report.csv`: optional GateTruth output
+- `ban_risk_board.csv`: optional BanWindow output
+- `carrier_score_rules.csv`: optional `metric`, `weight` scoring rules
+
+### Outputs
+
+- `carrier_score/output/carrier_scorecard.csv` with carrier KPIs, exception rates, weighted score, risk bucket, confidence bucket, top issue, evidence, and suggested action
+- `carrier_score/output/carrier_exception_summary.csv` with one row per carrier and exception area needing review
+- KPI cards, Plotly bucket chart, scorecard table, exception summary, and download buttons inside Streamlit
+
+Risk buckets are `STRONG`, `STABLE`, `WATCHLIST`, `NEEDS REVIEW`, and `DATA GAP`.
+
+### Run CarrierScore
+
+```bash
+uv sync
+uv run streamlit run carrier_score/app.py
+```
+
+The app loads realistic GCC synthetic demo data from `carrier_score/demo_data/` when no files are uploaded.
+
+### CarrierScore Limitations
+
+- V1 is deterministic and file-based; no live carrier, procurement, billing, or messaging integration is included.
+- CarrierScore does not create penalty invoices, legal claims, vendor communications, or contract records.
+- The trip file remains the primary source of carrier ownership.
+- Scores depend on uploaded report quality and user-supplied scoring weights.
 
 ## Quick Start
 

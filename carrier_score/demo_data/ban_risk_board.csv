@@ -1,0 +1,10 @@
+trip_id,risk_bucket,carrier_name,city,overlap_minutes,severity,evidence
+CS-001,CLEAR,Gulf Bridge,Riyadh,0,OK,Synthetic clear restriction check
+CS-002,BAN CONFLICT,Gulf Bridge,Jeddah,45,HIGH,Synthetic city-window conflict
+CS-004,WATCH,Gulf Bridge,Jeddah,0,MEDIUM,Synthetic near-window watch
+CS-006,CLEAR,Desert Line,Dammam,0,OK,Synthetic clear restriction check
+CS-010,WATCH,Desert Line,Riyadh,0,MEDIUM,Synthetic near-window watch
+CS-011,CLEAR,North Star Logistics,Riyadh,0,OK,Synthetic clear restriction check
+CS-012,CLEAR,North Star Logistics,Dammam,0,OK,Synthetic clear restriction check
+CS-013,CLEAR,North Star Logistics,Dubai,0,OK,Synthetic clear restriction check
+CS-014,VEHICLE CLASS UNKNOWN,One Trip Express,Jeddah,0,MEDIUM,Synthetic missing vehicle class for window

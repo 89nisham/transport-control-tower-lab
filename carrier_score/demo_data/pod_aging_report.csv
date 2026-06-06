@@ -1,0 +1,9 @@
+trip_id,pod_gap_type,risk_bucket,carrier_name,pod_age_hours,aging_bucket,invoice_blocked,severity,evidence
+CS-002,POD missing,POD OVERDUE,Gulf Bridge,72,48-168h,true,HIGH,Synthetic POD overdue
+CS-003,No gap,OK,Gulf Bridge,8,<24h,false,OK,Synthetic POD received
+CS-005,POD rejected,POD REJECTED,Gulf Bridge,54,48-168h,true,HIGH,Synthetic rejected POD
+CS-006,No gap,OK,Desert Line,5,<24h,false,OK,Synthetic POD received
+CS-009,POD pending,WATCH,Desert Line,22,<24h,false,LOW,Synthetic watch case
+CS-011,No gap,OK,North Star Logistics,4,<24h,false,OK,Synthetic POD received
+CS-012,No gap,OK,North Star Logistics,6,<24h,false,OK,Synthetic POD received
+CS-014,POD missing,POD MISSING,One Trip Express,30,24-48h,true,MEDIUM,Synthetic missing POD

@@ -50,6 +50,7 @@ packages = [
   "pod_pulse",
   "lane_lab",
   "ban_window",
+  "carrier_score",
 ]
 
 [tool.uv]

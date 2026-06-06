@@ -1,0 +1,6 @@
+trip_id,risk_bucket,carrier_name,detention_minutes,chargeable_minutes,severity,evidence
+CS-002,CHARGEABLE,Gulf Bridge,220,100,HIGH,Synthetic origin dwell above free time
+CS-004,APPROACHING FREE TIME,Gulf Bridge,105,0,MEDIUM,Synthetic site dwell watch
+CS-006,OK,Desert Line,45,0,OK,Synthetic short dwell
+CS-009,OK,Desert Line,50,0,OK,Synthetic short dwell
+CS-014,MISSING EXIT,One Trip Express,0,0,MEDIUM,Synthetic missing exit evidence

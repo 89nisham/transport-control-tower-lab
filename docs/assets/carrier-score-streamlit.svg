@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">CarrierScore Streamlit screenshot mockup</title>
+  <desc id="desc">A dashboard-style mockup showing carrier SLA scores, review buckets, and exception summaries.</desc>
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="0" y="0" width="260" height="720" fill="#111827"/>
+  <text x="34" y="58" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#ffffff">CarrierScore</text>
+  <text x="34" y="98" font-family="Arial, sans-serif" font-size="15" fill="#d1d5db">Inputs</text>
+  <rect x="32" y="122" width="196" height="42" rx="6" fill="#1f2937"/>
+  <text x="50" y="148" font-family="Arial, sans-serif" font-size="14" fill="#f3f4f6">trips.csv</text>
+  <rect x="32" y="178" width="196" height="42" rx="6" fill="#1f2937"/>
+  <text x="50" y="204" font-family="Arial, sans-serif" font-size="14" fill="#f3f4f6">optional reports</text>
+  <rect x="32" y="234" width="196" height="42" rx="6" fill="#1f2937"/>
+  <text x="50" y="260" font-family="Arial, sans-serif" font-size="14" fill="#f3f4f6">score rules</text>
+  <text x="34" y="326" font-family="Arial, sans-serif" font-size="15" fill="#d1d5db">Settings</text>
+  <rect x="32" y="350" width="196" height="42" rx="6" fill="#1f2937"/>
+  <text x="50" y="376" font-family="Arial, sans-serif" font-size="14" fill="#f3f4f6">Stable threshold: 75</text>
+  <rect x="32" y="414" width="196" height="46" rx="6" fill="#2563eb"/>
+  <text x="80" y="443" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Run CarrierScore</text>
+
+  <text x="300" y="58" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">CarrierScore</text>
+  <text x="300" y="88" font-family="Arial, sans-serif" font-size="16" fill="#475569">Builds a neutral SLA scorecard from trip files and optional exception outputs.</text>
+  <rect x="300" y="112" width="850" height="54" rx="8" fill="#dbeafe"/>
+  <text x="326" y="145" font-family="Arial, sans-serif" font-size="15" fill="#1e3a8a">Local review board only: no penalty invoices, vendor messages, or live integrations.</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="300" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="318" y="224" font-size="13" fill="#64748b">Carriers</text>
+    <text x="318" y="256" font-size="30" font-weight="700" fill="#0f172a">4</text>
+    <rect x="448" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="466" y="224" font-size="13" fill="#64748b">Trips</text>
+    <text x="466" y="256" font-size="30" font-weight="700" fill="#0f172a">14</text>
+    <rect x="596" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="614" y="224" font-size="13" fill="#64748b">Avg score</text>
+    <text x="614" y="256" font-size="30" font-weight="700" fill="#2563eb">72</text>
+    <rect x="744" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="762" y="224" font-size="13" fill="#64748b">Needs review</text>
+    <text x="762" y="256" font-size="30" font-weight="700" fill="#dc2626">2</text>
+    <rect x="892" y="194" width="132" height="78" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="910" y="224" font-size="13" fill="#64748b">Summary rows</text>
+    <text x="910" y="256" font-size="30" font-weight="700" fill="#0f172a">11</text>
+  </g>
+
+  <rect x="300" y="304" width="850" height="350" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="300" y="304" width="850" height="48" rx="8" fill="#f1f5f9"/>
+  <text x="326" y="334" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">carrier_scorecard.csv</text>
+  <g font-family="Arial, sans-serif" font-size="13">
+    <text x="326" y="382" fill="#64748b">carrier</text>
+    <text x="540" y="382" fill="#64748b">score</text>
+    <text x="654" y="382" fill="#64748b">bucket</text>
+    <text x="826" y="382" fill="#64748b">top issue</text>
+    <text x="1010" y="382" fill="#64748b">confidence</text>
+    <line x1="326" y1="398" x2="1124" y2="398" stroke="#e2e8f0"/>
+    <text x="326" y="432" fill="#0f172a">Gulf Bridge</text>
+    <text x="540" y="432" fill="#0f172a">48.0</text>
+    <rect x="654" y="411" width="116" height="28" rx="4" fill="#dc2626"/>
+    <text x="670" y="430" fill="#ffffff" font-weight="700">NEEDS REVIEW</text>
+    <text x="826" y="432" fill="#0f172a">Delay performance</text>
+    <text x="1010" y="432" fill="#0f172a">HIGH</text>
+    <text x="326" y="486" fill="#0f172a">Desert Line</text>
+    <text x="540" y="486" fill="#0f172a">85.0</text>
+    <rect x="654" y="465" width="74" height="28" rx="4" fill="#2563eb"/>
+    <text x="670" y="484" fill="#ffffff" font-weight="700">STABLE</text>
+    <text x="826" y="486" fill="#0f172a">Gate-truth gaps</text>
+    <text x="1010" y="486" fill="#0f172a">HIGH</text>
+    <text x="326" y="540" fill="#0f172a">North Star Logistics</text>
+    <text x="540" y="540" fill="#0f172a">100.0</text>
+    <rect x="654" y="519" width="76" height="28" rx="4" fill="#15803d"/>
+    <text x="670" y="538" fill="#ffffff" font-weight="700">STRONG</text>
+    <text x="826" y="540" fill="#0f172a">No dominant issue</text>
+    <text x="1010" y="540" fill="#0f172a">MEDIUM</text>
+    <text x="326" y="594" fill="#0f172a">One Trip Express</text>
+    <text x="540" y="594" fill="#0f172a">0.0</text>
+    <rect x="654" y="573" width="116" height="28" rx="4" fill="#dc2626"/>
+    <text x="670" y="592" fill="#ffffff" font-weight="700">NEEDS REVIEW</text>
+    <text x="826" y="594" fill="#0f172a">Delay performance</text>
+    <text x="1010" y="594" fill="#0f172a">LOW</text>
+  </g>
+</svg>

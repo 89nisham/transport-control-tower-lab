@@ -295,3 +295,30 @@ Planners need a simple way to check whether uploaded city, port, mall, or site r
 - `uv run ruff check .`
 - `uv run python -m py_compile ban_window/app.py ban_window/engine.py ban_window/models.py`
 - Demo smoke run writes `ban_window/output/ban_risk_board.csv` and `ban_window/output/ban_conflicts.csv`
+
+## v0.12.0-carrier-score
+
+Date: 2026-06-06
+
+### Shipped
+
+- Added `carrier_score/` as a separate Streamlit micro-product folder.
+- Added deterministic carrier-level KPI aggregation from required trips and optional product output files.
+- Joined optional report rows back to trip ownership by `trip_id`, with report carrier names used only as fallback context.
+- Added configurable score weights through `carrier_score_rules.csv`.
+- Added late-trip, missing-POD, detention-review, update-gap, fuel-exception, gate-gap, and ban-watch exception rates.
+- Added weighted SLA score, risk bucket, confidence bucket, top issue, neutral evidence text, and suggested actions.
+- Added carrier exception summary rows for review meeting prep.
+- Added synthetic GCC demo data and tests.
+- Added README CarrierScore visual and product-specific Before/After section.
+
+### Why It Matters
+
+Carrier performance reviews are calmer when operational evidence is consolidated before the meeting. CarrierScore turns scattered exception files into a transparent SLA scorecard without penalty invoices, legal claims, vendor communication, or live integrations.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile carrier_score/app.py carrier_score/engine.py carrier_score/models.py`
+- Demo smoke run writes `carrier_score/output/carrier_scorecard.csv` and `carrier_score/output/carrier_exception_summary.csv`
