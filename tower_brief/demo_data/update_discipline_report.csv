@@ -1,3 +1,4 @@
 trip_id,vehicle_id,customer_name,carrier_name,update_gap_type,risk_bucket,update_delay_minutes,severity,evidence,suggested_action
 TB-004,V-104,Metro Pharma,Signal Gap Transport,MISSING UPDATE,HIGH,210,HIGH,No driver or TMS milestone since departure,Request immediate status update
+TB-009,V-109,Doha Retail,Desert Bridge,LATE UPDATE,WATCH,55,MEDIUM,Arrival update posted 55 minutes late,Coach update timing
 TB-001,V-101,Najd Retail,Atlas Roadlink,OK,OK,0,OK,All milestones current,No action needed

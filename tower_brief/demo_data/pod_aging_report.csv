@@ -1,3 +1,4 @@
-trip_id,vehicle_id,customer_name,carrier_name,pod_gap_type,risk_bucket,aging_bucket,invoice_blocked,invoice_status,severity,evidence,suggested_action
-TB-007,V-107,Najd Retail,Invoice Hold Express,POD REJECTED,HIGH,72H+,true,BLOCKED,CRITICAL,Rejected POD is blocking invoice,Resolve POD rejection with billing
-TB-001,V-101,Najd Retail,Atlas Roadlink,OK,OK,0-24H,false,READY,OK,POD approved,No action needed
+trip_id,vehicle_id,customer_name,carrier_name,pod_gap_type,risk_bucket,pod_age_hours,aging_bucket,invoice_blocked,invoice_status,invoice_amount,severity,evidence,suggested_action
+TB-007,V-107,Najd Retail,Invoice Hold Express,POD REJECTED,HIGH,90,72H+,true,BLOCKED,4200,CRITICAL,Rejected POD is blocking invoice,Resolve POD rejection with billing
+TB-003,V-103,Portside Stores,Dock Time Logistics,POD MISSING,WATCH,190,7D+,false,NOT READY,0,MEDIUM,POD missing for more than 7 days,Collect POD from carrier
+TB-001,V-101,Najd Retail,Atlas Roadlink,OK,OK,12,0-24H,false,READY,0,OK,POD approved,No action needed

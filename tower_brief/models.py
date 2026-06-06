@@ -9,8 +9,9 @@ class TowerBriefSettings(BaseModel):
     """User-adjustable TowerBrief thresholds."""
 
     brief_date: str = "2026-06-06"
-    high_priority_limit: int = Field(default=10, ge=1)
-    detention_exposure_threshold: float = Field(default=500.0, ge=0)
-    fuel_liter_threshold: float = Field(default=150.0, ge=0)
-    stale_update_minutes_threshold: float = Field(default=120.0, ge=0)
-
+    critical_detention_exposure: float = Field(default=1000.0, ge=0)
+    high_detention_exposure: float = Field(default=500.0, ge=0)
+    critical_ban_overlap_minutes: float = Field(default=120.0, ge=0)
+    critical_pod_age_hours: float = Field(default=168.0, ge=0)
+    max_critical_rows: int = Field(default=20, ge=1)
+    max_high_priority_rows: int = Field(default=20, ge=1)

@@ -37,7 +37,7 @@ TowerBrief scans available files, validates minimal required columns for each up
 
 Each exception row becomes an action with:
 
-- priority rank and bucket;
+- priority value: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, or `DATA GAP`;
 - action owner;
 - source product and source file;
 - trip, vehicle, customer, and carrier context;
@@ -45,7 +45,21 @@ Each exception row becomes an action with:
 - evidence and suggested action;
 - financial exposure where available.
 
-Priority is deterministic: critical severity, risk bucket, and financial exposure sort first. Trip context fills missing customer and carrier values when source rows include a matching `trip_id`.
+Priority is deterministic. Critical severity, critical/high-risk buckets, detention exposure above the configured critical threshold, rejected POD with invoice blocking, POD missing for 7D+, ban conflict overlap above threshold, at-risk carrier score, and high-risk fuel evidence become `CRITICAL`. High severity, delayed/review buckets, POD overdue, invoice blockers, missing gate events, missing updates, and detention exposure above the high threshold become `HIGH`. Watchlist and unclear-impact rows become `MEDIUM`; clean informational rows become `LOW`; schema and context gaps become `DATA GAP`.
+
+Owner buckets are deterministic:
+
+- ETA Watch and DelayLens -> `control_tower`
+- DetentionClock -> `billing_or_operations`
+- GateTruth -> `control_tower`
+- FuelGuard -> `fleet_audit`
+- UpdatePulse -> `dispatcher_or_control_tower`
+- PODPulse -> `documentation_or_billing`
+- BanWindow -> `planning`
+- CarrierScore -> `transport_manager`
+- Data gaps -> `data_owner`
+
+Trip context fills missing customer and carrier values when source rows include a matching `trip_id`.
 
 ## Outputs
 
@@ -53,7 +67,9 @@ Priority is deterministic: critical severity, risk bucket, and financial exposur
 - `daily_control_tower_brief.html`
 - `daily_control_tower_brief.csv`
 
-The CSV export is the unified action table used by the Streamlit view and HTML brief.
+The CSV export includes exactly: `brief_date`, `section`, `priority`, `owner`, `source_file`, `source_product`, `trip_id`, `vehicle_id`, `customer_name`, `carrier_name`, `exception_type`, `risk_bucket`, `severity`, `financial_exposure`, `evidence`, and `suggested_action`.
+
+The markdown and static HTML briefs include the same core management sections: executive summary, KPI snapshot, critical actions, high priority actions, financial exposure, customer risks, carrier watchlist, delay and ETA risks, POD and invoice blockers, detention exposure, fuel and update exceptions, ban-window risks, data gaps, files used, files missing, and limitations.
 
 ## Demo Data
 
@@ -68,7 +84,9 @@ The demo pack uses synthetic GCC-style rows covering:
 - rejected POD and invoice blocker;
 - ban-window conflict;
 - carrier watch and at-risk rows;
-- missing or partial source coverage behavior.
+- data gap from missing context fields;
+- multiple exceptions on the same trip from different source products;
+- duplicate issue rows deduplicated within the same source product.
 
 ## Run
 

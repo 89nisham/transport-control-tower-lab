@@ -1,3 +1,4 @@
-fuel_event_id,trip_id,vehicle_id,customer_name,carrier_name,exception_type,severity,liters,evidence,suggested_action
-FUEL-001,TB-005,V-105,City Fresh,Fuel Review Fleet,HIGH LITERS,HIGH,220,Single fuel event above lane threshold,Review receipt and GPS stop evidence
-FUEL-002,TB-001,V-101,Najd Retail,Atlas Roadlink,OK,OK,70,Known station matched,No action needed
+fuel_event_id,trip_id,vehicle_id,customer_name,carrier_name,exception_type,severity,liters,amount,evidence,suggested_action
+FUEL-001,TB-005,V-105,City Fresh,Fuel Review Fleet,NO GPS EVIDENCE,HIGH,220,0,No GPS point or stop evidence near fuel time,Review receipt and GPS stop evidence
+FUEL-002,TB-001,V-101,Najd Retail,Atlas Roadlink,OK,OK,70,0,Known station matched,No action needed
+FUEL-003,,V-111,,,DUPLICATE RECEIPT,HIGH,90,330,Duplicate receipt number found without trip context,Review duplicate receipt and add trip context

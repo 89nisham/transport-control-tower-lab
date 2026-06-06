@@ -1,3 +1,4 @@
 trip_id,vehicle_id,customer_name,carrier_name,primary_delay_reason,risk_bucket,arrival_delay_minutes,severity,evidence,suggested_action
 TB-002,V-102,Gulf Foods,Red Sea Haulage,LATE ARRIVAL,CRITICAL,155,CRITICAL,Arrival delay exceeds critical threshold,Prepare recovery note for customer
+TB-002,V-102,Gulf Foods,Red Sea Haulage,LATE ARRIVAL,CRITICAL,155,HIGH,Duplicate row with less complete evidence,Call customer service desk
 TB-001,V-101,Najd Retail,Atlas Roadlink,ON TIME,ON TIME,0,OK,Delivered before promised arrival,No action needed

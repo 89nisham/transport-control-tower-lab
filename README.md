@@ -924,7 +924,9 @@ All files are optional and read from uploads or `tower_brief/demo_data/`:
 - `tower_brief/output/daily_control_tower_brief.html`
 - `tower_brief/output/daily_control_tower_brief.csv`
 
-The CSV export is a unified action table with priority, owner, source product, trip, customer, carrier, exception type, risk, severity, evidence, suggested action, and financial exposure.
+The CSV export is a unified action table with the exact `daily_control_tower_brief.csv` contract: brief date, section, priority, owner, source file/product, trip, vehicle, customer, carrier, exception type, risk bucket, severity, financial exposure, evidence, and suggested action.
+
+Priority values are deterministic: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, and `DATA GAP`. Owner buckets are operational roles such as `control_tower`, `billing_or_operations`, `fleet_audit`, `dispatcher_or_control_tower`, `documentation_or_billing`, `planning`, `transport_manager`, and `data_owner`.
 
 ### Run TowerBrief
 

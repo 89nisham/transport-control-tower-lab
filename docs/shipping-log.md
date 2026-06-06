@@ -333,9 +333,9 @@ Date: 2026-06-06
 - Added deterministic daily brief generation from optional product-output CSV files.
 - Added source-file coverage reporting for used, missing, and data-missing files.
 - Added unified action table normalization across trip, vehicle, customer, carrier, exception, risk, severity, evidence, and suggested-action fields.
-- Added priority ranking, priority buckets, owner routing, KPI snapshot, source coverage, markdown brief, HTML brief, and CSV action export.
+- Added exact-contract priority values, owner routing, KPI snapshot, source coverage, markdown brief, escaped static HTML brief, and 16-column CSV action export.
 - Added CLI entry point `tower-brief` for file-based batch generation.
-- Added synthetic GCC demo product-output files and focused tests.
+- Added synthetic GCC demo product-output files covering the 12 required scenarios and 21 focused tests.
 - Added README TowerBrief visual and product-specific Before/After section.
 
 ### Why It Matters
