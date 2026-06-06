@@ -1,7 +1,7 @@
 # Transport Control Tower Lab
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab%20%2B%20BanWindow%20%2B%20CarrierScore-ff4b4b)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-GeoReplay%20%2B%20ETA%20Watch%20%2B%20DetentionClock%20%2B%20GateTruth%20%2B%20FuelGuard%20%2B%20UpdatePulse%20%2B%20DelayLens%20%2B%20PODPulse%20%2B%20LaneLab%20%2B%20BanWindow%20%2B%20CarrierScore%20%2B%20TowerBrief-ff4b4b)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
@@ -878,6 +878,74 @@ After:
 - Each milestone is classified as `OK`, `WATCH`, `REVIEW`, `HIGH RISK`, or `DATA MISSING` with readable evidence.
 - Missing, late, early, duplicate, sequence, and no-event-evidence flags are exported for dispatch review.
 
+## Day 13 Micro-Product: TowerBrief
+
+TowerBrief is a local-first Streamlit app and CLI that turns the previous product-output CSVs into one daily management brief.
+
+![TowerBrief Streamlit screenshot](docs/assets/tower-brief-streamlit.svg)
+
+### Who It Is For
+
+- Control tower managers
+- Transport managers
+- Dispatch leads
+- Billing review teams
+- Carrier-management teams preparing a daily standup
+
+### Problem
+
+Managers do not want to open 12 separate CSV files every morning. They need one brief that shows:
+
+- which exceptions are critical;
+- what needs action today;
+- who owns each follow-up;
+- which customers and carriers are exposed;
+- where financial risk exists;
+- which source files are missing or incomplete.
+
+### Inputs
+
+All files are optional and read from uploads or `tower_brief/demo_data/`:
+
+- `trips.csv`
+- `eta_risk_board.csv`
+- `detention_report.csv`
+- `gate_truth_report.csv`
+- `fuel_exceptions.csv`
+- `update_discipline_report.csv`
+- `delay_classification_report.csv`
+- `pod_aging_report.csv`
+- `ban_risk_board.csv`
+- `carrier_scorecard.csv`
+
+### Outputs
+
+- `tower_brief/output/daily_control_tower_brief.md`
+- `tower_brief/output/daily_control_tower_brief.html`
+- `tower_brief/output/daily_control_tower_brief.csv`
+
+The CSV export is a unified action table with priority, owner, source product, trip, customer, carrier, exception type, risk, severity, evidence, suggested action, and financial exposure.
+
+### Run TowerBrief
+
+```bash
+uv sync
+uv run streamlit run tower_brief/app.py
+```
+
+CLI:
+
+```bash
+uv run tower-brief tower_brief/demo_data tower_brief/output
+```
+
+### TowerBrief Limitations
+
+- V1 is deterministic and file-based.
+- It uses synthetic demo data only.
+- It does not use AI-generated narrative, paid APIs, live integrations, emails, WhatsApp, Telegram, workflow engines, login systems, BI servers, or databases.
+- Missing source files reduce brief coverage but do not block export generation.
+
 ## Python Libraries
 
 - `pandas`: reads, normalizes, validates, groups, and exports operational tabular data.
@@ -887,13 +955,13 @@ After:
 - `loguru`: keeps lightweight operational logs.
 - `pytest`: validates the core behavior.
 - `ruff`: checks code quality before shipping.
-- `streamlit`: runs the GeoReplay, ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse local apps.
+- `streamlit`: runs the local product apps.
 - `geopandas`: handles geospatial tables and coordinate reference systems.
 - `shapely`: builds and checks geofence geometry.
 - `geopy`: reverse-geocodes only geofence/event/exception locations when explicitly enabled.
 - `folium`: renders the interactive map.
-- `plotly`: renders clean ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse KPI distribution charts.
-- `pydantic`: validates GeoReplay, ETA Watch, DetentionClock, GateTruth, FuelGuard, and UpdatePulse input records.
+- `plotly`: renders clean KPI distribution charts.
+- `pydantic`: validates product settings and input records.
 
 ## Public Story
 
@@ -912,6 +980,8 @@ Day 5 is GateTruth: a Streamlit app that turns planned trips and GeoReplay visit
 Day 6 is FuelGuard: a Streamlit app that turns fuel transactions, GPS points, fuel-site masters, and trip windows into a fuel reconciliation review pack.
 
 Day 7 is UpdatePulse: a Streamlit app that turns trip plans, TMS or driver updates, and optional GeoReplay visits into an update-discipline review pack.
+
+Day 13 is TowerBrief: a Streamlit app and CLI that turns product-output files into one daily control-tower management brief.
 
 See [docs/shipping-log.md](docs/shipping-log.md) for the build log.
 

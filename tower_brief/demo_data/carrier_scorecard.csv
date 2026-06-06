@@ -1,0 +1,4 @@
+carrier_name,total_trips,customer_count,lane_count,source_files_used,data_completeness_rate,on_time_rate,late_trip_rate,missing_pod_rate,overdue_pod_rate,rejected_pod_rate,detention_case_rate,update_exception_rate,fuel_exception_rate,gate_exception_rate,ban_conflict_rate,invoice_blocker_rate,estimated_detention_exposure,total_fuel_exception_liters,score,score_penalty,risk_bucket,confidence_bucket,top_issue,evidence,suggested_action
+Atlas Roadlink,12,3,2,7,1.0,0.95,0.05,0,0,0,0,0,0,0,0,0,0,0,97,3,EXCELLENT,HIGH,No dominant issue,Strong performance across uploaded files,Maintain current review cadence
+Red Sea Haulage,5,2,2,5,0.8,0.2,0.8,0,0,0,0,0.2,0,0,0,0,0,0,68,32,WATCH,MEDIUM,late trips,Late arrival pattern on Jeddah-Riyadh lane,Review dispatch recovery plan
+Invoice Hold Express,3,1,1,4,0.7,0.67,0.33,0,0,0.67,0,0,0,0,0,0.67,0,0,55,45,AT RISK,LOW SAMPLE,invoice blockers,POD rejection and invoice blocker concentration,Resolve invoice evidence with billing

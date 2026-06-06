@@ -322,3 +322,29 @@ Carrier performance reviews are calmer when operational evidence is consolidated
 - `uv run ruff check .`
 - `uv run python -m py_compile carrier_score/app.py carrier_score/engine.py carrier_score/models.py`
 - Demo smoke run writes `carrier_score/output/carrier_scorecard.csv` and `carrier_score/output/carrier_exception_summary.csv`
+
+## v0.13.0-tower-brief
+
+Date: 2026-06-06
+
+### Shipped
+
+- Added `tower_brief/` as the final local-first Streamlit micro-product folder.
+- Added deterministic daily brief generation from optional product-output CSV files.
+- Added source-file coverage reporting for used, missing, and data-missing files.
+- Added unified action table normalization across trip, vehicle, customer, carrier, exception, risk, severity, evidence, and suggested-action fields.
+- Added priority ranking, priority buckets, owner routing, KPI snapshot, source coverage, markdown brief, HTML brief, and CSV action export.
+- Added CLI entry point `tower-brief` for file-based batch generation.
+- Added synthetic GCC demo product-output files and focused tests.
+- Added README TowerBrief visual and product-specific Before/After section.
+
+### Why It Matters
+
+Daily standups should start from one manager-ready brief, not a folder of disconnected product exports. TowerBrief consolidates local product outputs into an action-ranked brief without AI-generated narrative, automated messaging, workflow systems, or live integrations.
+
+### Validation
+
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m py_compile tower_brief/app.py tower_brief/engine.py tower_brief/models.py`
+- Demo smoke run writes `tower_brief/output/daily_control_tower_brief.md`, `tower_brief/output/daily_control_tower_brief.html`, and `tower_brief/output/daily_control_tower_brief.csv`

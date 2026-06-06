@@ -22,6 +22,8 @@ update_pulse/output/*
 !update_pulse/output/.gitkeep
 pod_pulse/output/*
 !pod_pulse/output/.gitkeep
+tower_brief/output/*
+!tower_brief/output/.gitkeep
 logs/*
 !logs/.gitkeep
 

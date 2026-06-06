@@ -20,6 +20,7 @@ dependencies = [
 
 [project.scripts]
 control-tower = "control_tower_lab.cli:app"
+tower-brief = "tower_brief.engine:main"
 
 [dependency-groups]
 dev = [
@@ -51,6 +52,7 @@ packages = [
   "lane_lab",
   "ban_window",
   "carrier_score",
+  "tower_brief",
 ]
 
 [tool.uv]

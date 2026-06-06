@@ -1,0 +1,3 @@
+trip_id,vehicle_id,customer_name,carrier_name,risk_bucket,city,overlap_minutes,severity,evidence,suggested_action
+TB-006,V-106,Southern Parts,City Window Movers,BAN CONFLICT,Riyadh,140,CRITICAL,Planned arrival overlaps truck ban window,Hold or reroute before city entry
+TB-001,V-101,Najd Retail,Atlas Roadlink,OK,Dammam,0,OK,No ban conflict,No action needed

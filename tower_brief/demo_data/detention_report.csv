@@ -1,0 +1,3 @@
+trip_id,vehicle_id,customer_name,carrier_name,risk_bucket,chargeable_minutes,estimated_charge,currency,severity,evidence,suggested_action
+TB-003,V-103,Portside Stores,Dock Time Logistics,DETENTION,180,900,SAR,HIGH,Destination dwell exceeded free time by 180 minutes,Review dwell evidence before billing
+TB-007,V-107,Najd Retail,Invoice Hold Express,NO DETENTION,0,0,SAR,OK,No chargeable detention,No action needed

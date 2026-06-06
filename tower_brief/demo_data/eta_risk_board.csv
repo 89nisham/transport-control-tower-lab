@@ -1,0 +1,5 @@
+trip_id,vehicle_id,customer_name,carrier_name,risk_bucket,eta_status,severity,evidence,suggested_action
+TB-001,V-101,Najd Retail,Atlas Roadlink,ON TIME,ON TIME,OK,Delivered before promise,No action needed
+TB-002,V-102,Gulf Foods,Red Sea Haulage,CRITICAL,LATE,HIGH,Predicted arrival is 155 minutes after promise,Call dispatcher and prepare customer update
+TB-004,V-104,Metro Pharma,Signal Gap Transport,DELAYED,NO SIGNAL,MEDIUM,No fresh vehicle event in last 3 hours,Confirm vehicle status
+TB-006,V-106,Southern Parts,City Window Movers,WATCH,AT RISK,MEDIUM,ETA close to city restriction window,Review route timing

@@ -1,0 +1,9 @@
+trip_id,vehicle_id,customer_name,carrier_name,origin,destination,lane_id,promised_arrival,delivered_time
+TB-001,V-101,Najd Retail,Atlas Roadlink,Riyadh,Dammam,RUH-DMM,2026-06-06T10:00:00Z,2026-06-06T09:45:00Z
+TB-002,V-102,Gulf Foods,Red Sea Haulage,Jeddah,Riyadh,JED-RUH,2026-06-06T12:00:00Z,2026-06-06T14:35:00Z
+TB-003,V-103,Portside Stores,Dock Time Logistics,Dammam,Riyadh,DMM-RUH,2026-06-06T15:00:00Z,
+TB-004,V-104,Metro Pharma,Signal Gap Transport,Riyadh,Jeddah,RUH-JED,2026-06-06T13:00:00Z,
+TB-005,V-105,City Fresh,Fuel Review Fleet,Jeddah,Makkah,JED-MAK,2026-06-06T11:30:00Z,2026-06-06T11:20:00Z
+TB-006,V-106,Southern Parts,City Window Movers,Abha,Riyadh,AHB-RUH,2026-06-06T18:00:00Z,
+TB-007,V-107,Najd Retail,Invoice Hold Express,Riyadh,Dammam,RUH-DMM,2026-06-06T16:00:00Z,2026-06-06T16:20:00Z
+TB-008,V-108,New Lane Pilot,New Route Pilot,Tabuk,Riyadh,TUU-RUH,2026-06-06T21:00:00Z,
