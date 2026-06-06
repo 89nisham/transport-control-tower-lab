@@ -9,6 +9,28 @@ Open-source Python CLI for practical logistics control-tower automation.
 
 The goal is not to replace a TMS. The goal is to turn messy operational files into clean events, explainable exceptions, and useful review packs that transport teams can act on.
 
+## v1.0.0 Factory Release
+
+The v1.0.0 release closes the 13-product local-first factory. It packages the completed transport control-tower lab as a file-based toolkit for demos, learning, and practical operational review without paid APIs, authentication, databases, messaging integrations, BI servers, or live production connectors.
+
+Included products:
+
+- Trip Sheet Doctor
+- GeoReplay
+- ETA Watch
+- DetentionClock
+- GateTruth
+- FuelGuard
+- UpdatePulse
+- DelayLens
+- PODPulse
+- LaneLab
+- BanWindow
+- CarrierScore
+- TowerBrief
+
+See [docs/v1.0.0-factory-release.md](docs/v1.0.0-factory-release.md) for the closeout scope and validation checklist.
+
 ## Problem
 
 Transport operations teams lose hours every day checking Excel sheets, GPS exports, trip files, and planned stops by hand.

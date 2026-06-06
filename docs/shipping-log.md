@@ -348,3 +348,28 @@ Daily standups should start from one manager-ready brief, not a folder of discon
 - `uv run ruff check .`
 - `uv run python -m py_compile tower_brief/app.py tower_brief/engine.py tower_brief/models.py`
 - Demo smoke run writes `tower_brief/output/daily_control_tower_brief.md`, `tower_brief/output/daily_control_tower_brief.html`, and `tower_brief/output/daily_control_tower_brief.csv`
+
+## v1.0.0
+
+Date: 2026-06-06
+
+### Shipped
+
+- Closed the 13-product local-first factory release.
+- Added `docs/v1.0.0-factory-release.md` with release scope, boundaries, and validation checklist.
+- Bumped package metadata to `1.0.0`.
+- Added patch tags for the spec-complete UpdatePulse and DelayLens commits.
+- Fixed TowerBrief Customer Risks markdown routing so all rows with customer context are included regardless of priority.
+- Added TowerBrief regression coverage for the 14-row demo Customer Risks section.
+
+### Why It Matters
+
+The repo now has a clean v1 local release point for the completed factory: practical demos, file-based workflows, and deterministic exports without adding live integrations, auth, messaging, databases, BI servers, paid APIs, or SaaS features.
+
+### Validation
+
+- `uv sync`
+- `uv run pytest`
+- `uv run ruff check .`
+- `uv run python -m compileall -q .`
+- `uv run tower-brief tower_brief/demo_data tower_brief/output`

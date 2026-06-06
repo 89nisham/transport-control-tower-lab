@@ -209,6 +209,24 @@ def test_markdown_brief_generation() -> None:
         assert section in brief
 
 
+def test_demo_customer_risks_section_includes_all_customer_rows() -> None:
+    result = _demo_result()
+    expected = result.action_table[
+        (result.action_table["customer_name"] != "") & (result.action_table["source_product"] != "Trip Context")
+    ]
+    customer_risks = result.brief_markdown.split("## Customer Risks", 1)[1].split("## Carrier Watchlist", 1)[0]
+    customer_bullets = [line for line in customer_risks.splitlines() if line.startswith("- ")]
+    assert len(customer_bullets) == 14
+    assert len(expected) == 14
+    assert "HIGH | GateTruth | MISSING DESTINATION ENTRY" in customer_risks
+    assert "customer: New Lane Pilot" in customer_risks
+    assert "MEDIUM | BanWindow | VEHICLE CLASS UNKNOWN" in customer_risks
+    assert "MEDIUM | ETA Watch | WATCH" in customer_risks
+    assert "customer: Southern Parts" in customer_risks
+    assert "MEDIUM | UpdatePulse | LATE UPDATE" in customer_risks
+    assert "customer: Doha Retail" in customer_risks
+
+
 def test_html_brief_generation_with_escaped_dynamic_text() -> None:
     result = run_tower_brief(
         {

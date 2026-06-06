@@ -1,6 +1,6 @@
 [project]
 name = "control-tower-lab"
-version = "0.1.0"
+version = "1.0.0"
 description = "Logistics control tower lab for TMS/GPS cleaning, ETA checks, exceptions, and weekly reports."
 requires-python = ">=3.12"
 dependencies = [

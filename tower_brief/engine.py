@@ -631,7 +631,7 @@ def _brief_markdown(
         ),
         (
             "Customer Risks",
-            _bullets(actions[(actions["customer_name"] != "") & (actions["priority"].isin(["CRITICAL", "HIGH", "MEDIUM"]))]),
+            _bullets(actions[(actions["customer_name"] != "") & (actions["source_product"] != "Trip Context")]),
         ),
         (
             "Carrier Watchlist",
