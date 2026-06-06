@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#roadmap--coming-soon)
 
-Open-source Python CLI for practical logistics control-tower automation.
+Local-first Python toolkit for practical logistics control-tower automation across 13 file-based micro-products.
 
 The goal is not to replace a TMS. The goal is to turn messy operational files into clean events, explainable exceptions, and useful review packs that transport teams can act on.
 
@@ -13,23 +13,52 @@ The goal is not to replace a TMS. The goal is to turn messy operational files in
 
 The v1.0.0 release closes the 13-product local-first factory. It packages the completed transport control-tower lab as a file-based toolkit for demos, learning, and practical operational review without paid APIs, authentication, databases, messaging integrations, BI servers, or live production connectors.
 
-Included products:
+See [docs/factory-closeout.md](docs/factory-closeout.md) for the closeout scope and validation checklist.
 
-- Trip Sheet Doctor
-- GeoReplay
-- ETA Watch
-- DetentionClock
-- GateTruth
-- FuelGuard
-- UpdatePulse
-- DelayLens
-- PODPulse
-- LaneLab
-- BanWindow
-- CarrierScore
-- TowerBrief
+### Product Index
 
-See [docs/v1.0.0-factory-release.md](docs/v1.0.0-factory-release.md) for the closeout scope and validation checklist.
+| # | Product | Purpose | Recommended run command |
+|---|---|---|---|
+| 1 | Trip Sheet Doctor | Clean messy trip sheets into an exception workbook. | `uv run control-tower trip-sheet-doctor data/samples/trip_sheet_doctor_sample.csv data/output/trip_sheet_doctor_demo.xlsx` |
+| 2 | GeoReplay | Reconstruct geofence visit events from GPS pings. | `uv run streamlit run georeplay/app.py` |
+| 3 | ETA Watch | Turn trips and visit events into ETA risk boards. | `uv run streamlit run eta_watch/app.py` |
+| 4 | DetentionClock | Calculate detention exposure from visit events and rules. | `uv run streamlit run detention_clock/app.py` |
+| 5 | GateTruth | Compare planned gates against actual visit evidence. | `uv run streamlit run gate_truth/app.py` |
+| 6 | FuelGuard | Reconcile fuel transactions against GPS and trip context. | `uv run streamlit run fuel_guard/app.py` |
+| 7 | UpdatePulse | Audit trip milestone update discipline. | `uv run streamlit run update_pulse/app.py` |
+| 8 | DelayLens | Classify delay reasons from trips, visits, and lane baselines. | `uv run streamlit run delay_lens/app.py` |
+| 9 | PODPulse | Track POD aging, gaps, approvals, and invoice blockers. | `uv run streamlit run pod_pulse/app.py` |
+| 10 | LaneLab | Build lane travel-time baselines from history. | `uv run streamlit run lane_lab/app.py` |
+| 11 | BanWindow | Check planned trips against uploaded restriction windows. | `uv run streamlit run ban_window/app.py` |
+| 12 | CarrierScore | Build a neutral carrier SLA scorecard. | `uv run streamlit run carrier_score/app.py` |
+| 13 | TowerBrief | Consolidate product outputs into a daily management brief. | `uv run streamlit run tower_brief/app.py` or `uv run tower-brief tower_brief/demo_data tower_brief/output` |
+
+### Data Flow Map
+
+Trip Sheet Doctor -> GeoReplay -> ETA Watch -> DetentionClock -> GateTruth -> FuelGuard -> UpdatePulse -> DelayLens -> PODPulse -> LaneLab -> BanWindow -> CarrierScore -> TowerBrief
+
+### Quality Gates
+
+```bash
+uv sync
+uv run pytest
+uv run ruff check .
+uv run python - <<'PY'
+import py_compile
+import subprocess
+files = subprocess.check_output(["git", "ls-files", "*.py"], text=True).splitlines()
+for file in files:
+    py_compile.compile(file, doraise=True)
+print(f"Compiled {len(files)} Python files")
+PY
+```
+
+### Local-First Boundaries
+
+- The toolkit is local-first and file-based. It does not include paid APIs, authentication, databases, BI servers, live production connectors, email, WhatsApp, Telegram, or SaaS workflow features.
+- Demo data is synthetic and public-safe. No real company data is required or included.
+- BanWindow is an uploaded-rule planning aid, not legal advice.
+- TowerBrief is deterministic and does not generate AI-written narrative.
 
 ## Problem
 
