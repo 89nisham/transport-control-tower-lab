@@ -227,6 +227,16 @@ def test_demo_customer_risks_section_includes_all_customer_rows() -> None:
     assert "customer: Doha Retail" in customer_risks
 
 
+def test_markdown_headings_start_on_clean_lines() -> None:
+    brief = _demo_result().brief_markdown
+    glued_headings = [
+        line
+        for line in brief.splitlines()
+        if "##" in line and not line.startswith("##") and line.split("##", 1)[0].strip()
+    ]
+    assert glued_headings == []
+
+
 def test_html_brief_generation_with_escaped_dynamic_text() -> None:
     result = run_tower_brief(
         {
